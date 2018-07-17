@@ -49,6 +49,9 @@
     <Filter Include="2DFramework\button">
       <UniqueIdentifier>{f7d51706-c5d3-48b6-820a-231ce8fb495f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\prologue">
+      <UniqueIdentifier>{6fbbff84-02f6-496a-a526-664aa7b6c299}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -123,6 +126,12 @@
     <ClInclude Include="keyAniManager.h">
       <Filter>2DFramework\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="dataInput.h">
+      <Filter>playGround\prologue</Filter>
+    </ClInclude>
+    <ClInclude Include="data.h">
+      <Filter>playGround\prologue</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -184,6 +193,12 @@
     </ClCompile>
     <ClCompile Include="keyAniManager.cpp">
       <Filter>2DFramework\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="dataInput.cpp">
+      <Filter>playGround\prologue</Filter>
+    </ClCompile>
+    <ClCompile Include="playGround_Image.cpp">
+      <Filter>playGround</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

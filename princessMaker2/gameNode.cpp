@@ -98,9 +98,41 @@ LRESULT gameNode::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 {
 	PAINTSTRUCT ps;		//조사 한 번 해보시요1
 	HDC hdc;
+	static TCHAR str[256];
+	int len;
 
 	switch (iMessage)
 	{
+	    case WM_CHAR:
+			if (!_isInput) break;
+			switch (wParam)
+			{
+			case  VK_BACK:
+				if (_inputData.size())
+				{
+					_inputData.pop_back();
+					_inputData.pop_back();
+				}
+				break;
+			case VK_RETURN:
+				break;
+			default:
+				if (wParam > 127)
+				{
+					if(_inputData.size() < 8)
+						_inputData.push_back((TCHAR)wParam);
+				}
+				break;
+			}
+	    	InvalidateRect(hWnd, NULL, false);
+	    break;
+		
+	    case WM_PAINT:
+			hdc = BeginPaint(hWnd, &ps);
+			TextOut(hdc, 100, 100, str, lstrlen(str));
+			EndPaint(hWnd, &ps);
+	    break;
+
 		case WM_LBUTTONDOWN:
 			_leftButtonDown = true;
 			
