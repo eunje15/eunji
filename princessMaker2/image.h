@@ -69,6 +69,8 @@ private:
 	BOOL			_trans;			//특정 칼라 지울지여부
 	COLORREF		_transColor;	//제외할 칼라 값
 
+	BOOL			_alpha;
+
 	BLENDFUNCTION	_blendFunc;		//알파블렌드 관련 함수를 사용할수있음.
 	LPIMAGE_INFO	_blendImage;	//알파블렌드 먹일 이미지
 
@@ -77,11 +79,11 @@ public:
 	~image();
 
 	//백버퍼를 옮겨와야겠다 + 이미지 초기화
-	HRESULT init(int width, int height);
+	HRESULT init(int width, int height, BOOL alpha = FALSE);
 	HRESULT init(const char* fileName, int width, int height,
-		BOOL trans = FALSE, COLORREF transColor = RGB(0, 0, 0));
+		BOOL trans = FALSE, COLORREF transColor = RGB(0, 0, 0), BOOL alpha = FALSE);
 	HRESULT init(const char* fileName, float x, float y, int width, int height,
-		BOOL trans = FALSE, COLORREF transColor = RGB(0, 0, 0));
+		BOOL trans = FALSE, COLORREF transColor = RGB(0, 0, 0), BOOL alpha = FALSE);
 
 	//프레임 이미지 초기화
 	HRESULT init(const char* fileName, float x, float y, int width, int height,
@@ -114,6 +116,9 @@ public:
 	void alphaRender(HDC hdc, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight, BYTE alpha);
 
 	void aniRender(HDC hdc, int destX, int destY, animation* ani);
+
+	void transRender(HDC hdc, int destX, int destY, bool isTrans);
+	void transRender(HDC hdc, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight, bool isTrans);
 
 	inline HDC getMemDC() { return _imageInfo->hMemDC; }
 

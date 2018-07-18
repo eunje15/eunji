@@ -162,6 +162,7 @@
     <ClInclude Include="keyAniManager.h" />
     <ClInclude Include="keyManager.h" />
     <ClInclude Include="playGround.h" />
+    <ClInclude Include="princess.h" />
     <ClInclude Include="progressBar.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="Resource.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="keyManager.cpp" />
     <ClCompile Include="playGround.cpp" />
     <ClCompile Include="playGround_Image.cpp" />
+    <ClCompile Include="princess.cpp" />
     <ClCompile Include="progressBar.cpp" />
     <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="soundManager.cpp" />

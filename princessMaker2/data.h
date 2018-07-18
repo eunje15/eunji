@@ -6,3 +6,13 @@ struct tagObj
 	int idX, idY;
 	bool isSelected;
 };
+
+
+struct tagInfo
+{
+	string name;
+	int year;
+	int mon;
+	int day;
+	int age;
+};

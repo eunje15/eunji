@@ -99,6 +99,7 @@ LRESULT gameNode::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 	PAINTSTRUCT ps;		//조사 한 번 해보시요1
 	HDC hdc;
 	static TCHAR str[256];
+	static bool dadOrDaughter = _dadOrDaughter;
 	int len;
 
 	switch (iMessage)
@@ -117,6 +118,11 @@ LRESULT gameNode::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 			case VK_RETURN:
 				break;
 			default:
+				if (dadOrDaughter != _dadOrDaughter)
+				{
+					_inputData.clear();
+					dadOrDaughter = _dadOrDaughter;
+				}
 				if (wParam > 127)
 				{
 					if(_inputData.size() < 8)

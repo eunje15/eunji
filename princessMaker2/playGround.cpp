@@ -16,9 +16,15 @@ HRESULT playGround::init(void)
 {
 	gameNode::init(true);
 	image_init();
-
+	//_test = IMAGEMANAGER->addImage("테스트", "image/prologue/test.bmp", 100, 100, true, RGB(255, 0, 255), true);
+	//_rc = RectMakeCenter(50, 50, 10, 10);
 	_dataInput = new dataInput;
 	_dataInput->init();
+
+	_princess = new princess;
+	_princess->init();
+
+	_dataInput->setPrincessAddressLink(_princess);
 
 	//_test = IMAGEMANAGER->addFrameImage("자음", "image/prologue/자음(80x665,2x19).bmp", 80, 665, 2, 19, true, RGB(255, 0, 255));
 
@@ -37,6 +43,7 @@ void playGround::update(void)
 {
 	gameNode::update();
 
+	
 	/*if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 	{
 		if (_frameX < _test->getMaxFrameX())
@@ -81,6 +88,21 @@ void playGround::render(void)
 	//	}
 	//	TextOut(DC, 100, 100, str.c_str(), strlen(str.c_str()));
 	//}
+
+	/*if(!_isTest)
+		_test->render(DC);
+
+	if (KEYMANAGER->isToggleKey(VK_F2))
+		Rectangle(DC, _rc.left, _rc.top, _rc.right, _rc.bottom);
+
+	if (KEYMANAGER->isOnceKeyDown(VK_F1))
+	{
+		_test->transRender(_test->getMemDC(), _rc.left, _rc.top, _rc.left, _rc.top, 10, 10, true);
+		_test->render(DC);
+		_isTest ? _isTest = false : _isTest = true;
+	}*/
+
+	//_test->alphaRender(DC, 100);
 	//////////////////////////////////////////////////////////
 	TIMEMANAGER->render(getMemDC());
 	this->getBackBuffer()->render(getHDC(), 0, 0);

@@ -24,7 +24,7 @@ void imageManager::release(void)
 }
 
 
-image* imageManager::addImage(string strKey, int width, int height)																			
+image* imageManager::addImage(string strKey, int width, int height, BOOL alpha)																			
 {
 	//해당 키 값을 찾아보고
 	image* img = findImage(strKey);
@@ -37,7 +37,7 @@ image* imageManager::addImage(string strKey, int width, int height)
 	img = new image;
 
 	//이미지를 초기화 한다, (만약 실패시 널 값 반환)
-	if (FAILED(img->init(width, height)))
+	if (FAILED(img->init(width, height, alpha)))
 	{
 		SAFE_DELETE(img);
 
@@ -50,7 +50,7 @@ image* imageManager::addImage(string strKey, int width, int height)
 	return img;
 }
 
-image* imageManager::addImage(string strKey, const char* fileName, int width, int height, bool trans, COLORREF transColor)					
+image* imageManager::addImage(string strKey, const char* fileName, int width, int height, bool trans, COLORREF transColor, BOOL alpha)
 {
 	//해당 키 값을 찾아보고
 	image* img = findImage(strKey);
@@ -63,7 +63,7 @@ image* imageManager::addImage(string strKey, const char* fileName, int width, in
 	img = new image;
 
 	//이미지를 초기화 한다, (만약 실패시 널 값 반환)
-	if (FAILED(img->init(fileName, width, height, trans, transColor)))
+	if (FAILED(img->init(fileName, width, height, trans, transColor, alpha)))
 	{
 		SAFE_DELETE(img);
 
@@ -76,7 +76,7 @@ image* imageManager::addImage(string strKey, const char* fileName, int width, in
 	return img;
 }
 
-image* imageManager::addImage(string strKey, const char* fileName, float x, float y, int width, int height, bool trans, COLORREF transColor)
+image* imageManager::addImage(string strKey, const char* fileName, float x, float y, int width, int height, bool trans, COLORREF transColor, BOOL alpha)
 {
 	//해당 키 값을 찾아보고
 	image* img = findImage(strKey);
@@ -89,7 +89,7 @@ image* imageManager::addImage(string strKey, const char* fileName, float x, floa
 	img = new image;
 
 	//이미지를 초기화 한다, (만약 실패시 널 값 반환)
-	if (FAILED(img->init(fileName, x, y, width, height, trans, transColor)))
+	if (FAILED(img->init(fileName, x, y, width, height, trans, transColor, alpha)))
 	{
 		SAFE_DELETE(img);
 

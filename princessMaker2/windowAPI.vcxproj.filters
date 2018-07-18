@@ -52,6 +52,9 @@
     <Filter Include="playGround\prologue">
       <UniqueIdentifier>{6fbbff84-02f6-496a-a526-664aa7b6c299}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\princess">
+      <UniqueIdentifier>{f35be7b3-e0ed-49e0-9879-0cba18e30caa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -132,6 +135,9 @@
     <ClInclude Include="data.h">
       <Filter>playGround\prologue</Filter>
     </ClInclude>
+    <ClInclude Include="princess.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -199,6 +205,9 @@
     </ClCompile>
     <ClCompile Include="playGround_Image.cpp">
       <Filter>playGround</Filter>
+    </ClCompile>
+    <ClCompile Include="princess.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

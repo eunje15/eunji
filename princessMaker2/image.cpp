@@ -17,7 +17,7 @@ image::~image()
 {
 }
 
-HRESULT image::init(int width, int height)
+HRESULT image::init(int width, int height, BOOL alpha)
 {
 	//백버퍼가 널이 아니면 == 뭔가 데이터가 있으면 == 초기화가 잘안되어있으면
 	//해제해라
@@ -32,20 +32,24 @@ HRESULT image::init(int width, int height)
 	_imageInfo->width = width;
 	_imageInfo->height = height;
 
-	//알파블렌드 설정
-	_blendFunc.BlendFlags	= 0;
-	_blendFunc.AlphaFormat	= 0;
-	_blendFunc.BlendOp		= AC_SRC_OVER;
+	if (alpha)
+	{
+		//알파블렌드 설정
+		_blendFunc.BlendFlags = 0;
+		_blendFunc.AlphaFormat = 0;
+		_blendFunc.BlendOp = AC_SRC_OVER;
 
-	_blendImage				= new IMAGE_INFO;
-	_blendImage->loadType	= LOAD_EMPTY;
-	_blendImage->resID		= 0;
-	_blendImage->hMemDC		= CreateCompatibleDC(hdc);
-	_blendImage->hBit = (HBITMAP)CreateCompatibleBitmap(hdc, WINSIZEX, WINSIZEY);
-	_blendImage->hOBit = (HBITMAP)SelectObject(_blendImage->hMemDC, _blendImage->hBit);
-	_blendImage->width = WINSIZEX;
-	_blendImage->height = WINSIZEY;
+		_blendImage = new IMAGE_INFO;
+		_blendImage->loadType = LOAD_EMPTY;
+		_blendImage->resID = 0;
+		_blendImage->hMemDC = CreateCompatibleDC(hdc);
+		_blendImage->hBit = (HBITMAP)CreateCompatibleBitmap(hdc, WINSIZEX, WINSIZEY);
+		_blendImage->hOBit = (HBITMAP)SelectObject(_blendImage->hMemDC, _blendImage->hBit);
+		_blendImage->width = WINSIZEX;
+		_blendImage->height = WINSIZEY;
+	}
 
+	_alpha = alpha;
 
 	//예외처리 하나 더
 	//비트맵이 생성안되었다면
@@ -63,7 +67,7 @@ HRESULT image::init(int width, int height)
 	return S_OK;
 }
 
-HRESULT image::init(const char * fileName, int width, int height, BOOL trans, COLORREF transColor)
+HRESULT image::init(const char * fileName, int width, int height, BOOL trans, COLORREF transColor, BOOL alpha)
 {
 	//파일이름이 없으면 에러를 띄워줘라
 	if (fileName == NULL) return E_FAIL;
@@ -82,19 +86,22 @@ HRESULT image::init(const char * fileName, int width, int height, BOOL trans, CO
 	_imageInfo->width = width;
 	_imageInfo->height = height;
 
-	//알파블렌드 설정
-	_blendFunc.BlendFlags = 0;
-	_blendFunc.AlphaFormat = 0;
-	_blendFunc.BlendOp = AC_SRC_OVER;
+	if (alpha)
+	{
+		//알파블렌드 설정
+		_blendFunc.BlendFlags = 0;
+		_blendFunc.AlphaFormat = 0;
+		_blendFunc.BlendOp = AC_SRC_OVER;
 
-	_blendImage = new IMAGE_INFO;
-	_blendImage->loadType = LOAD_EMPTY;
-	_blendImage->resID = 0;
-	_blendImage->hMemDC = CreateCompatibleDC(hdc);
-	_blendImage->hBit = (HBITMAP)CreateCompatibleBitmap(hdc, WINSIZEX, WINSIZEY);
-	_blendImage->hOBit = (HBITMAP)SelectObject(_blendImage->hMemDC, _blendImage->hBit);
-	_blendImage->width = WINSIZEX;
-	_blendImage->height = WINSIZEY;
+		_blendImage = new IMAGE_INFO;
+		_blendImage->loadType = LOAD_EMPTY;
+		_blendImage->resID = 0;
+		_blendImage->hMemDC = CreateCompatibleDC(hdc);
+		_blendImage->hBit = (HBITMAP)CreateCompatibleBitmap(hdc, WINSIZEX, WINSIZEY);
+		_blendImage->hOBit = (HBITMAP)SelectObject(_blendImage->hMemDC, _blendImage->hBit);
+		_blendImage->width = WINSIZEX;
+		_blendImage->height = WINSIZEY;
+	}
 
 	int len = strlen(fileName);
 
@@ -105,6 +112,8 @@ HRESULT image::init(const char * fileName, int width, int height, BOOL trans, CO
 	//특정컬러 제외할지 여부 및 컬러 값
 	_trans = trans;
 	_transColor = transColor;
+
+	_alpha = alpha;
 
 	//이미지가 제대로 불러져오지 않았다면
 	if (_imageInfo->hBit == NULL)
@@ -120,7 +129,7 @@ HRESULT image::init(const char * fileName, int width, int height, BOOL trans, CO
 	return S_OK;
 }
 
-HRESULT image::init(const char * fileName, float x, float y, int width, int height, BOOL trans, COLORREF transColor)
+HRESULT image::init(const char * fileName, float x, float y, int width, int height, BOOL trans, COLORREF transColor, BOOL alpha)
 {
 	//파일이름이 없으면 에러를 띄워줘라
 	if (fileName == NULL) return E_FAIL;
@@ -141,19 +150,22 @@ HRESULT image::init(const char * fileName, float x, float y, int width, int heig
 	_imageInfo->width = width;
 	_imageInfo->height = height;
 
-	//알파블렌드 설정
-	_blendFunc.BlendFlags = 0;
-	_blendFunc.AlphaFormat = 0;
-	_blendFunc.BlendOp = AC_SRC_OVER;
+	if (alpha)
+	{
+		//알파블렌드 설정
+		_blendFunc.BlendFlags = 0;
+		_blendFunc.AlphaFormat = 0;
+		_blendFunc.BlendOp = AC_SRC_OVER;
 
-	_blendImage = new IMAGE_INFO;
-	_blendImage->loadType = LOAD_EMPTY;
-	_blendImage->resID = 0;
-	_blendImage->hMemDC = CreateCompatibleDC(hdc);
-	_blendImage->hBit = (HBITMAP)CreateCompatibleBitmap(hdc, WINSIZEX, WINSIZEY);
-	_blendImage->hOBit = (HBITMAP)SelectObject(_blendImage->hMemDC, _blendImage->hBit);
-	_blendImage->width = WINSIZEX;
-	_blendImage->height = WINSIZEY;
+		_blendImage = new IMAGE_INFO;
+		_blendImage->loadType = LOAD_EMPTY;
+		_blendImage->resID = 0;
+		_blendImage->hMemDC = CreateCompatibleDC(hdc);
+		_blendImage->hBit = (HBITMAP)CreateCompatibleBitmap(hdc, WINSIZEX, WINSIZEY);
+		_blendImage->hOBit = (HBITMAP)SelectObject(_blendImage->hMemDC, _blendImage->hBit);
+		_blendImage->width = WINSIZEX;
+		_blendImage->height = WINSIZEY;
+	}
 
 	int len = strlen(fileName);
 
@@ -164,6 +176,8 @@ HRESULT image::init(const char * fileName, float x, float y, int width, int heig
 	//특정컬러 제외할지 여부 및 컬러 값
 	_trans = trans;
 	_transColor = transColor;
+
+	_alpha = alpha;
 
 	//이미지가 제대로 불러져오지 않았다면
 	if (_imageInfo->hBit == NULL)
@@ -599,3 +613,52 @@ void image::aniRender(HDC hdc, int destX, int destY, animation * ani)
 {
 	render(hdc, destX, destY, ani->getFramePos().x, ani->getFramePos().y, ani->getFrameWidth(), ani->getFrameHeight());
 }
+
+void image::transRender(HDC hdc, int destX, int destY, bool isTrans)
+{
+	if (isTrans)
+	{
+		GdiTransparentBlt(
+			hdc,					//복사될 DC
+			destX,					//복사될 좌표 X(left)
+			destY,					//복사될 좌표 Y(top)
+			_imageInfo->width,		//복사될 가로크기
+			_imageInfo->height,		//복사될 세로크기
+			_imageInfo->hMemDC,		//복사할 DC
+			0, 0,					//복사할 x,y
+			_imageInfo->width,		//복사할 가로, 세로크기
+			_imageInfo->height,
+			_transColor);			//복사할때 제외할 칼라
+	}
+	else
+	{
+		BitBlt(hdc, destX, destY,
+			_imageInfo->width, _imageInfo->height,
+			_imageInfo->hMemDC, 0, 0, SRCCOPY);
+	}
+}
+
+void image::transRender(HDC hdc, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight, bool isTrans)
+{
+	if (isTrans)
+	{
+		GdiTransparentBlt(
+			hdc,					//복사될 DC
+			destX,					//복사될 좌표 X(left)
+			destY,					//복사될 좌표 Y(top)
+			sourWidth,				//복사될 가로크기
+			sourHeight,				//복사될 세로크기
+			_imageInfo->hMemDC,		//복사할 DC
+			sourX, sourY,			//복사할 x,y
+			sourWidth,				//복사할 가로, 세로크기
+			sourHeight,
+			RGB(0,0,0));			//복사할때 제외할 칼라
+	}
+	else
+	{
+		BitBlt(hdc, destX, destY,
+			sourWidth, sourHeight,
+			_imageInfo->hMemDC, sourX, sourY, SRCCOPY);
+	}
+}
+
