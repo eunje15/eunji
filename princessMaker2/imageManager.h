@@ -23,8 +23,8 @@ public:
 	image* addImage(string strKey, const char* fileName, int width, int height, bool trans, COLORREF transColor, BOOL alpha = FALSE);
 	image* addImage(string strKey, const char* fileName, float x, float y, int width, int height, bool trans, COLORREF transColor, BOOL alpha = FALSE);
 
-	image* addFrameImage(string strKey, const char* fileName, float x, float y, int width, int height, int frameX, int frameY, bool trans, COLORREF transColor);
-	image* addFrameImage(string strKey, const char* fileName, int width, int height, int frameX, int frameY, bool trans, COLORREF transColor);
+	image* addFrameImage(string strKey, const char* fileName, float x, float y, int width, int height, int frameX, int frameY, bool trans, COLORREF transColor, BOOL alpha = FALSE);
+	image* addFrameImage(string strKey, const char* fileName, int width, int height, int frameX, int frameY, bool trans, COLORREF transColor, BOOL alpha = FALSE);
 
 	//키 값 찾는 함수
 	image* findImage(string strKey);
@@ -46,6 +46,5 @@ public:
 	void loopRender(string strKey, HDC hdc, const LPRECT drawArea, int offSetX, int offSetY);
 
 	void alphaRender(string strKey, HDC hdc, int destX, int destY, BYTE alpha);
-
 };
 

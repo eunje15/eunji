@@ -136,7 +136,13 @@
       <Filter>playGround\prologue</Filter>
     </ClInclude>
     <ClInclude Include="princess.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>playGround\princess</Filter>
+    </ClInclude>
+    <ClInclude Include="prologueDialog.h">
+      <Filter>playGround\prologue</Filter>
+    </ClInclude>
+    <ClInclude Include="dialogManager.h">
+      <Filter>2DFramework\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -207,7 +213,13 @@
       <Filter>playGround</Filter>
     </ClCompile>
     <ClCompile Include="princess.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>playGround\princess</Filter>
+    </ClCompile>
+    <ClCompile Include="prologueDialog.cpp">
+      <Filter>playGround\prologue</Filter>
+    </ClCompile>
+    <ClCompile Include="dialogManager.cpp">
+      <Filter>2DFramework\Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

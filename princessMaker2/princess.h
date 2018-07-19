@@ -5,6 +5,8 @@ class princess : public gameNode
 {
 private:
 	tagInfo _info;
+
+	
 public:
 	princess();
 	~princess();

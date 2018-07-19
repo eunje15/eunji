@@ -11,6 +11,7 @@ class dataInput :public gameNode
 private:
 	princess* _princess;
 	tagInfo _princessInfo;
+	tagStatus _princessStatus;
 
 	image* _back;
 	tagObj _okBtn;
@@ -29,6 +30,9 @@ private:
 	list<int>::iterator _lDadAgeIter;
 	int	_dadAge, _dadYear;
 
+	tagObj _blood[4];
+
+	int _count;
 public:
 	dataInput();
 	~dataInput();
@@ -37,24 +41,25 @@ public:
 	void update();
 	void render();
 	void release();
-	void setDadName();
-	void setDadNameRender();
-	void setPrincessName();
-	void setPrincessNameRender();
+
 	void changeMode();
+	void setDadName();
+	void setPrincessName();
 	void setCal();
-	void CalRender();
+	void setStatus();
 	void clickCal();
-
 	void setDadAge();
-
-	void dadAgeRender();
-
-	void checkRender();
-
 	void setDadCal();
+	void setBlood();
 
+	void dadNameRender();
+	void princessNameRender();
+	void dadAgeRender();
+	void CalRender();
+	void checkRender();
 	void dadCalRender();
+	void bloodRender();
+	void printInfo();
 
 	void setPrincessAddressLink(princess* princess) { _princess = princess; }
 };

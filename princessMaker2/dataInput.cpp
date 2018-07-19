@@ -14,14 +14,15 @@ dataInput::~dataInput()
 
 HRESULT dataInput::init()
 {
-	_mode = PROLOGUE_CAL;
-	//setDadName();
-	setCal();
+	_mode = PROLOGUE_DADNAME;
+	setDadName();
 	return S_OK;
 }
 
 void dataInput::update()
 {
+	_count++;
+	if (_count < 30) return;
 	if (PtInRect(&_okBtn.rc, _ptMouse))
 	{
 		_okBtn.isSelected = true;
@@ -33,33 +34,33 @@ void dataInput::update()
 	}
 	else
 		_okBtn.idX = 0;
-
-	
 }
 
 void dataInput::render()
-{	
+{
 	switch (_mode)
 	{
-	case PROLOGUE_DADNAME:
-		setDadNameRender();
-		break;
-	case PROLOGUE_DADCAL:
-		dadCalRender();
-		break;
-	case PROLOGUE_DADAGE:
-		dadAgeRender();
-		break;
-	case PROLOGUE_NAME:
-		setPrincessNameRender();
-		break;
-	case PROLOGUE_CAL:
-		CalRender();
-		break;
-	case PROLOGUE_BLOOD:
-		break;
-	case PROLOGUE_DIALOG:
-		break;
+		case PROLOGUE_DADNAME:
+			dadNameRender();
+			break;
+		case PROLOGUE_DADCAL:
+			dadCalRender();
+			break;
+		case PROLOGUE_DADAGE:
+			dadAgeRender();
+			break;
+		case PROLOGUE_NAME:
+			princessNameRender();
+			break;
+		case PROLOGUE_CAL:
+			CalRender();
+			break;
+		case PROLOGUE_BLOOD:
+			bloodRender();
+			break;
+		case PROLOGUE_DIALOG:
+			printInfo();
+			break;
 	}
 
 	char str[128];
@@ -79,7 +80,7 @@ void dataInput::setDadName()
 	_okBtn.isSelected = _okBtn.idX = _okBtn.idY = 0;
 }
 
-void dataInput::setDadNameRender()
+void dataInput::dadNameRender()
 {
 	_back->render(DC, 0, 0);
 
@@ -106,9 +107,10 @@ void dataInput::setPrincessName()
 	_back = IMAGEMANAGER->findImage("princessName");
 	_okBtn.rc = RectMake(510, WINSIZEY / 2, 68, 37);
 	_okBtn.isSelected = _okBtn.idX = _okBtn.idY = 0;
+	_inputData.clear();
 }
 
-void dataInput::setPrincessNameRender()
+void dataInput::princessNameRender()
 {
 	_dadOrDaughter = true;
 
@@ -134,44 +136,51 @@ void dataInput::setPrincessNameRender()
 
 void dataInput::changeMode()
 {
+	_count = 0;
+
 	string temp = "";
 	switch (_mode)
 	{
-	case PROLOGUE_DADNAME:
-		_mode = PROLOGUE_NAME;
-		if (_dadName.size() > 8)
-			_dadName = _dadName.substr(0, 7);
-		setPrincessName();
-		break;
-	case PROLOGUE_DADCAL:
-		break;
-	case PROLOGUE_DADAGE:
-		_lDadAgeIter = _lDadAge.begin();
-		for (; _lDadAgeIter != _lDadAge.end(); ++_lDadAgeIter)
-		{
-			temp += to_string(*_lDadAgeIter);
-		}
-		_dadAge = atoi(temp.c_str());
-		if (_dadAge > 9)
-		{
-			_mode = PROLOGUE_DADCAL;
-			setDadCal();
-		}
-		break;
-	case PROLOGUE_NAME:
-		_mode = PROLOGUE_NAME;
-		if (_princessName.size() > 8)
-			_princessName = _princessName.substr(0, 7);
-		_princessInfo.name = _princessName;
-		break;
-	case PROLOGUE_CAL:
-		_mode = PROLOGUE_DADAGE;
-		setDadAge();
-		break;
-	case PROLOGUE_BLOOD:
-		break;
-	case PROLOGUE_DIALOG:
-		break;
+		case PROLOGUE_DADNAME:
+			_mode = PROLOGUE_NAME;
+			if (_dadName.size() > 8)
+				_dadName = _dadName.substr(0, 7);
+			setPrincessName();
+			break;
+		case PROLOGUE_DADCAL:
+			_mode = PROLOGUE_BLOOD;
+			setBlood();
+			break;
+		case PROLOGUE_DADAGE:
+			_lDadAgeIter = _lDadAge.begin();
+			for (; _lDadAgeIter != _lDadAge.end(); ++_lDadAgeIter)
+			{
+				temp += to_string(*_lDadAgeIter);
+			}
+			_dadAge = atoi(temp.c_str());
+			if (_dadAge > 9)
+			{
+				_mode = PROLOGUE_DADCAL;
+				setDadCal();
+			}
+			break;
+		case PROLOGUE_NAME:
+			_mode = PROLOGUE_CAL;
+			if (_princessName.size() > 8)
+				_princessName = _princessName.substr(0, 7);
+			_princessInfo.name = _princessName;
+			setCal();
+			break;
+		case PROLOGUE_CAL:
+			_mode = PROLOGUE_DADAGE;
+			setStatus();
+			setDadAge();
+			break;
+		case PROLOGUE_BLOOD:
+			_mode = PROLOGUE_DIALOG;
+			break;
+		case PROLOGUE_DIALOG:
+			break;
 	}
 }
 
@@ -180,7 +189,7 @@ void dataInput::setCal()
 	for (int i = 0; i < 12; i++)
 	{
 		for (int j = 0; j < 42; j++)
-		{			
+		{
 			switch (i)
 			{
 				case 0:
@@ -245,11 +254,120 @@ void dataInput::setCal()
 					break;
 			}
 			_cal[i][j].idX = i + 1;
-			_cal[i][j].rc = RectMake((i % 3) * 250 + 61 + 30 * (j % 7), 104 + 108 * (i / 3) + 16 * (j / 7), 30, 16);
+			_cal[i][j].rc = RectMake(61 + (i % 3) * 250 + 30 * (j % 7), 104 + 108 * (i / 3) + 16 * (j / 7), 30, 16);
 		}
 	}
 
 	_img = IMAGEMANAGER->findImage("princessYellow");
+}
+
+void dataInput::setStatus()
+{
+	switch (_princessInfo.mon)
+	{
+		case 1:
+			if (_princessInfo.day <= 19)
+				_princessStatus.god.constellation = "염소자리";
+			else
+				_princessStatus.god.constellation = "물병자리";
+		break;
+		case 2:
+			if (_princessInfo.day <= 18)
+				_princessStatus.god.constellation = "물병자리";
+			else
+				_princessStatus.god.constellation = "물고기자리";
+		break;
+		case 3:
+			if (_princessInfo.day <= 20)
+				_princessStatus.god.constellation = "물고기자리";
+			else
+				_princessStatus.god.constellation = "양자리";
+		break;
+		case 4:
+			if (_princessInfo.day <= 19)
+				_princessStatus.god.constellation = "양자리";
+			else
+				_princessStatus.god.constellation = "황소자리";
+		break;
+		case 5:
+			if (_princessInfo.day <= 20)
+				_princessStatus.god.constellation = "황소자리";
+			else
+				_princessStatus.god.constellation = "쌍둥이자리";
+		break;
+		case 6:
+			if (_princessInfo.day <= 21)
+				_princessStatus.god.constellation = "쌍둥이자리";
+			else
+				_princessStatus.god.constellation = "게자리";
+		break;
+		case 7:
+			if (_princessInfo.day <= 22)
+				_princessStatus.god.constellation = "게자리";
+			else
+				_princessStatus.god.constellation = "사자자리";
+		break;
+		case 8:
+			if (_princessInfo.day <= 22)
+				_princessStatus.god.constellation = "사자자리";
+			else
+				_princessStatus.god.constellation = "처녀자리";
+		break;
+		case 9:
+			if (_princessInfo.day <= 22)
+				_princessStatus.god.constellation = "처녀자리";
+			else
+				_princessStatus.god.constellation = "천칭자리";
+		break;
+		case 10:
+			if (_princessInfo.day <= 23)
+				_princessStatus.god.constellation = "천칭자리";
+			else
+				_princessStatus.god.constellation = "전갈자리";
+		break;
+		case 11:
+			if (_princessInfo.day <= 22)
+				_princessStatus.god.constellation = "전갈자리";
+			else
+				_princessStatus.god.constellation = "사수자리";
+		break;
+		case 12:
+			if (_princessInfo.day <= 21)
+				_princessStatus.god.constellation = "사수자리";
+			else
+				_princessStatus.god.constellation = "염소자리";
+		break;
+	}
+	vector<string> vStr = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", _princessStatus.god.constellation.c_str());
+
+	_princessStatus.god.planet = vStr[0];
+	_princessStatus.god.name = vStr[1];
+
+	_princessStatus.hp = atoi(vStr[3].c_str());
+	_princessStatus.physical = atoi(vStr[4].c_str());
+	_princessStatus.intelligence = atoi(vStr[5].c_str());
+	_princessStatus.elegance = atoi(vStr[6].c_str());
+	_princessStatus.sexual = atoi(vStr[7].c_str());
+	_princessStatus.morality = atoi(vStr[8].c_str());
+	_princessStatus.faith = atoi(vStr[9].c_str());
+	_princessStatus.sensitivity = atoi(vStr[10].c_str());
+	_princessStatus.warrior = atoi(vStr[11].c_str());
+	_princessStatus.warriorSkill = atoi(vStr[12].c_str());
+	_princessStatus.power = atoi(vStr[13].c_str());
+	_princessStatus.magic = atoi(vStr[14].c_str());
+	_princessStatus.magicSkill = atoi(vStr[15].c_str());
+	_princessStatus.spell = atoi(vStr[16].c_str());
+	_princessStatus.spellDefence = atoi(vStr[17].c_str());
+	_princessStatus.sociality = atoi(vStr[18].c_str());
+	_princessStatus.manner = atoi(vStr[19].c_str());
+	_princessStatus.art = atoi(vStr[20].c_str());
+	_princessStatus.conversation = atoi(vStr[21].c_str());
+	_princessStatus.housework = atoi(vStr[22].c_str());
+	_princessStatus.cooking = atoi(vStr[23].c_str());
+	_princessStatus.cleaning = atoi(vStr[24].c_str());
+	_princessStatus.personality = atoi(vStr[25].c_str());
+	_princessStatus.total = atoi(vStr[26].c_str());
+	_princessStatus.plusNorth = vStr[27];
 }
 
 void dataInput::CalRender()
@@ -269,10 +387,12 @@ void dataInput::CalRender()
 
 void dataInput::clickCal()
 {
-	if(_mode == PROLOGUE_CAL)
+	if (_mode == PROLOGUE_CAL)
 		IMAGEMANAGER->findImage("princessCal")->render(DC);
 	if (_mode == PROLOGUE_DADCAL)
 		IMAGEMANAGER->findImage("dadCal")->render(DC);
+
+	if (_count < 30) return;
 
 	for (int i = 0; i < 12; i++)
 	{
@@ -280,7 +400,7 @@ void dataInput::clickCal()
 		{
 			if (!PtInRect(&_cal[i][j].rc, _ptMouse) || !_cal[i][j].isData) continue;
 
-			_img->render(DC,_cal[i][j].rc.left,_cal[i][j].rc.top, _cal[i][j].rc.left, _cal[i][j].rc.top, _cal[i][j].rc.right - _cal[i][j].rc.left, _cal[i][j].rc.bottom - _cal[i][j].rc.top);
+			_img->render(DC, _cal[i][j].rc.left, _cal[i][j].rc.top, _cal[i][j].rc.left, _cal[i][j].rc.top, _cal[i][j].rc.right - _cal[i][j].rc.left, _cal[i][j].rc.bottom - _cal[i][j].rc.top);
 			SetTextColor(DC, RGB(255, 255, 255));
 			if (_mode == PROLOGUE_CAL)
 				TextOut(DC, 33, 73, "1200", strlen("1200"));
@@ -295,14 +415,15 @@ void dataInput::clickCal()
 				_princessInfo.year = 1200;
 				_princessInfo.mon = _cal[i][j].idX;
 				_princessInfo.day = _cal[i][j].idY;
+				_princessInfo.age = 10;
 			}
 			if (_mode == PROLOGUE_DADCAL)
 			{
 			}
 
 			changeMode();
-			
-			break;						
+
+			break;
 		}
 	}
 }
@@ -312,7 +433,7 @@ void dataInput::setDadAge()
 	for (int i = 0; i < 10; i++)
 	{
 		_dadAgeArr[i].idX = i;
-		_dadAgeArr[i].rc = RectMake(255 + i*30, 347, 20, 20);
+		_dadAgeArr[i].rc = RectMake(255 + i * 30, 347, 20, 20);
 	}
 
 	_okBtn.rc = RectMake(168, 435, 45, 25);
@@ -325,7 +446,7 @@ void dataInput::dadAgeRender()
 	IMAGEMANAGER->findImage("dadAge")->render(DC);
 
 	checkRender();
-	
+
 	for (int i = 0; i < 10; i++)
 	{
 		if (!PtInRect(&_dadAgeArr[i].rc, _ptMouse)) continue;
@@ -356,7 +477,7 @@ void dataInput::dadAgeRender()
 	SetTextColor(DC, RGB(190, 172, 76));
 	for (; _lDadAgeIter != _lDadAge.end(); ++_lDadAgeIter)
 	{
-		TextOut(DC, 373 + (idx++)* 15, 304, to_string(*_lDadAgeIter).c_str(), strlen(to_string(*_lDadAgeIter).c_str()));
+		TextOut(DC, 373 + (idx++) * 15, 304, to_string(*_lDadAgeIter).c_str(), strlen(to_string(*_lDadAgeIter).c_str()));
 	}
 	SelectObject(DC, oldFont);
 	DeleteObject(font);
@@ -366,13 +487,13 @@ void dataInput::dadAgeRender()
 void dataInput::checkRender()
 {
 	if (!KEYMANAGER->isToggleKey(VK_F1)) return;
-	
+
 	for (int i = 0; i < 10; i++)
 	{
 		Rectangle(DC, _dadAgeArr[i].rc.left, _dadAgeArr[i].rc.top, _dadAgeArr[i].rc.right, _dadAgeArr[i].rc.bottom);
 	}
 
-	Rectangle(DC, _okBtn.rc.left, _okBtn.rc.top, _okBtn.rc.right, _okBtn.rc.bottom);	
+	Rectangle(DC, _okBtn.rc.left, _okBtn.rc.top, _okBtn.rc.right, _okBtn.rc.bottom);
 }
 
 void dataInput::setDadCal()
@@ -385,8 +506,18 @@ void dataInput::dadCalRender()
 {
 	clickCal();
 
-	if (!KEYMANAGER->isToggleKey(VK_TAB)) return;
+	HFONT font, oldFont;
+	font = CreateFont(18, 0, 0, 0, 600, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, 0, TEXT("Britannic Bold"));
+	oldFont = (HFONT)SelectObject(DC, font);
+	SetTextColor(DC, RGB(255, 255, 255));
+	for (int i = 0; i < 12; i++)
+	{
+		TextOut(DC, 17 + (i % 3) * 250, 92 + 108 * (i / 3), to_string(_dadYear).c_str(), strlen(to_string(_dadYear).c_str()));
+	}
+	SelectObject(DC, oldFont);
+	DeleteObject(font);
 
+	if (!KEYMANAGER->isToggleKey(VK_TAB)) return;
 	for (int i = 0; i < 12; i++)
 	{
 		for (int j = 0; j < 42; j++)
@@ -394,4 +525,52 @@ void dataInput::dadCalRender()
 			Rectangle(DC, _cal[i][j].rc.left, _cal[i][j].rc.top, _cal[i][j].rc.right, _cal[i][j].rc.bottom);
 		}
 	}
+}
+
+void dataInput::setBlood()
+{
+	_img = IMAGEMANAGER->findImage("princessBloodYellow");
+
+	for (int i = 0; i < 4; i++)
+	{
+		_blood[i].rc = RectMake(255 + i * 80, 340, 30, 30);
+	}
+}
+
+void dataInput::bloodRender()
+{
+	IMAGEMANAGER->findImage("princessBlood")->render(DC);
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (PtInRect(&_blood[i].rc, _ptMouse))
+		{
+			_img->render(DC, _blood[i].rc.left, _blood[i].rc.top, _blood[i].rc.left, _blood[i].rc.top, _blood[i].rc.right - _blood[i].rc.left, _blood[i].rc.bottom - _blood[i].rc.top);
+			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+			{
+				_princessInfo.blood = (BLOOD_TYPE)i;
+				changeMode();
+			}
+		}
+	}
+
+	if (!KEYMANAGER->isToggleKey(VK_TAB))return;
+	for (int i = 0; i < 4; i++)
+	{
+		Rectangle(DC, _blood[i].rc.left, _blood[i].rc.top, _blood[i].rc.right, _blood[i].rc.bottom);
+	}
+}
+
+void dataInput::printInfo()
+{
+	SetTextColor(DC, RGB(0, 0, 0));
+	char str[128];
+	sprintf_s(str, "딸 이름 : %s", _princessInfo.name.c_str());
+	TextOut(DC, 100, 100, str, strlen(str));
+	sprintf_s(str, "딸 생년월일 : %d, %d, %d", _princessInfo.year, _princessInfo.mon, _princessInfo.day);
+	TextOut(DC, 100, 200, str, strlen(str));
+	sprintf_s(str, "딸 나이: %d", _princessInfo.age);
+	TextOut(DC, 100, 300, str, strlen(str));
+	sprintf_s(str, "딸 혈액형 : %d", (int)_princessInfo.blood);
+	TextOut(DC, 100, 400, str, strlen(str));
 }

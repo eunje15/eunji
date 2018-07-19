@@ -39,6 +39,7 @@ HRESULT gameNode::init(bool managerInit)
 		KEYANIMANAGER->init();
 		TXTDATA->init();
 		INIDATA->init();
+		DIALOG->init();
 	}
 
 
@@ -76,6 +77,9 @@ void gameNode::release(void)
 		TXTDATA->releaseSingleton();
 
 		INIDATA->releaseSingleton();
+
+		DIALOG->release();
+		DIALOG->releaseSingleton();
 	}
 	//초기화해줄때 GetDC를 사용했으므로 DC해제해준다
 	ReleaseDC(_hWnd, _hdc);

@@ -153,6 +153,7 @@
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="dataInput.h" />
+    <ClInclude Include="dialogManager.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effectManager.h" />
     <ClInclude Include="gameNode.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="playGround.h" />
     <ClInclude Include="princess.h" />
     <ClInclude Include="progressBar.h" />
+    <ClInclude Include="prologueDialog.h" />
     <ClInclude Include="randomFunction.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="sceneManager.h" />
@@ -180,6 +182,7 @@
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="dataInput.cpp" />
+    <ClCompile Include="dialogManager.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effectManager.cpp" />
     <ClCompile Include="gameNode.cpp" />
@@ -192,6 +195,7 @@
     <ClCompile Include="playGround_Image.cpp" />
     <ClCompile Include="princess.cpp" />
     <ClCompile Include="progressBar.cpp" />
+    <ClCompile Include="prologueDialog.cpp" />
     <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="soundManager.cpp" />
     <ClCompile Include="stdafx.cpp">

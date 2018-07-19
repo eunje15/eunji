@@ -103,7 +103,7 @@ image* imageManager::addImage(string strKey, const char* fileName, float x, floa
 }
 
 
-image* imageManager::addFrameImage(string strKey, const char* fileName, float x, float y, int width, int height, int frameX, int frameY, bool trans, COLORREF transColor)
+image* imageManager::addFrameImage(string strKey, const char* fileName, float x, float y, int width, int height, int frameX, int frameY, bool trans, COLORREF transColor, BOOL alpha)
 {
 	//해당 키 값을 찾아보고
 	image* img = findImage(strKey);
@@ -116,7 +116,7 @@ image* imageManager::addFrameImage(string strKey, const char* fileName, float x,
 	img = new image;
 
 	//이미지를 초기화 한다, (만약 실패시 널 값 반환)
-	if (FAILED(img->init(fileName, x, y, width, height, frameX, frameY, trans, transColor)))
+	if (FAILED(img->init(fileName, x, y, width, height, frameX, frameY, trans, transColor, alpha)))
 	{
 		SAFE_DELETE(img);
 
@@ -129,7 +129,7 @@ image* imageManager::addFrameImage(string strKey, const char* fileName, float x,
 	return img;
 }
 
-image* imageManager::addFrameImage(string strKey, const char* fileName, int width, int height, int frameX, int frameY, bool trans, COLORREF transColor)					 
+image* imageManager::addFrameImage(string strKey, const char* fileName, int width, int height, int frameX, int frameY, bool trans, COLORREF transColor, BOOL alpha)
 {
 	//해당 키 값을 찾아보고
 	image* img = findImage(strKey);
@@ -142,7 +142,7 @@ image* imageManager::addFrameImage(string strKey, const char* fileName, int widt
 	img = new image;
 	
 	//이미지를 초기화 한다, (만약 실패시 널 값 반환)
-	if (FAILED(img->init(fileName, width, height, frameX, frameY, trans, transColor)))
+	if (FAILED(img->init(fileName, width, height, frameX, frameY, trans, transColor, alpha)))
 	{
 		SAFE_DELETE(img);
 
