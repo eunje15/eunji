@@ -4,7 +4,7 @@ class dialogManager : public singletonBase<dialogManager>
 {
 private:
 	string _str;
-	int _count, _idx;
+	int _count, _idx, _speed;
 public:
 	dialogManager();
 	~dialogManager();
@@ -14,7 +14,7 @@ public:
 	void update();
 	void render();
 
-	void setDialog(string str);
+	void setDialog(string str, int speed);
 	string getCurrentDialog();
 	string getTotalDialog();
 };
