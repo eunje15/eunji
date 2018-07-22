@@ -17,17 +17,16 @@ HRESULT playGround::init(void)
 	gameNode::init(true);
 	image_init();
 	
-	_dataInput = new dataInput;
-	_dataInput->init();
-
 	_princess = new princess;
 	_princess->init();
 
-	_prologue = new prologueDialog;
-	_prologue->init();
+	SCENEMANAGER->setPrincessAddressLink(_princess);
 
-	_dataInput->setPrincessAddressLink(_princess);
+	SCENEMANAGER->addScene("데이터입력", new dataInput);
+	SCENEMANAGER->addScene("프롤로그", new prologueDialog);
+	SCENEMANAGER->addScene("공주씬", new princessScene);
 	
+	SCENEMANAGER->changeScene("공주씬");
 	_str = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", "처녀자리");
 
 	return S_OK;
@@ -44,9 +43,7 @@ void playGround::update(void)
 {
 	gameNode::update();
 
-	_prologue->update();
-	
-	_dataInput->update();
+	SCENEMANAGER->update();
 }
 
 void playGround::render(void)
@@ -56,11 +53,10 @@ void playGround::render(void)
 	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
 	//////////////////////////////////////////////////////////
 
-	//_dataInput->render();
-	_prologue->render();
+	SCENEMANAGER->render();
 	
 	//////////////////////////////////////////////////////////
-	TIMEMANAGER->render(getMemDC());
+	//TIMEMANAGER->render(getMemDC());
 	this->getBackBuffer()->render(getHDC(), 0, 0);
 }
 

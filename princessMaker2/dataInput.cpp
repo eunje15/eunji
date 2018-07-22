@@ -14,6 +14,7 @@ dataInput::~dataInput()
 
 HRESULT dataInput::init()
 {
+	_princess = SCENEMANAGER->getPrincessAddress();
 	_mode = PROLOGUE_DADNAME;
 	setDadName();
 	return S_OK;
@@ -57,9 +58,6 @@ void dataInput::render()
 			break;
 		case PROLOGUE_BLOOD:
 			bloodRender();
-			break;
-		case PROLOGUE_DIALOG:
-			printInfo();
 			break;
 	}
 
@@ -177,9 +175,10 @@ void dataInput::changeMode()
 			setDadAge();
 			break;
 		case PROLOGUE_BLOOD:
-			_mode = PROLOGUE_DIALOG;
-			break;
-		case PROLOGUE_DIALOG:
+			_princess->setInfo(_princessInfo);
+			_princess->setStatus(_princessStatus);
+			_princess->setDadName(_dadName);
+			SCENEMANAGER->changeScene("ÇÁ·Ñ·Î±×");
 			break;
 	}
 }
@@ -549,6 +548,10 @@ void dataInput::bloodRender()
 			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 			{
 				_princessInfo.blood = (BLOOD_TYPE)i;
+				if (i == 0) _princessInfo.strBlood = "A";
+				else if (i == 1) _princessInfo.strBlood = "B";
+				else if (i == 2) _princessInfo.strBlood = "O";
+				else if (i == 3) _princessInfo.strBlood = "AB";
 				changeMode();
 			}
 		}
@@ -559,18 +562,4 @@ void dataInput::bloodRender()
 	{
 		Rectangle(DC, _blood[i].rc.left, _blood[i].rc.top, _blood[i].rc.right, _blood[i].rc.bottom);
 	}
-}
-
-void dataInput::printInfo()
-{
-	SetTextColor(DC, RGB(0, 0, 0));
-	char str[128];
-	sprintf_s(str, "µþ ÀÌ¸§ : %s", _princessInfo.name.c_str());
-	TextOut(DC, 100, 100, str, strlen(str));
-	sprintf_s(str, "µþ »ý³â¿ùÀÏ : %d, %d, %d", _princessInfo.year, _princessInfo.mon, _princessInfo.day);
-	TextOut(DC, 100, 200, str, strlen(str));
-	sprintf_s(str, "µþ ³ªÀÌ: %d", _princessInfo.age);
-	TextOut(DC, 100, 300, str, strlen(str));
-	sprintf_s(str, "µþ Ç÷¾×Çü : %d", (int)_princessInfo.blood);
-	TextOut(DC, 100, 400, str, strlen(str));
 }

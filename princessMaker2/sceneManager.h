@@ -4,6 +4,7 @@
 
 //씬을 위한 게임노드 전방선언
 class gameNode;
+class princess;
 
 class sceneManager : public singletonBase<sceneManager>
 {
@@ -14,6 +15,8 @@ public:
 private:
 	static gameNode*	_currentScene;	//현재 씬
 	mapSceneList		_mSceneList;
+
+	princess* _princess;
 
 public:
 	sceneManager();
@@ -29,5 +32,8 @@ public:
 
 	//씬 변경
 	HRESULT changeScene(string sceneName);
+
+	void setPrincessAddressLink(princess* princess) { _princess = princess; }
+	princess* getPrincessAddress() { return _princess; }
 };
 

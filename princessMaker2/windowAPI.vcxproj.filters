@@ -144,6 +144,9 @@
     <ClInclude Include="dialogManager.h">
       <Filter>2DFramework\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="princessScene.h">
+      <Filter>playGround\princess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -220,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="dialogManager.cpp">
       <Filter>2DFramework\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="princessScene.cpp">
+      <Filter>playGround\princess</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

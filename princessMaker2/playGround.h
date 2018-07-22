@@ -3,15 +3,13 @@
 #include "dataInput.h"
 #include "princess.h"
 #include "prologueDialog.h"
-
+#include "princessScene.h"
 
 class playGround : public gameNode
 {
 private:
-	dataInput* _dataInput;
 	princess* _princess;
-	prologueDialog* _prologue;
-
+	
 	image* _test;
 	int _frameX, _frameY;
 	RECT _rc;

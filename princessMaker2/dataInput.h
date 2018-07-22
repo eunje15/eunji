@@ -2,7 +2,7 @@
 #include "gameNode.h"
 #include "data.h"
 
-enum PROLOGUE_MODE { PROLOGUE_DADNAME, PROLOGUE_DADCAL, PROLOGUE_DADAGE, PROLOGUE_NAME, PROLOGUE_CAL, PROLOGUE_BLOOD, PROLOGUE_DIALOG };
+enum PROLOGUE_MODE { PROLOGUE_DADNAME, PROLOGUE_DADCAL, PROLOGUE_DADAGE, PROLOGUE_NAME, PROLOGUE_CAL, PROLOGUE_BLOOD };
 
 class princess;
 
@@ -59,8 +59,5 @@ public:
 	void checkRender();
 	void dadCalRender();
 	void bloodRender();
-	void printInfo();
-
-	void setPrincessAddressLink(princess* princess) { _princess = princess; }
 };
 

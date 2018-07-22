@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "prologueDialog.h"
 
-
 prologueDialog::prologueDialog()
 {
 }
@@ -13,15 +12,12 @@ prologueDialog::~prologueDialog()
 
 HRESULT prologueDialog::init()
 {
+	_princess = SCENEMANAGER->getPrincessAddress();
 	_scene = SCENE_WAR;
-	//_whoDialog = DIALOG_NONE;
-	//_loop = 0;
-	//setWar();
-	//_frameY = 1;
-	//_strCount = 5;
 	_frameY = 0;
 	_whoDialog = DIALOG_NONE;
 	_progress = FRAME_START;
+	setGodPhoto();
 	setWar();
 	return S_OK;
 }
@@ -74,7 +70,7 @@ void prologueDialog::update()
 			break;
 			case DIALOG_ING:
 				_count++;
-				if (!(_count % 10)) //120이 기본
+				if (!(_count % 120)) //120이 기본
 				{
 					_count = 0;
 					if (_isRender) _progress = DIALOG_FIN;
@@ -116,7 +112,7 @@ void prologueDialog::update()
 					_progress = FRAME_FIN;
 					break;
 				case 4:
-					Sleep(1000);
+					Sleep(2000);
 					_strCount++;
 					_progress = FRAME_FIN;
 					break;
@@ -163,17 +159,18 @@ void prologueDialog::update()
 						_progress = FRAME_FIN;
 					break;
 				case 10:
-					_alpha2 += 5;
+					_alpha2 += 2;
 					if (_alpha2 >= 255)
 					{
 						_alpha2 = 255;
+						Sleep(1000);
 						_scene = SCENE_PRINCESS;
 					}
 					break;
 				}
 				break;
 			case FRAME_START:
-				_alpha += 30;
+				_alpha += 3;
 				if (_alpha >= 255)
 				{
 					_alpha = 255;
@@ -181,7 +178,7 @@ void prologueDialog::update()
 				}
 				break;
 			case FRAME_FIN:
-				_alpha -= 30;
+				_alpha -= 3;
 				if (_alpha <= 0)
 				{
 					_alpha = 0;
@@ -191,30 +188,9 @@ void prologueDialog::update()
 				}
 				break;
 			}
-			//switch (_whoDialog)
-			//{
-			//	//case DIALOG_DEVIL:
-			//	//
-			//	//break;
-			//	//case DIALOG_KING:
-			//	//
-			//	//break;
-			//	//case DIALOG_GOD:
-			//	//
-			//	//break;
-			//	case DIALOG_NONE: case DIALOG_CONTINUE:
-			//		warUpdate();
-			//	break;
-			//	default:
-			//		//setDialog();
-			//	break;
-			//}
-			break;
-		case SCENE_DEVIL_DIALOG:
-			break;
-		case SCENE_KING_DIALOG:
 			break;
 		case SCENE_PRINCESS:
+			SCENEMANAGER->changeScene("공주씬");
 			break;
 	}
 }
@@ -228,25 +204,8 @@ void prologueDialog::render()
 			break;
 		case SCENE_WAR:
 			warRender();
-			char str[128];
-			sprintf_s(str, "str : %d, _frameY : %d", _strCount, _frameY);
-			TextOut(DC, 200, 200, str, strlen(str));
-			switch (_whoDialog)
-			{
-				case DIALOG_DEVIL:
-					dialogRender();
-				break;
-				case DIALOG_KING:
-				break;
-				case DIALOG_GOD:
-				break;
-				case DIALOG_NONE: case DIALOG_CONTINUE:
-				break;
-			}
-			break;
-		case SCENE_DEVIL_DIALOG:
-			break;
-		case SCENE_KING_DIALOG:
+			if(_whoDialog != DIALOG_NONE)
+				dialogRender();
 			break;
 		case SCENE_PRINCESS:
 			break;
@@ -269,14 +228,35 @@ void prologueDialog::changeMode()
 		case SCENE_WAR:
 			_frameY = 0;
 		break;
-		//case SCENE_DEVIL_DIALOG:
-		//	dialogRender();
-		//	break;
-		//case SCENE_KING_DIALOG:
-		//	break;
 		case SCENE_PRINCESS:
 			break;
 	}
+}
+
+void prologueDialog::setGodPhoto()
+{
+	_godName = _princess->getStatus().god.name;
+	_godPlanet = _princess->getStatus().god.planet;
+	if (_godName == "새턴")
+		_godIndex = 0;
+	else if (_godName == "우라누스")
+		_godIndex = 1;
+	else if (_godName == "넵튠")
+		_godIndex = 2;
+	else if (_godName == "마스")
+		_godIndex = 3;
+	else if (_godName == "비너스")
+		_godIndex = 4;
+	else if (_godName == "머큐리")
+		_godIndex = 5;
+	else if (_godName == "더 문")
+		_godIndex = 6;
+	else if (_godName == "솔")
+		_godIndex = 7;
+	else if (_godName == "하데스")
+		_godIndex = 8;
+	else if (_godName == "주피터")
+		_godIndex = 9;
 }
 
 void prologueDialog::prologueRender()
@@ -295,7 +275,7 @@ void prologueDialog::warRender()
 	IMAGEMANAGER->findImage("war")->alphaFrameRender(DC, 0, 0, 0, _frameY, _alpha);
 	if (_frameY == 10) IMAGEMANAGER->findImage("princessMaker")->alphaRender(DC, 0, 0, _alpha2);
 
-	if ((_whoDialog == DIALOG_NONE) || (_whoDialog == DIALOG_CONTINUE))
+	if ((_whoDialog == DIALOG_NONE))
 	{
 		if (!_isRender) return;
 
@@ -319,18 +299,13 @@ void prologueDialog::warRender()
 void prologueDialog::setWar()
 {
 	_vDialog = TXTDATA->txtLoad("dialog/dialog.txt");
-	//_vDevilDialog = TXTDATA->txtLoad("dialog/마왕다이얼로그.txt");
-	//_vKingDialog = TXTDATA->txtLoad("dialog/왕다이얼로그.txt");
-	//_vGodDialog = TXTDATA->txtLoad("dialog/신다이얼로그.txt");
-	//_whoDialog = DIALOG_NONE;
 	_count = _frameY = _isAlpha = 0;
 	_isRender = 1;
 	_strCount = 0;
 	_alpha = 0;
 
 	//임시로 아빠이름~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	_dadName = "대디";
-
+	_dadName = _princess->getDadName();
 	
 	string temp = "(아빠성)";
 	for (int i = 0; i < _vDialog.size(); i++)
@@ -342,28 +317,16 @@ void prologueDialog::setWar()
 			pos += _dadName.length();
 		}
 	}
-}
-
-void prologueDialog::warUpdate()
-{
-	/*_count++;
-
-	if (!(_count % 100))
+	temp = "(신 신이름)";
+	string change = _godPlanet + " " + _godName;
+	size_t pos = 0;
+	if ((pos = _vDialog[26].find(temp, pos)) != std::string::npos)
 	{
-		_count = 0;
-
-		if (_isRender)
-		{
-			_isRender = false;
-			return;
-		}
-
-		_isRender = true;
-
-
-		changePrintDialog();
-	}*/
+		_vDialog[26].replace(pos, temp.length(), change);
+		pos += change.length();
+	}
 }
+
 
 void prologueDialog::changePrintDialog()
 {
@@ -388,19 +351,19 @@ void prologueDialog::changePrintDialog()
 
 void prologueDialog::setDialog()
 {
-	if (_whoDialog == DIALOG_NONE || _whoDialog == DIALOG_CONTINUE) return;
+	if (_whoDialog == DIALOG_NONE) return;
 
 	if(_whoDialog == DIALOG_DEVIL)
-		DIALOG->setDialog(_vDialog[_strCount], 5);
+		DIALOG->setDialog(_vDialog[_strCount], 10);
 	else if (_whoDialog == DIALOG_KING)
-		DIALOG->setDialog(_vDialog[_strCount], 3);
-	else if(_whoDialog == DIALOG_GOD)
 		DIALOG->setDialog(_vDialog[_strCount], 5);
+	else if(_whoDialog == DIALOG_GOD)
+		DIALOG->setDialog(_vDialog[_strCount], 10);
 }
 
 void prologueDialog::dialogRender()
 {
-	if (_whoDialog == DIALOG_NONE || _whoDialog == DIALOG_CONTINUE) return;
+	if (_whoDialog == DIALOG_NONE) return;
 
 	IMAGEMANAGER->findImage("war")->alphaFrameRender(DC, 0, 0, 0, _frameY, _alpha);
 
@@ -416,23 +379,11 @@ void prologueDialog::dialogRender()
 			IMAGEMANAGER->findImage("peopleFace")->frameRender(DC, WINSIZEX / 2 - 190, WINSIZEY / 2 - 90, 1, 2);
 	}
 	else if(_whoDialog == DIALOG_GOD)
-		IMAGEMANAGER->findImage("godFace")->frameRender(DC, WINSIZEX / 2 - 190, WINSIZEY / 2 - 90, 0, 0);
+		IMAGEMANAGER->findImage("godFace")->frameRender(DC, WINSIZEX / 2 - 190, WINSIZEY / 2 - 90, _godIndex, 0);
 
 	string str = DIALOG->getCurrentDialog();
 	if (str == "end")
 	{
-		/*_strCount++;
-		if (_strCount == 9 || _strCount == 16)
-		{
-			if (_strCount == 16)
-				_strCount--;
-			changePrintDialog();
-			_whoDialog = DIALOG_NONE;
-			_scene = SCENE_WAR;
-			if (_strCount == 16 && _frameY == 2) _isAlpha = true;
-		}
-		else
-			setDialog();*/
 		_strCount++;
 		if (_whoDialog == DIALOG_DEVIL)
 		{

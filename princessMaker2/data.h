@@ -7,15 +7,17 @@ struct tagObj
 	bool isSelected;
 };
 
-enum BLOOD_TYPE { BLOOD_A, BLOOD_N, BLOOD_O, BLOOD_AB };
+enum BLOOD_TYPE { BLOOD_A, BLOOD_B, BLOOD_O, BLOOD_AB };
 struct tagInfo
 {
+	string firstName;
 	string name;
 	int year;
 	int mon;
 	int day;
 	int age;
 	BLOOD_TYPE blood;
+	string strBlood;
 };
 
 struct tagGod
@@ -53,4 +55,18 @@ struct tagStatus
 	int personality;
 	int total;
 	string plusNorth;
+};
+
+struct tagImg
+{
+	image* img;
+	int x, y;
+	int frameX, frameY;
+};
+
+struct tagString
+{
+	string str;
+	RECT rc;
+	bool isSelected;
 };
