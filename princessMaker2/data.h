@@ -63,12 +63,7 @@ struct tagStatus
 	string plusNorth;		//¹«½Å
 };
 
-struct tagImg
-{
-	image* img;
-	int x, y;
-	int frameX, frameY;
-};
+
 
 struct tagString
 {
@@ -76,6 +71,14 @@ struct tagString
 	RECT rc;
 	bool isSelected;
 	bool isChoose;
+};
+
+struct tagImg
+{
+	image* img;
+	int x, y;
+	int frameX, frameY;
+	tagString data;
 };
 
 struct tagProgress

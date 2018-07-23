@@ -112,6 +112,7 @@ void princessScene::update()
 						break;
 					case 4:
 						_menuType = SELECT_TOWN;
+						setStore();
 						break;
 					case 5:
 						_menuType = SELECT_CASTLE;
@@ -152,6 +153,10 @@ void princessScene::update()
 	else if (_menuType == SELECT_CHANGE_INFO)
 	{
 		changeInfo();
+	}
+	else if (_menuType == SELECT_TOWN)
+	{
+		clickStore();
 	}
 }
 
@@ -207,6 +212,7 @@ void princessScene::render()
 		infoRender();
 		break;
 	case SELECT_TOWN:
+		storeRender();
 		break;
 	case SELECT_CASTLE:
 		break;
@@ -326,26 +332,8 @@ void princessScene::changeInfo()
 
 				char temp[128];
 				sprintf_s(temp, "DADTALK%d", i);
-				DIALOG->setDialog(_cube->getDialog(temp), 5);
-				string str = DIALOG->getTotalDialog();
-				int strSize = str.size();
-				int idx = 0;
-				_vDialog.clear();
-				while (1)
-				{
-					if (strSize > 30)
-					{
-						_vDialog.push_back(str.substr(idx, 30));
-						idx += 30;
-						strSize -= 30;
-					}
-					else
-					{
-						_vDialog.push_back(str.substr(idx, strSize));
-						break;
-					}
-				}
-				DIALOG->setDialog(_vDialog[0], 5);
+
+				setDialog(_cube->getDialog(temp));
 
 				for (int i = 0; i < 2; i++)
 				{
@@ -684,34 +672,138 @@ void princessScene::setStringStatus()
 		{
 			_strStatus[i].rc = RectMake(610, 290 + i*28, 150, 28);
 			_strStatus[i].isSelected = false;
+			_strStatus[i].isChoose = false;
 			_dialog[i].isSelected = false;
 		}
-		DIALOG->setDialog(_cube->getDialog("DADTALK"), 5);
-		string str = DIALOG->getTotalDialog();
-		int strSize = str.size();
-		int idx = 0;
-		_vDialog.clear();
-
-		while (1)
-		{
-			if (strSize > 30)
-			{
-				_vDialog.push_back(str.substr(idx, 30));
-				idx += 30;
-				strSize -= 30;
-			}
-			else
-			{
-				_vDialog.push_back(str.substr(idx, strSize));
-				break;
-			}
-		}
-		DIALOG->setDialog(_vDialog[0], 5);
+		
+		setDialog(_cube->getDialog("DADTALK"));
 
 		for (int i = 0; i < 2; i++)
 		{
 			_chooseAnswer[i].rc = RectMake(0,0,0,0);
 			_chooseAnswer[i].isSelected = _chooseAnswer[i].isChoose = false;
 		}
+	}
+}
+
+void princessScene::setDialog(string dialog)
+{
+	DIALOG->setDialog(dialog, 5);
+	string str = DIALOG->getTotalDialog();
+	int strSize = str.size();
+	int idx = 0;
+	_vDialog.clear();
+	while (1)
+	{
+		if (strSize > 30)
+		{
+			_vDialog.push_back(str.substr(idx, 30));
+			idx += 30;
+			strSize -= 30;
+		}
+		else
+		{
+			_vDialog.push_back(str.substr(idx, strSize));
+			break;
+		}
+	}
+	DIALOG->setDialog(_vDialog[0], 5);
+}
+
+void princessScene::setStore()
+{
+	_storeDialog = "딸과 거리를 나왔습니다. 어디로 가겠습니까?";
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			if (_store[i * 2 + j].img == NULL)
+			{
+				_store[i * 2 + j].img = new image;
+				_store[i * 2 + j].img->init("image/main/storeSelect(320x52,2x1).bmp", 320, 52, 2, 1, false, RGB(255, 0, 255));
+			}
+			_store[i * 2 + j].data.rc = RectMake(460 + j * 170, 254 + i * 60, 160, 52);
+			_store[i * 2 + j].frameX = _store[i * 2 + j].frameY = 0;
+			_store[i * 2 + j].data.isSelected = _store[i * 2 + j].data.isChoose = false;
+			_store[i * 2 + j].x = i * 2 + j;
+		}
+	}
+	if (_store[6].img == NULL)
+	{
+		_store[6].img = new image;
+		_store[6].img->init("image/main/storeQuit(240x40,2x1).bmp", 240, 40, 2, 1, false, RGB(255, 0, 255));
+	}
+	_store[6].data.rc = RectMake(526, 446, 120, 40);
+	_store[6].frameX = _store[6].frameY = 0;
+	_store[6].data.isSelected = _store[6].data.isChoose = false;
+
+	_store[0].data.str = "무기점", _store[1].data.str = "의상실", _store[2].data.str = "요리점";
+	_store[3].data.str = "잡화점", _store[4].data.str = "교회",	_store[5].data.str = "병원";
+	_store[6].data.str = "관둔다";
+}
+
+void princessScene::setRectZero(RECT* rc)
+{
+	*rc = RectMake(0, 0, 0, 0);
+}
+void princessScene::clickStore()
+{
+	bool fin = false;
+	for (int i = 0; i < 7; i++)
+	{
+		_store[i].frameX = 0;
+		if (PtInRect(&_store[i].data.rc, _ptMouse))
+		{
+			_store[i].frameX = 1;
+			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+			{
+				switch (i)
+				{
+					case 0:
+					break;
+					case 1:
+					break;
+					case 2:
+					break;
+					case 3:
+					break;
+					case 4:
+					break;
+					case 5:
+					break;
+					case 6:
+						fin = true;
+						_menuType = SELECT_NONE;
+					break;
+				}
+			}
+		}
+	}
+	if (fin)
+	{
+		for (int i = 0; i < 7; i++)
+			setRectZero(&_store[i].data.rc);
+	}
+}
+
+void princessScene::storeRender()
+{
+	IMAGEMANAGER->findImage("storeFrame")->render(DC, 32, 113);
+	IMAGEMANAGER->findImage("storePicture")->render(DC, 52, 123);
+
+	IMAGEMANAGER->findImage("wideBack")->render(DC, 35, 410);
+	TextOut(DC, 45, 420, _storeDialog.c_str(), strlen(_storeDialog.c_str()));
+
+	for (int i = 0; i < 7; i++)
+	{
+		//Rectangle(DC, _store[i].data.rc.left, _store[i].data.rc.top, _store[i].data.rc.right, _store[i].data.rc.bottom);
+		_store[i].img->frameRender(DC, _store[i].data.rc.left, _store[i].data.rc.top, _store[i].frameX, _store[i].frameY);
+		if (i < 6)
+		{
+			IMAGEMANAGER->findImage("storeIcon")->frameRender(DC, _store[i].data.rc.left + 10, _store[i].data.rc.top + 6, _store[i].x, 0);
+			TextOut(DC, _store[i].data.rc.left + 70, _store[i].data.rc.top + 15, _store[i].data.str.c_str(), strlen(_store[i].data.str.c_str()));
+		}
+		else
+			TextOut(DC, _store[i].data.rc.left + 20, _store[i].data.rc.top + 10, _store[i].data.str.c_str(), strlen(_store[i].data.str.c_str()));
 	}
 }

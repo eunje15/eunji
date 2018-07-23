@@ -26,6 +26,8 @@ private:
 	bool _dialogSelect, _isClick;
 	cube* _cube;
 	vector<string> _vDialog;
+	tagImg _store[7];
+	string _storeDialog;
 public:
 	princessScene();
 	~princessScene();
@@ -43,5 +45,10 @@ public:
 	void release();
 
 	void setStringStatus();
+	void setDialog(string dialog);
+	void setStore();
+	void setRectZero(RECT * rc);
+	void clickStore();
+	void storeRender();
 };
 
