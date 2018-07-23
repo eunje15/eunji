@@ -53,6 +53,9 @@ HRESULT princessScene::init()
 	_menu.y = _status.img->getHeight();
 	_menu.frameX = 0;
 
+	_constellationImg.img = IMAGEMANAGER->findImage("constellation");
+	_constellationImg.frameX = _princess->getStatus().god.idx;
+
 	_selectMenu = IMAGEMANAGER->findImage("selectMenu");
 	_selectMenu->setX(WINSIZEX - _menu.img->getFrameWidth());
 	_selectMenu->setY(_status.img->getHeight());
@@ -72,50 +75,59 @@ HRESULT princessScene::init()
 
 	_perHealth = _perBad = _personalConnect = 0;
 
+	_cube = new cube;
+	_cube->init();
+
 	return S_OK;
 }
 
 void princessScene::update()
 {
-	for (int i = 0; i < 9; i++)
+	if (_menuType == SELECT_NONE)
 	{
-		_menubox[i].isSelected = false;
-		if (PtInRect(&_menubox[i].rc, _ptMouse))
+		for (int i = 0; i < 9; i++)
 		{
-			_menubox[i].isSelected = true;
-			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+			_menubox[i].isSelected = false;
+			if (PtInRect(&_menubox[i].rc, _ptMouse))
 			{
-				switch (i)
+				_menubox[i].isSelected = true;
+				if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 				{
+					switch (i)
+					{
 					case 0:
 						_menuType = SELECT_STATUS;
-					break;
+						setStat();
+						break;
 					case 1:
 						_menuType = SELECT_TALK;
-					break;
+						setDadTalk();
+						break;
 					case 2:
 						_menuType = SELECT_CHANGE_INFO;
-					break;
+						setStringStatus();
+						break;
 					case 3:
 						_menuType = SELECT_INFO;
-					break;
+						break;
 					case 4:
 						_menuType = SELECT_TOWN;
-					break;
+						break;
 					case 5:
 						_menuType = SELECT_CASTLE;
-					break;
+						break;
 					case 6:
 						_menuType = SELECT_WEAPON;
-					break;
+						break;
 					case 7:
 						_menuType = SELECT_SAVE;
-					break;
+						break;
 					case 8:
 						_menuType = SELECT_SCHEDULE;
-					break;
+						break;
+					}
+					_menubox[i].isData = true;
 				}
-				_menubox[i].isData = true;
 			}
 		}
 	}
@@ -123,6 +135,23 @@ void princessScene::update()
 	if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
 	{
 		_menuType = SELECT_NONE;
+		if (_cube->getDialogFin()) _cube->setDialogFin(false);
+	}
+
+	if (_menuType == SELECT_TALK)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			_dadTalk[i].isSelected = false;
+			if (PtInRect(&_dadTalk[i].rc, _ptMouse))
+			{
+				_dadTalk[i].isSelected = true;
+			}
+		}
+	}
+	else if (_menuType == SELECT_CHANGE_INFO)
+	{
+		changeInfo();
 	}
 }
 
@@ -145,6 +174,7 @@ void princessScene::render()
 	DrawText(DC, _printStrStatus.str.c_str(), strlen(_printStrStatus.str.c_str()), &_printStrStatus.rc, DT_CENTER | DT_VCENTER);
 	IMAGEMANAGER->findImage("number")->frameRender(DC, 615, 80, 1, 0);
 	IMAGEMANAGER->findImage("number")->frameRender(DC, 630, 80, _princess->getInfo().age % 10, 0);
+	_constellationImg.img->frameRender(DC, 650, 70, _constellationImg.frameX, 0);
 	
 	switch (_menuType)
 	{
@@ -168,8 +198,10 @@ void princessScene::render()
 		statusRender();
 		break;
 	case SELECT_TALK:
+		dadTalkRender();
 		break;
 	case SELECT_CHANGE_INFO:
+		changeInfoRender();
 		break;
 	case SELECT_INFO:
 		infoRender();
@@ -190,6 +222,173 @@ void princessScene::render()
 	SetTextColor(DC, RGB(255, 255, 255));
 	sprintf_s(str, "%d %d", _ptMouse.x, _ptMouse.y);
 	TextOut(DC, 50, 50, str, strlen(str));
+}
+
+void princessScene::setStat()
+{
+	_pInfo[0].str = "체력", _pInfo[0].data = _princess->getStatus().hp;
+	_pInfo[1].str = "근력", _pInfo[1].data = _princess->getStatus().physical;
+	_pInfo[2].str = "지능", _pInfo[2].data = _princess->getStatus().intelligence;
+	_pInfo[3].str = "기품", _pInfo[3].data = _princess->getStatus().elegance;
+	_pInfo[4].str = "매력", _pInfo[4].data = _princess->getStatus().sexual;
+	_pInfo[5].str = "도덕성", _pInfo[5].data = _princess->getStatus().morality;
+	_pInfo[6].str = "신앙", _pInfo[6].data = _princess->getStatus().faith;
+	_pInfo[7].str = "인과",  _pInfo[7].data = _princess->getStatus().karma;
+	_pInfo[8].str = "감수성", _pInfo[8].data = _princess->getStatus().sensitivity;
+	_pInfo[9].str = "스트레스", _pInfo[9].data = _princess->getStatus().stress;
+
+	for (int i = 0; i < 10; i++)
+	{
+		_pInfo[i].strRc = RectMake(15, 160 + i * 20, 80, 20);
+		_pInfo[i].dataRc = RectMake(95, 160 + i * 20, 30, 20);
+
+		_pInfo[i].progressBar = new progressBar;
+		_pInfo[i].progressBar->init(125, 160 + i * 20, 110, 20);
+		_pInfo[i].progressBar->setGauge(_pInfo[i].data, 500);
+	}
+
+	_p4Stat[0].str = "전사평가", _p4Stat[0].data = _princess->getStatus().warrior;
+	_p4Stat[1].str = "마법평가", _p4Stat[1].data = _princess->getStatus().magic;
+	_p4Stat[2].str = "사교평가", _p4Stat[2].data = _princess->getStatus().sociality;
+	_p4Stat[3].str = "가사평가", _p4Stat[3].data = _princess->getStatus().housework;
+
+	for (int i = 0; i < 4; i++)
+	{
+		_p4Stat[i].strRc = RectMake(WINSIZEX - 253, 285 + i * 20, 80, 20);
+		_p4Stat[i].dataRc = RectMake(WINSIZEX - 173, 285 + i * 20, 30, 20);
+
+		_p4Stat[i].progressBar = new progressBar;
+		_p4Stat[i].progressBar->init(WINSIZEX - 143, 285 + i * 20, 110, 20);
+		_p4Stat[i].progressBar->setGauge(_p4Stat[i].data, 500);
+	}
+
+	_pSkill[0].str = "전투기술", _pSkill[0].data = _princess->getStatus().warriorSkill;
+	_pSkill[1].str = "공격력", _pSkill[1].data = _princess->getStatus().power;
+_pSkill[2].str = "방어력", _pSkill[2].data = _princess->getStatus().defPower;
+_pSkill[3].str = "마법기술", _pSkill[3].data = _princess->getStatus().magicSkill;
+_pSkill[4].str = "마력", _pSkill[4].data = _princess->getStatus().spell;
+_pSkill[5].str = "항마력", _pSkill[5].data = _princess->getStatus().spellDefence;
+
+for (int i = 0; i < 6; i++)
+{
+	_pSkill[i].strRc = RectMake(15, 395 + i * 20, 80, 20);
+	_pSkill[i].dataRc = RectMake(95, 395 + i * 20, 30, 20);
+
+	_pSkill[i].progressBar = new progressBar;
+	_pSkill[i].progressBar->init(125, 395 + i * 20, 110, 20);
+	_pSkill[i].progressBar->setGauge(_pSkill[i].data, 100);
+}
+
+_pBasicStat[0].str = "예의범절", _pBasicStat[0].data = _princess->getStatus().manner;
+_pBasicStat[1].str = "예술", _pBasicStat[1].data = _princess->getStatus().art;
+_pBasicStat[2].str = "화술", _pBasicStat[2].data = _princess->getStatus().conversation;
+_pBasicStat[3].str = "요리", _pBasicStat[3].data = _princess->getStatus().cooking;
+_pBasicStat[4].str = "청소세탁", _pBasicStat[4].data = _princess->getStatus().cleaning;
+_pBasicStat[5].str = "성품", _pBasicStat[5].data = _princess->getStatus().personality;
+
+for (int i = 0; i < 6; i++)
+{
+	_pBasicStat[i].strRc = RectMake(WINSIZEX - 253, 400 + i * 20, 80, 20);
+	_pBasicStat[i].dataRc = RectMake(WINSIZEX - 173, 400 + i * 20, 30, 20);
+
+	_pBasicStat[i].progressBar = new progressBar;
+	_pBasicStat[i].progressBar->init(WINSIZEX - 143, 400 + i * 20, 110, 20);
+	_pBasicStat[i].progressBar->setGauge(_pBasicStat[i].data, 100);
+}
+}
+
+void princessScene::setDadTalk()
+{
+	_dadTalk[0].str = "부녀간의 이야기";
+	_dadTalk[1].str = "용돈";
+	_dadTalk[2].str = "설교";
+
+	for (int i = 0; i < 3; i++)
+	{
+		_dadTalk[i].rc = RectMake(602, 300 + i * 28, 150, 28);
+		_dadTalk[i].isSelected = false;
+	}
+}
+
+void princessScene::changeInfo()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		_strStatus[i].isSelected = false;
+		if (PtInRect(&_strStatus[i].rc, _ptMouse))
+		{
+			_strStatus[i].isSelected = true;
+			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+			{
+				if (!_isClick) return;
+				_strStatus[i].isChoose = true;
+				_dialogSelect = true;
+
+				char temp[128];
+				sprintf_s(temp, "DADTALK%d", i);
+				DIALOG->setDialog(_cube->getDialog(temp), 5);
+				string str = DIALOG->getTotalDialog();
+				int strSize = str.size();
+				int idx = 0;
+				_vDialog.clear();
+				while (1)
+				{
+					if (strSize > 30)
+					{
+						_vDialog.push_back(str.substr(idx, 30));
+						idx += 30;
+						strSize -= 30;
+					}
+					else
+					{
+						_vDialog.push_back(str.substr(idx, strSize));
+						break;
+					}
+				}
+				DIALOG->setDialog(_vDialog[0], 5);
+
+				for (int i = 0; i < 2; i++)
+				{
+					_chooseAnswer[i].rc = RectMake(610, 295 + i * 28, 120, 28);
+					_chooseAnswer[i].isSelected = _chooseAnswer[i].isChoose = false;
+				}
+				_chooseAnswer[0].str = "이 방침으로";
+				_chooseAnswer[1].str = "지금까지대로";
+				for (int i = 0; i < 4; i++)
+				{
+					_strStatus[i].rc = RectMake(0, 0, 0, 0);
+				}
+				return;
+			}
+		}
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		_chooseAnswer[i].isSelected = false;
+		if (PtInRect(&_chooseAnswer[i].rc, _ptMouse))
+		{
+			_chooseAnswer[i].isSelected = true;
+			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+			{
+				if (!_isClick) return;
+				_menuType = SELECT_NONE;
+				_dialogSelect = false;
+				_idx = 0;
+				if (_cube->getDialogFin()) _cube->setDialogFin(false);
+				if (i == 0)
+				{
+					for (int i = 0; i < 4; i++)
+					{
+						if (_strStatus[i].isChoose)
+						{
+							_printStrStatus.str = _strStatus[i].str;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void princessScene::infoRender()
@@ -257,7 +456,217 @@ void princessScene::statusRender()
 	IMAGEMANAGER->findImage("status2Back")->render(DC, 8, 165 + IMAGEMANAGER->findImage("status1Back")->getHeight());
 	IMAGEMANAGER->findImage("status3Back")->render(DC, WINSIZEX - 260, 275);
 	IMAGEMANAGER->findImage("status4Back")->render(DC, WINSIZEX - 260, 390);
+
+	for (int i = 0; i < 10; i++)
+	{
+		HBRUSH brush, oldBrush;
+		brush = CreateSolidBrush(RGB(111, 17, 17));
+		oldBrush = (HBRUSH)SelectObject(DC, brush);
+		FillRect(DC, &_pInfo[i].strRc, brush);
+		Rectangle(DC, _pInfo[i].strRc.left, _pInfo[i].strRc.top, _pInfo[i].strRc.right, _pInfo[i].strRc.bottom);
+		TextOut(DC, _pInfo[i].strRc.left,_pInfo[i].strRc.top + 2, _pInfo[i].str.c_str(), strlen(_pInfo[i].str.c_str()));
+		if (i < 4)
+		{
+			FillRect(DC, &_p4Stat[i].strRc, brush);
+			Rectangle(DC, _p4Stat[i].strRc.left, _p4Stat[i].strRc.top, _p4Stat[i].strRc.right, _p4Stat[i].strRc.bottom);
+			TextOut(DC, _p4Stat[i].strRc.left, _p4Stat[i].strRc.top + 2, _p4Stat[i].str.c_str(), strlen(_p4Stat[i].str.c_str()));
+		}
+		SelectObject(DC, oldBrush);
+		DeleteObject(brush);
+		brush = CreateSolidBrush(RGB(0, 0, 0));
+		oldBrush = (HBRUSH)SelectObject(DC, brush);
+		Rectangle(DC, _pInfo[i].dataRc.left, _pInfo[i].dataRc.top, _pInfo[i].dataRc.right, _pInfo[i].dataRc.bottom);
+		char str[128];
+		sprintf_s(str, "%3d", _pInfo[i].data);
+		TextOut(DC, _pInfo[i].dataRc.left + 2, _pInfo[i].dataRc.top + 2, str, strlen(str));
+		if (i < 4)
+		{
+			FillRect(DC, &_p4Stat[i].dataRc, brush);
+			Rectangle(DC, _p4Stat[i].dataRc.left, _p4Stat[i].dataRc.top, _p4Stat[i].dataRc.right, _p4Stat[i].dataRc.bottom);
+			sprintf_s(str, "%3d", _p4Stat[i].data);
+			TextOut(DC, _p4Stat[i].dataRc.left + 2, _p4Stat[i].dataRc.top + 2,str, strlen(str));
+			_p4Stat[i].progressBar->render();
+		}
+		SelectObject(DC, oldBrush);
+		DeleteObject(brush);
+		_pInfo[i].progressBar->render();
+	}
+	
+	for (int i = 0; i < 6; i++)
+	{
+		HBRUSH brush, oldBrush;
+		brush = CreateSolidBrush(RGB(53, 78, 159));
+		oldBrush = (HBRUSH)SelectObject(DC, brush);
+		FillRect(DC, &_pSkill[i].strRc, brush);
+		Rectangle(DC, _pSkill[i].strRc.left, _pSkill[i].strRc.top, _pSkill[i].strRc.right, _pSkill[i].strRc.bottom);
+		TextOut(DC, _pSkill[i].strRc.left, _pSkill[i].strRc.top + 2, _pSkill[i].str.c_str(), strlen(_pSkill[i].str.c_str()));
+		FillRect(DC, &_pBasicStat[i].strRc, brush);
+		Rectangle(DC, _pBasicStat[i].strRc.left, _pBasicStat[i].strRc.top, _pBasicStat[i].strRc.right, _pBasicStat[i].strRc.bottom);
+		TextOut(DC, _pBasicStat[i].strRc.left, _pBasicStat[i].strRc.top + 2, _pBasicStat[i].str.c_str(), strlen(_pBasicStat[i].str.c_str()));
+		SelectObject(DC, oldBrush);
+		DeleteObject(brush);
+		brush = CreateSolidBrush(RGB(0, 0, 0));
+		oldBrush = (HBRUSH)SelectObject(DC, brush);
+		Rectangle(DC, _pSkill[i].dataRc.left, _pSkill[i].dataRc.top, _pSkill[i].dataRc.right, _pSkill[i].dataRc.bottom);
+		char str[128];
+		sprintf_s(str, "%3d", _pSkill[i].data);
+		TextOut(DC, _pSkill[i].dataRc.left + 2, _pSkill[i].dataRc.top + 2, str, strlen(str));
+		_pSkill[i].progressBar->render();
+		Rectangle(DC, _pBasicStat[i].dataRc.left, _pBasicStat[i].dataRc.top, _pBasicStat[i].dataRc.right, _pBasicStat[i].dataRc.bottom);
+		sprintf_s(str, "%3d", _pBasicStat[i].data);
+		TextOut(DC, _pBasicStat[i].dataRc.left + 2, _pBasicStat[i].dataRc.top + 2, str, strlen(str));
+		_pBasicStat[i].progressBar->render();
+		SelectObject(DC, oldBrush);
+		DeleteObject(brush);
+	}
 }
+
+void princessScene::dadTalkRender()
+{
+	IMAGEMANAGER->findImage("3Back")->render(DC, 592,286);
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (_dadTalk[i].isSelected)
+		{
+			HBRUSH brush, oldBrush;
+			brush = CreateSolidBrush(RGB(43, 0, 0));
+			oldBrush = (HBRUSH)SelectObject(DC, brush);
+			FillRect(DC, &_dadTalk[i].rc, brush);
+			SelectObject(DC, oldBrush);
+			DeleteObject(brush);
+		}
+		TextOut(DC, _dadTalk[i].rc.left + 2, _dadTalk[i].rc.top + 5, _dadTalk[i].str.c_str(), strlen(_dadTalk[i].str.c_str()));
+	}
+}
+
+void princessScene::changeInfoRender()
+{	
+	IMAGEMANAGER->findImage("dialogFrame")->render(DC, 10, 426);
+	IMAGEMANAGER->findImage("frame")->render(DC, 20 + IMAGEMANAGER->findImage("dialogFrame")->getWidth(), 426);
+	_cube->setXY(30 + IMAGEMANAGER->findImage("dialogFrame")->getWidth(), 436);
+	_cube->render();
+
+	if (_cube->getDialogFin())
+	{
+		if (!_dialogSelect)
+		{
+			for (int i = 0; i < _vDialog.size(); i++)
+			{
+				TextOut(DC, 15, 440 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+			}
+
+			IMAGEMANAGER->findImage("4Back")->render(DC, 600, 280);
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (_strStatus[i].isSelected)
+				{
+					HBRUSH brush, oldBrush;
+					brush = CreateSolidBrush(RGB(43, 0, 0));
+					oldBrush = (HBRUSH)SelectObject(DC, brush);
+					FillRect(DC, &_strStatus[i].rc, brush);
+					SelectObject(DC, oldBrush);
+					DeleteObject(brush);
+				}
+				TextOut(DC, _strStatus[i].rc.left + 2, _strStatus[i].rc.top + 5, _strStatus[i].str.c_str(), strlen(_strStatus[i].str.c_str()));
+			}
+		}
+		else
+		{
+			IMAGEMANAGER->findImage("answer")->render(DC, 10, 260);
+
+			string str;
+			for (int i = 0; i < 4; i++)
+			{
+				if (_strStatus[i].isChoose)
+				{
+					str = _strStatus[i].str;
+					break;
+				}
+			}
+			TextOut(DC, 20, 280, str.c_str(), strlen(str.c_str()));
+
+			if (_idx < _vDialog.size())
+			{
+				_isClick = false;
+				string temp = DIALOG->getCurrentDialog();
+				if (temp == "end")
+				{
+					_idx++;
+					if (_idx < _vDialog.size())
+						DIALOG->setDialog(_vDialog[_idx], 5);
+				}
+				else
+				{
+					if (_idx > 0)
+					{
+						for (int i = 0; i < _idx; i++)
+						{
+							TextOut(DC, 15, 440 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+						}
+					}
+					TextOut(DC, 15, 440 + _idx * 30, temp.c_str(), strlen(temp.c_str()));
+				}
+			}
+			else
+			{
+				_isClick = true;
+				for (int i = 0; i < _vDialog.size(); i++)
+				{
+					TextOut(DC, 15, 440 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+				}
+
+				IMAGEMANAGER->findImage("2Back")->render(DC, 600, 280);
+				for (int i = 0; i < 2; i++)
+				{
+					if (_chooseAnswer[i].isSelected)
+					{
+						HBRUSH brush, oldBrush;
+						brush = CreateSolidBrush(RGB(43, 0, 0));
+						oldBrush = (HBRUSH)SelectObject(DC, brush);
+						FillRect(DC, &_chooseAnswer[i].rc, brush);
+						SelectObject(DC, oldBrush);
+						DeleteObject(brush);
+					}
+					TextOut(DC, _chooseAnswer[i].rc.left + 2, _chooseAnswer[i].rc.top + 5, _chooseAnswer[i].str.c_str(), strlen(_chooseAnswer[i].str.c_str()));
+				}
+			}
+		}
+	}
+	else
+	{
+		if (_idx < _vDialog.size())
+		{
+			_isClick = false;
+			string temp = DIALOG->getCurrentDialog();
+			if (temp == "end")
+			{
+				_idx++;
+				if(_idx < _vDialog.size())
+					DIALOG->setDialog(_vDialog[_idx], 5);
+			}
+			else
+			{
+				if (_idx > 0)
+				{
+					for (int i = 0; i < _idx; i++)
+					{
+						TextOut(DC, 15, 440 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+					}
+				}
+				TextOut(DC, 15, 440 + _idx * 30, temp.c_str(), strlen(temp.c_str()));
+			}
+		}
+		else
+		{
+			_idx = 0;
+			_isClick = true;
+			_cube->setDialogFin(true);
+		}
+	}
+}
+
 void princessScene::release()
 {
 }
@@ -268,4 +677,41 @@ void princessScene::setStringStatus()
 	_strStatus[1].str = "어쨌든 튼튼하게";
 	_strStatus[2].str = "얌전한 아이로";
 	_strStatus[3].str = "다이어트 시킨다";
+
+	if (_menuType == SELECT_CHANGE_INFO)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			_strStatus[i].rc = RectMake(610, 290 + i*28, 150, 28);
+			_strStatus[i].isSelected = false;
+			_dialog[i].isSelected = false;
+		}
+		DIALOG->setDialog(_cube->getDialog("DADTALK"), 5);
+		string str = DIALOG->getTotalDialog();
+		int strSize = str.size();
+		int idx = 0;
+		_vDialog.clear();
+
+		while (1)
+		{
+			if (strSize > 30)
+			{
+				_vDialog.push_back(str.substr(idx, 30));
+				idx += 30;
+				strSize -= 30;
+			}
+			else
+			{
+				_vDialog.push_back(str.substr(idx, strSize));
+				break;
+			}
+		}
+		DIALOG->setDialog(_vDialog[0], 5);
+
+		for (int i = 0; i < 2; i++)
+		{
+			_chooseAnswer[i].rc = RectMake(0,0,0,0);
+			_chooseAnswer[i].isSelected = _chooseAnswer[i].isChoose = false;
+		}
+	}
 }

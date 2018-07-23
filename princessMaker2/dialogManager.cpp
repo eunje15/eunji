@@ -53,7 +53,6 @@ string dialogManager::getCurrentDialog()
 		else return "end";
 	}
 	
-
 	temp = _str.substr(0, _idx);
 	return temp;
 }

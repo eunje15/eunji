@@ -1,4 +1,6 @@
 #pragma once
+#include "progressBar.h"
+
 struct tagObj
 {
 	RECT rc;
@@ -25,36 +27,40 @@ struct tagGod
 	string planet;
 	string name;
 	string constellation;
+	int idx;
 };
 
 struct tagStatus
 {
-	tagGod god;
-	int hp;				
-	int physical;
-	int intelligence;
-	int elegance;
-	int sexual;
-	int morality;
-	int faith;
-	int sensitivity;
-	int warrior;
-	int warriorSkill;
-	int power;
-	int magic;
-	int magicSkill;
-	int spell;
-	int spellDefence;
-	int sociality;
-	int manner;
-	int art;
-	int conversation;
-	int housework;
-	int cooking;
-	int cleaning;
-	int personality;
-	int total;
-	string plusNorth;
+	tagGod god;				//별자리정보
+	int hp;					//체력
+	int physical;			//근력
+	int intelligence;		//지능
+	int elegance;			//기품
+	int sexual;				//색기(매력)
+	int morality;			//도덕심
+	int faith;				//신앙
+	int sensitivity;		//감수성
+	int warrior;			//전사평가
+	int warriorSkill;		//전투기술
+	int power;				//공격력
+	int defPower;			//방어력
+	int magic;				//마법평가
+	int magicSkill;			//마법기술
+	int spell;				//마력
+	int spellDefence;		//항마력
+	int sociality;			//사교평가
+	int manner;				//예의범절
+	int art;				//예술
+	int conversation;		//화술
+	int housework;			//가사평가
+	int cooking;			//요리
+	int cleaning;			//청소세탁
+	int personality;		//성품
+	int karma;				//업보
+	int stress;				//스트레스
+	int total;				//총합
+	string plusNorth;		//무신
 };
 
 struct tagImg
@@ -69,4 +75,13 @@ struct tagString
 	string str;
 	RECT rc;
 	bool isSelected;
+	bool isChoose;
+};
+
+struct tagProgress
+{
+	string str;
+	int data;
+	progressBar* progressBar;
+	RECT strRc, dataRc;
 };

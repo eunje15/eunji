@@ -266,75 +266,75 @@ void dataInput::setStatus()
 	{
 		case 1:
 			if (_princessInfo.day <= 19)
-				_princessStatus.god.constellation = "염소자리";
+				_princessStatus.god.constellation = "염소자리", _princessStatus.god.idx = 0;
 			else
-				_princessStatus.god.constellation = "물병자리";
+				_princessStatus.god.constellation = "물병자리", _princessStatus.god.idx = 1;
 		break;
 		case 2:
 			if (_princessInfo.day <= 18)
-				_princessStatus.god.constellation = "물병자리";
+				_princessStatus.god.constellation = "물병자리", _princessStatus.god.idx = 1;
 			else
-				_princessStatus.god.constellation = "물고기자리";
+				_princessStatus.god.constellation = "물고기자리", _princessStatus.god.idx = 2;
 		break;
 		case 3:
 			if (_princessInfo.day <= 20)
-				_princessStatus.god.constellation = "물고기자리";
+				_princessStatus.god.constellation = "물고기자리", _princessStatus.god.idx = 2;
 			else
-				_princessStatus.god.constellation = "양자리";
+				_princessStatus.god.constellation = "양자리", _princessStatus.god.idx = 3;
 		break;
 		case 4:
 			if (_princessInfo.day <= 19)
-				_princessStatus.god.constellation = "양자리";
+				_princessStatus.god.constellation = "양자리", _princessStatus.god.idx = 3;
 			else
-				_princessStatus.god.constellation = "황소자리";
+				_princessStatus.god.constellation = "황소자리", _princessStatus.god.idx = 4;
 		break;
 		case 5:
 			if (_princessInfo.day <= 20)
-				_princessStatus.god.constellation = "황소자리";
+				_princessStatus.god.constellation = "황소자리", _princessStatus.god.idx = 4;
 			else
-				_princessStatus.god.constellation = "쌍둥이자리";
+				_princessStatus.god.constellation = "쌍둥이자리", _princessStatus.god.idx = 5;
 		break;
 		case 6:
 			if (_princessInfo.day <= 21)
-				_princessStatus.god.constellation = "쌍둥이자리";
+				_princessStatus.god.constellation = "쌍둥이자리", _princessStatus.god.idx = 5;
 			else
-				_princessStatus.god.constellation = "게자리";
+				_princessStatus.god.constellation = "게자리", _princessStatus.god.idx = 6;
 		break;
 		case 7:
 			if (_princessInfo.day <= 22)
-				_princessStatus.god.constellation = "게자리";
+				_princessStatus.god.constellation = "게자리", _princessStatus.god.idx = 6;
 			else
-				_princessStatus.god.constellation = "사자자리";
+				_princessStatus.god.constellation = "사자자리", _princessStatus.god.idx = 7;
 		break;
 		case 8:
 			if (_princessInfo.day <= 22)
-				_princessStatus.god.constellation = "사자자리";
+				_princessStatus.god.constellation = "사자자리", _princessStatus.god.idx = 7;
 			else
-				_princessStatus.god.constellation = "처녀자리";
+				_princessStatus.god.constellation = "처녀자리", _princessStatus.god.idx = 5;
 		break;
 		case 9:
 			if (_princessInfo.day <= 22)
-				_princessStatus.god.constellation = "처녀자리";
+				_princessStatus.god.constellation = "처녀자리", _princessStatus.god.idx = 5;
 			else
-				_princessStatus.god.constellation = "천칭자리";
+				_princessStatus.god.constellation = "천칭자리", _princessStatus.god.idx = 4;
 		break;
 		case 10:
 			if (_princessInfo.day <= 23)
-				_princessStatus.god.constellation = "천칭자리";
+				_princessStatus.god.constellation = "천칭자리", _princessStatus.god.idx = 4;
 			else
-				_princessStatus.god.constellation = "전갈자리";
+				_princessStatus.god.constellation = "전갈자리", _princessStatus.god.idx = 8;
 		break;
 		case 11:
 			if (_princessInfo.day <= 22)
-				_princessStatus.god.constellation = "전갈자리";
+				_princessStatus.god.constellation = "전갈자리", _princessStatus.god.idx = 8;
 			else
-				_princessStatus.god.constellation = "사수자리";
+				_princessStatus.god.constellation = "사수자리", _princessStatus.god.idx = 9;
 		break;
 		case 12:
 			if (_princessInfo.day <= 21)
-				_princessStatus.god.constellation = "사수자리";
+				_princessStatus.god.constellation = "사수자리", _princessStatus.god.idx = 9;
 			else
-				_princessStatus.god.constellation = "염소자리";
+				_princessStatus.god.constellation = "염소자리", _princessStatus.god.idx = 0;
 		break;
 	}
 	vector<string> vStr = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", _princessStatus.god.constellation.c_str());

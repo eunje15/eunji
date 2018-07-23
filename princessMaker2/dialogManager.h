@@ -17,5 +17,7 @@ public:
 	void setDialog(string str, int speed);
 	string getCurrentDialog();
 	string getTotalDialog();
+
+	int getDialogSize() { return _str.size(); }
 };
 

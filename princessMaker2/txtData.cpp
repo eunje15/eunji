@@ -77,6 +77,7 @@ vector<string> txtData::txtLoad(const char* loadFileName)
 	return charArraySeparation(str);
 }
 
+
 vector<string> txtData::charArraySeparation(char charArray[])
 {
 	vector<string> vArray;
@@ -86,8 +87,8 @@ vector<string> txtData::charArraySeparation(char charArray[])
 	char* token;
 
 	token = strtok_s(charArray, separator, &temp);
-	if(token != NULL)
-	vArray.push_back(token);
+	if (token != NULL)
+		vArray.push_back(token);
 
 	while (NULL != (token = strtok_s(NULL, separator, &temp)))
 	{
@@ -96,6 +97,45 @@ vector<string> txtData::charArraySeparation(char charArray[])
 
 	return vArray;
 }
+
+vector<string> txtData::txtDataLoadSlash(const char* loadFileName)
+{
+	HANDLE file;
+	DWORD read;
+
+	char str[100000] = "";
+
+	file = CreateFile(loadFileName, GENERIC_READ, NULL, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	ReadFile(file, str, 100000, &read, NULL);
+
+	CloseHandle(file);
+
+	return charArraySlashSeparation(str);
+}
+
+
+vector<string> txtData::charArraySlashSeparation(char charArray[])
+{
+	vector<string> vArray;
+
+	char* temp;
+	const char* separator = "/";
+	char* token;
+
+	token = strtok_s(charArray, separator, &temp);
+	if (token != NULL)
+		vArray.push_back(token);
+
+	while (NULL != (token = strtok_s(NULL, separator, &temp)))
+	{
+		vArray.push_back(token);
+	}
+
+	return vArray;
+}
+
 
 vector<string> txtData::txtLoadCsv(const char* loadFileName, const char* constellation)
 {

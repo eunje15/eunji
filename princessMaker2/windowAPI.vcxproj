@@ -151,6 +151,7 @@
     <ClInclude Include="animation.h" />
     <ClInclude Include="button.h" />
     <ClInclude Include="commonMacroFunction.h" />
+    <ClInclude Include="cube.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="dataInput.h" />
     <ClInclude Include="dialogManager.h" />
@@ -182,6 +183,7 @@
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="dataInput.cpp" />
     <ClCompile Include="dialogManager.cpp" />
     <ClCompile Include="effect.cpp" />

@@ -17,6 +17,8 @@ public:
 
 	//·Îµå
 	vector<string> txtLoad(const char* loadFileName);
+	vector<string> txtDataLoadSlash(const char * loadFileName);
+	vector<string> charArraySlashSeparation(char charArray[]);
 	vector<string> charArraySeparation(char charArray[]);
 
 	vector<string> txtLoadCsv(const char * loadFileName, const char* constellation);
