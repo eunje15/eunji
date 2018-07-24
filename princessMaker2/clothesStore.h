@@ -3,23 +3,23 @@
 #include "item.h"
 #include "data.h"
 
-enum WEAPON_DIALOG_TYPE { WEAPON_DIALOG_FIN, WEAPON_DIALOG_SELECT, WEAPON_DIALOG_CLICK, WEAPON_DIALOG_NONE };
+enum CLOTHES_DIALOG_TYPE { CLOTHES_DIALOG_FIN, CLOTHES_DIALOG_SELECT, CLOTHES_DIALOG_CLICK, CLOTHES_DIALOG_NONE };
 
-class weaponStore : public gameNode
+class clothesStore : public gameNode
 {
 private:
 	vector<item*> _vItem;
 	tagImg	_npc;
 	vector<string> _vDialog;
 	int _dialogIdx;
-	WEAPON_DIALOG_TYPE _dialogType;
+	CLOTHES_DIALOG_TYPE _dialogType;
 	tagString _chooseBox[2], _buyBox[3];
-	tagImg _itemImg[12];
+	tagImg _itemImg[6];
 	tagImg _quitImg;
 	bool _fin, _selectItem;
 public:
-	weaponStore();
-	~weaponStore();
+	clothesStore();
+	~clothesStore();
 
 	HRESULT init();
 	void update();

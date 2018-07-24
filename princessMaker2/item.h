@@ -1,7 +1,7 @@
 #pragma once
 #include "gameNode.h"
 
-enum ITEM_TYPE { ITEM_WEAPON, ITEM_ARMOR, ITEM_GOODS };
+enum ITEM_TYPE { ITEM_WEAPON, ITEM_ARMOR, ITEM_CLOTHES, ITEM_COOK, ITEM_GOODS };
 class item : public gameNode
 {
 private:

@@ -47,6 +47,12 @@ void item::setImage()
 	case ITEM_WEAPON: case ITEM_ARMOR:
 		_img = IMAGEMANAGER->findImage("weapon");
 	break;
+	case ITEM_CLOTHES:
+		_img = IMAGEMANAGER->findImage("clothes");
+	break;
+	case ITEM_COOK:
+		_img = IMAGEMANAGER->findImage("cook");
+	break;
 	case ITEM_GOODS:
 		break;
 	}

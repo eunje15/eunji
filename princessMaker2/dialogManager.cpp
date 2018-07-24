@@ -31,6 +31,7 @@ void dialogManager::render()
 
 void dialogManager::setDialog(string str, int speed)
 {
+	_str.clear();
 	_str = str;
 	_idx = _count = 0;
 	_speed = speed;

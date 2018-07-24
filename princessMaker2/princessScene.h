@@ -3,6 +3,8 @@
 #include "princess.h"
 #include "cube.h"
 #include "weaponStore.h"
+#include "clothesStore.h"
+#include "cookStore.h"
 
 enum SEASON_TYPE { SPRING, SUMMER, AUTUMN, WINTER };
 enum MENU_TYPE { SELECT_NONE, SELECT_STATUS, SELECT_TALK, SELECT_CHANGE_INFO, SELECT_INFO,
@@ -33,6 +35,8 @@ private:
 	string _storeDialog;
 
 	weaponStore* _weaponStore;
+	clothesStore* _clothesStore;
+	cookStore* _cookStore;
 
 public:
 	princessScene();

@@ -150,7 +150,9 @@
   <ItemGroup>
     <ClInclude Include="animation.h" />
     <ClInclude Include="button.h" />
+    <ClInclude Include="clothesStore.h" />
     <ClInclude Include="commonMacroFunction.h" />
+    <ClInclude Include="cookStore.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="dataInput.h" />
@@ -185,6 +187,8 @@
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="clothesStore.cpp" />
+    <ClCompile Include="cookStore.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="dataInput.cpp" />
     <ClCompile Include="dialogManager.cpp" />

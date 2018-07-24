@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "weaponStore.h"
+#include "clothesStore.h"
 
 
-weaponStore::weaponStore()
+clothesStore::clothesStore()
 {
 }
 
 
-weaponStore::~weaponStore()
+clothesStore::~clothesStore()
 {
 }
 
-HRESULT weaponStore::init()
+HRESULT clothesStore::init()
 {
 	setItem();
 	_npc.img = IMAGEMANAGER->findImage("peopleFace");
-	_npc.frameX = 6, _npc.frameY = 1;
-	setDialog("「어서오세요. 무기도 방어구도 좋은 것들만 모여 있습니다」");
+	_npc.frameX = 7, _npc.frameY = 1;
+	setDialog("「어서오세요.  아가씨에게 어울리는 멋진 옷 한벌 어떠신가요?」");
 	_dialogIdx = 0;
-	_dialogType = WEAPON_DIALOG_NONE;
+	_dialogType = CLOTHES_DIALOG_NONE;
 	_fin = false;
 
 	for (int i = 0; i < 2; i++)
@@ -33,20 +33,15 @@ HRESULT weaponStore::init()
 	{
 		for (int j = 0; j < 4; j++)
 		{
+			if ((i * 4 + j) > 5) break;
+
 			_itemImg[i * 4 + j].img = new image;
 			_itemImg[i * 4 + j].img->init("image/item/itemDialog(380x76,2x1).bmp", 380, 76, 2, 1, true, RGB(255, 0, 255));
-			_itemImg[i * 4 + j].data.rc = RectMake(20 + j*190, 445 + i*76, 190, 76);
+			_itemImg[i * 4 + j].data.rc = RectMake(20 + j * 190, 445 + i * 76, 190, 76);
 		}
 	}
 
-	for (int i = 8; i < 12; i++)
-	{
-		_itemImg[i].img = new image;
-		_itemImg[i].img->init("image/item/itemDialog(380x76,2x1).bmp", 380, 76, 2, 1, true, RGB(255, 0, 255));
-		_itemImg[i].data.rc = RectMake(590, 369 - (i - 8) * 76, 190, 76);
-	}
-
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		_vItem[i]->setXY(_itemImg[i].data.rc.left + 7, _itemImg[i].data.rc.top + 5);
 	}
@@ -69,11 +64,11 @@ HRESULT weaponStore::init()
 	return S_OK;
 }
 
-void weaponStore::update()
+void clothesStore::update()
 {
 	switch (_dialogType)
 	{
-	case WEAPON_DIALOG_FIN:
+	case CLOTHES_DIALOG_FIN:
 		for (int i = 0; i < 2; i++)
 		{
 			_chooseBox[i].isSelected = false;
@@ -83,17 +78,17 @@ void weaponStore::update()
 				if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 				{
 					if (i == 0)
-						_dialogType = WEAPON_DIALOG_SELECT;
+						_dialogType = CLOTHES_DIALOG_SELECT;
 					else if (i == 1)
 						_fin = true;
 				}
 			}
 		}
 		break;
-	case WEAPON_DIALOG_SELECT:
+	case CLOTHES_DIALOG_SELECT:
 		if (!_selectItem)
 		{
-			for (int i = 0; i < 12; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				_itemImg[i].frameX = 0;
 				if (PtInRect(&_itemImg[i].data.rc, _ptMouse))
@@ -107,13 +102,13 @@ void weaponStore::update()
 						_itemImg[i].frameX = 0;
 						string str = "「" + _vItem[i]->getName() + "은/는 " + to_string(_vItem[i]->getPrice()) + "G 입니다.」";
 						setDialog(str);
-						_dialogType = WEAPON_DIALOG_CLICK;
+						_dialogType = CLOTHES_DIALOG_CLICK;
 					}
 				}
 			}
 		}
 		_quitImg.frameX = 0;
-		if(PtInRect(&_quitImg.data.rc, _ptMouse))
+		if (PtInRect(&_quitImg.data.rc, _ptMouse))
 		{
 			_quitImg.frameX = 1;
 			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
@@ -122,7 +117,7 @@ void weaponStore::update()
 			}
 		}
 		break;
-	case WEAPON_DIALOG_CLICK:
+	case CLOTHES_DIALOG_CLICK:
 		for (int i = 0; i < 3; i++)
 		{
 			_buyBox[i].isSelected = false;
@@ -137,7 +132,7 @@ void weaponStore::update()
 					}
 					else if (i == 1)
 					{
-						_dialogType = WEAPON_DIALOG_SELECT;
+						_dialogType = CLOTHES_DIALOG_SELECT;
 						_selectItem = false;
 					}
 					else
@@ -148,12 +143,12 @@ void weaponStore::update()
 			}
 		}
 		break;
-	case WEAPON_DIALOG_NONE:
+	case CLOTHES_DIALOG_NONE:
 		break;
 	}
 }
 
-void weaponStore::render()
+void clothesStore::render()
 {
 	IMAGEMANAGER->findImage("frame")->render(DC, 20, 295);
 	_npc.img->frameRender(DC, 30, 305, _npc.frameX, _npc.frameY);
@@ -166,7 +161,7 @@ void weaponStore::render()
 		}
 		switch (_dialogType)
 		{
-		case WEAPON_DIALOG_FIN:
+		case CLOTHES_DIALOG_FIN:
 			IMAGEMANAGER->findImage("2Back")->render(DC, 600, 280);
 			for (int i = 0; i < 2; i++)
 			{
@@ -182,12 +177,12 @@ void weaponStore::render()
 				TextOut(DC, _chooseBox[i].rc.left + 2, _chooseBox[i].rc.top + 5, _chooseBox[i].str.c_str(), strlen(_chooseBox[i].str.c_str()));
 			}
 			break;
-		case WEAPON_DIALOG_SELECT:
-			for (int i = 0; i < 12; i++)
+		case CLOTHES_DIALOG_SELECT:
+			for (int i = 0; i < 6; i++)
 			{
 				if (_selectItem && !_itemImg[i].data.isChoose) continue;
 				//Rectangle(DC, _itemImg[i].data.rc.left, _itemImg[i].data.rc.top, _itemImg[i].data.rc.right, _itemImg[i].data.rc.bottom);
-				_itemImg[i].img->frameRender(DC, _itemImg[i].data.rc.left, _itemImg[i].data.rc.top,_itemImg[i].frameX, 0);
+				_itemImg[i].img->frameRender(DC, _itemImg[i].data.rc.left, _itemImg[i].data.rc.top, _itemImg[i].frameX, 0);
 				_vItem[i]->render();
 				TextOut(DC, _vItem[i]->getX() + 45, _vItem[i]->getY() + 5, _vItem[i]->getName().c_str(), strlen(_vItem[i]->getName().c_str()));
 				string gold = to_string(_vItem[i]->getPrice()) + "G";
@@ -196,10 +191,11 @@ void weaponStore::render()
 				vector<pair<string, int>> vTemp = _vItem[i]->getProperty();
 				for (int j = 0; j < vTemp.size(); j++)
 				{
+					if (vTemp[j].first == "나이") break;
 					TextOut(DC, _vItem[i]->getX() + j * 80, _vItem[i]->getY() + 45, vTemp[j].first.c_str(), strlen(vTemp[j].first.c_str()));
-					if(vTemp[j].second > 0)
-						TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size()*8 + j * 80, _vItem[i]->getY() + 45, "+", strlen("+"));
-					TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size()*8 + 10 + j * 80, _vItem[i]->getY() + 45, to_string(vTemp[j].second).c_str(), strlen(to_string(vTemp[j].second).c_str()));
+					if (vTemp[j].second > 0)
+						TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size() * 8 + j * 80, _vItem[i]->getY() + 45, "+", strlen("+"));
+					TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size() * 8 + 10 + j * 80, _vItem[i]->getY() + 45, to_string(vTemp[j].second).c_str(), strlen(to_string(vTemp[j].second).c_str()));
 				}
 
 				_quitImg.img->frameRender(DC, 444, 393, _quitImg.frameX, 0);
@@ -207,7 +203,7 @@ void weaponStore::render()
 				TextOut(DC, _quitImg.data.rc.left + 30, _quitImg.data.rc.top + 10, "관둔다", strlen("관둔다"));
 			}
 			break;
-		case WEAPON_DIALOG_CLICK:
+		case CLOTHES_DIALOG_CLICK:
 			IMAGEMANAGER->findImage("3Back")->render(DC, 600, 280);
 			for (int i = 0; i < 3; i++)
 			{
@@ -228,13 +224,13 @@ void weaponStore::render()
 	}
 }
 
-void weaponStore::release()
+void clothesStore::release()
 {
 }
 
-void weaponStore::setItem()
+void clothesStore::setItem()
 {
-	vector<string> vStr = TXTDATA->txtLoadCsv("dialog/weapon2.csv");
+	vector<string> vStr = TXTDATA->txtLoadCsv("dialog/clothes.csv");
 	int idx = 0;
 	for (int i = 0; i < vStr.size(); i++)
 	{
@@ -248,31 +244,27 @@ void weaponStore::setItem()
 		{
 			property.push_back(make_pair(temp[j], atoi(temp[j + 1].c_str())));
 		}
-			if (i < 10)
-				tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 0, i, 0);
-			else
-				tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 1, i, 0);
-			_vItem.push_back(tItem);
+		tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 2, i, 0);
+		_vItem.push_back(tItem);
 		//	idx++;
 	}
 }
 
-
-void weaponStore::setDialog(string dialog)
+void clothesStore::setDialog(string dialog)
 {
 	DIALOG->setDialog(dialog, 5);
 	string str = DIALOG->getTotalDialog();
 	int strSize = str.size();
 	int idx = 0;
 	_vDialog.clear();
-	_vDialog.push_back("무기점의 제노");
+	_vDialog.push_back("의상실의 마르");
 	while (1)
 	{
-		if (strSize > 30)
+		if (strSize > 28)
 		{
-			_vDialog.push_back(str.substr(idx, 30));
-			idx += 30;
-			strSize -= 30;
+			_vDialog.push_back(str.substr(idx, 28));
+			idx += 28;
+			strSize -= 28;
 		}
 		else
 		{
@@ -283,9 +275,9 @@ void weaponStore::setDialog(string dialog)
 	DIALOG->setDialog(_vDialog[0], 5);
 }
 
-bool weaponStore::dialogRender()
+bool clothesStore::dialogRender()
 {
-	if (_dialogType != WEAPON_DIALOG_NONE) return true;
+	if (_dialogType != CLOTHES_DIALOG_NONE) return true;
 
 	if (_dialogIdx < _vDialog.size())
 	{
@@ -310,7 +302,7 @@ bool weaponStore::dialogRender()
 	}
 	else
 	{
-		_dialogType = WEAPON_DIALOG_FIN;
+		_dialogType = CLOTHES_DIALOG_FIN;
 		return true;
 	}
 	return false;

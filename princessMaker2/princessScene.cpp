@@ -81,8 +81,13 @@ HRESULT princessScene::init()
 	_cube->init();
 
 	_weaponStore = new weaponStore;
-	_weaponStore->init();
+	//_weaponStore->init();
 
+	_clothesStore = new clothesStore;
+	//_clothesStore->init();
+
+	_cookStore = new cookStore;
+	//_cookStore->init();
 	return S_OK;
 }
 
@@ -175,8 +180,14 @@ void princessScene::update()
 				_storeType = STORE_SELECT;
 			break;
 		case STORE_ARMOR:
+			_clothesStore->update();
+			if (_clothesStore->getFin())
+				_storeType = STORE_SELECT;
 			break;
 		case STORE_COOK:
+			_cookStore->update();
+			if (_cookStore->getFin())
+				_storeType = STORE_SELECT;
 			break;
 		case STORE_GOODS:
 			break;
@@ -251,8 +262,10 @@ void princessScene::render()
 			_weaponStore->render();
 			break;
 		case STORE_ARMOR:
+			_clothesStore->render();
 			break;
 		case STORE_COOK:
+			_cookStore->render();
 			break;
 		case STORE_GOODS:
 			break;
@@ -813,13 +826,18 @@ void princessScene::clickStore()
 				{
 					case 0:
 						_storeType = STORE_WEAPON;
+						_weaponStore->init();
 						_weaponStore->setFin(false);
 					break;
 					case 1:
 						_storeType = STORE_ARMOR;
+						_clothesStore->init();
+						_clothesStore->setFin(false);
 					break;
 					case 2:
 						_storeType = STORE_COOK;
+						_cookStore->init();
+						_cookStore->setFin(false);
 					break;
 					case 3:
 						_storeType = STORE_GOODS;
