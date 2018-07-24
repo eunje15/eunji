@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef _DATA_H_
+#define _DATA_H_
+
 #include "progressBar.h"
 
 struct tagObj
@@ -88,3 +92,5 @@ struct tagProgress
 	progressBar* progressBar;
 	RECT strRc, dataRc;
 };
+
+#endif

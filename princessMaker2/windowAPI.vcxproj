@@ -161,6 +161,7 @@
     <ClInclude Include="image.h" />
     <ClInclude Include="imageManager.h" />
     <ClInclude Include="iniDataManager.h" />
+    <ClInclude Include="item.h" />
     <ClInclude Include="keyAniManager.h" />
     <ClInclude Include="keyManager.h" />
     <ClInclude Include="playGround.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="timer.h" />
     <ClInclude Include="txtData.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="weaponStore.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
@@ -192,6 +194,7 @@
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageManager.cpp" />
     <ClCompile Include="iniDataManager.cpp" />
+    <ClCompile Include="item.cpp" />
     <ClCompile Include="keyAniManager.cpp" />
     <ClCompile Include="keyManager.cpp" />
     <ClCompile Include="playGround.cpp" />
@@ -212,6 +215,7 @@
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="txtData.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="weaponStore.cpp" />
     <ClCompile Include="windowAPI.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

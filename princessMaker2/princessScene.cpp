@@ -73,10 +73,15 @@ HRESULT princessScene::init()
 	_menubox[8].isSelected = false;
 	_menuType = SELECT_NONE;
 
+	_storeType = STORE_NONE;
+
 	_perHealth = _perBad = _personalConnect = 0;
 
 	_cube = new cube;
 	_cube->init();
+
+	_weaponStore = new weaponStore;
+	_weaponStore->init();
 
 	return S_OK;
 }
@@ -112,6 +117,7 @@ void princessScene::update()
 						break;
 					case 4:
 						_menuType = SELECT_TOWN;
+						_storeType = STORE_SELECT;
 						setStore();
 						break;
 					case 5:
@@ -136,6 +142,7 @@ void princessScene::update()
 	if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
 	{
 		_menuType = SELECT_NONE;
+		_storeType = STORE_NONE;
 		if (_cube->getDialogFin()) _cube->setDialogFin(false);
 	}
 
@@ -156,7 +163,28 @@ void princessScene::update()
 	}
 	else if (_menuType == SELECT_TOWN)
 	{
-		clickStore();
+	//	clickStore();
+		switch (_storeType)
+		{
+		case STORE_NONE: case STORE_SELECT:
+			clickStore();
+			break;
+		case STORE_WEAPON:
+			_weaponStore->update();
+			if (_weaponStore->getFin())
+				_storeType = STORE_SELECT;
+			break;
+		case STORE_ARMOR:
+			break;
+		case STORE_COOK:
+			break;
+		case STORE_GOODS:
+			break;
+		case STORE_CHURCH:
+			break;
+		case STORE_HOSTIPITAL:
+			break;
+		}
 	}
 }
 
@@ -212,7 +240,27 @@ void princessScene::render()
 		infoRender();
 		break;
 	case SELECT_TOWN:
-		storeRender();
+		IMAGEMANAGER->findImage("storeFrame")->render(DC, 32, 113);
+		IMAGEMANAGER->findImage("storePicture")->render(DC, 52, 123);
+		switch (_storeType)
+		{
+		case STORE_NONE: case STORE_SELECT:
+			storeRender();
+			break;
+		case STORE_WEAPON:
+			_weaponStore->render();
+			break;
+		case STORE_ARMOR:
+			break;
+		case STORE_COOK:
+			break;
+		case STORE_GOODS:
+			break;
+		case STORE_CHURCH:
+			break;
+		case STORE_HOSTIPITAL:
+			break;
+		}
 		break;
 	case SELECT_CASTLE:
 		break;
@@ -740,6 +788,7 @@ void princessScene::setStore()
 	_store[0].data.str = "무기점", _store[1].data.str = "의상실", _store[2].data.str = "요리점";
 	_store[3].data.str = "잡화점", _store[4].data.str = "교회",	_store[5].data.str = "병원";
 	_store[6].data.str = "관둔다";
+	_count = 0;
 }
 
 void princessScene::setRectZero(RECT* rc)
@@ -748,7 +797,9 @@ void princessScene::setRectZero(RECT* rc)
 }
 void princessScene::clickStore()
 {
-	bool fin = false;
+	_count++;
+	if (_count < 30) return;
+
 	for (int i = 0; i < 7; i++)
 	{
 		_store[i].frameX = 0;
@@ -757,40 +808,40 @@ void princessScene::clickStore()
 			_store[i].frameX = 1;
 			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 			{
+				if (_storeType != STORE_SELECT) return;
 				switch (i)
 				{
 					case 0:
+						_storeType = STORE_WEAPON;
+						_weaponStore->setFin(false);
 					break;
 					case 1:
+						_storeType = STORE_ARMOR;
 					break;
 					case 2:
+						_storeType = STORE_COOK;
 					break;
 					case 3:
+						_storeType = STORE_GOODS;
 					break;
 					case 4:
+						_storeType = STORE_CHURCH;
 					break;
 					case 5:
+						_storeType = STORE_HOSTIPITAL;
 					break;
 					case 6:
-						fin = true;
 						_menuType = SELECT_NONE;
+						_storeType = STORE_NONE;
 					break;
 				}
 			}
 		}
 	}
-	if (fin)
-	{
-		for (int i = 0; i < 7; i++)
-			setRectZero(&_store[i].data.rc);
-	}
 }
 
 void princessScene::storeRender()
 {
-	IMAGEMANAGER->findImage("storeFrame")->render(DC, 32, 113);
-	IMAGEMANAGER->findImage("storePicture")->render(DC, 52, 123);
-
 	IMAGEMANAGER->findImage("wideBack")->render(DC, 35, 410);
 	TextOut(DC, 45, 420, _storeDialog.c_str(), strlen(_storeDialog.c_str()));
 

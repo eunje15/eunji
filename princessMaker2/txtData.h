@@ -17,13 +17,15 @@ public:
 
 	//·Îµå
 	vector<string> txtLoad(const char* loadFileName);
+	vector<string> charArraySeparation(char charArray[]);
+
 	vector<string> txtDataLoadSlash(const char * loadFileName);
 	vector<string> charArraySlashSeparation(char charArray[]);
-	vector<string> charArraySeparation(char charArray[]);
+
+	vector<string> txtLoadCsv(const char * loadFileName);
+	vector<string> charArraySeparationCsv(char charArray[]);
 
 	vector<string> txtLoadCsv(const char * loadFileName, const char* constellation);
 	vector<string> charArraySeparationCsv(char charArray[], const char* constellation);
-
-
 };
 

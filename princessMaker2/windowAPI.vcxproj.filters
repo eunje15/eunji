@@ -58,6 +58,12 @@
     <Filter Include="playGround\npc">
       <UniqueIdentifier>{0f0a27d6-189e-45cb-8a40-b9a66bcc1b0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\item">
+      <UniqueIdentifier>{3b06fc4a-73ba-4fec-acd2-0a16035df31f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\store">
+      <UniqueIdentifier>{02d944a1-ab08-41b5-8646-9cfd5f99181d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -151,7 +157,13 @@
       <Filter>playGround\princess</Filter>
     </ClInclude>
     <ClInclude Include="cube.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>playGround\npc</Filter>
+    </ClInclude>
+    <ClInclude Include="item.h">
+      <Filter>playGround\item</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponStore.h">
+      <Filter>playGround\store</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -234,7 +246,13 @@
       <Filter>playGround\princess</Filter>
     </ClCompile>
     <ClCompile Include="cube.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>playGround\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="item.cpp">
+      <Filter>playGround\item</Filter>
+    </ClCompile>
+    <ClCompile Include="weaponStore.cpp">
+      <Filter>playGround\store</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
