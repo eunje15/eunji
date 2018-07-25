@@ -1,35 +1,35 @@
 #pragma once
 #include "gameNode.h"
-#include "item.h"
 #include "data.h"
 
-enum COOK_TYPE { COOK_FIN, COOK_SELECT, COOK_CLICK, COOK_NONE };
+class princess;
+
+enum HOSPITAL_TYPE { HOSPITAL_SICK, HOSPITAL_DEMAND, HOSPITAL_CURE, HOSPITAL_NOSICK, HOSPITAL_NONE  };
 
 
-class cookStore : public gameNode
+class hospital : public gameNode
 {
 private:
-	vector<item*> _vItem;
+	princess* _princess;
+
 	tagImg	_npc;
 	vector<string> _vDialog;
 	int _dialogIdx;
-	COOK_TYPE _type;
+	HOSPITAL_TYPE _type;
 	DIALOG_TYPE _dialogType;
-	tagString _chooseBox[2], _buyBox[3];
-	tagImg _itemImg[3];
-	tagImg _quitImg;
-	bool _fin, _selectItem;
-
+	tagString _chooseBox[2];
+	bool _fin, _isSick, _chooseNum;
+	int _sickPer;
+	tagProgress _pStress;
 public:
-	cookStore();
-	~cookStore();
+	hospital();
+	~hospital();
 
 	HRESULT init();
 	void update();
 	void render();
 	void release();
 
-	void setItem();
 	void setDialog(string dialog);
 	bool dialogRender();
 

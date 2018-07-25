@@ -64,6 +64,9 @@
     <Filter Include="playGround\store">
       <UniqueIdentifier>{02d944a1-ab08-41b5-8646-9cfd5f99181d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\scene">
+      <UniqueIdentifier>{7ac0d17a-e064-4549-a288-e06d42a3cef2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -171,6 +174,24 @@
     <ClInclude Include="cookStore.h">
       <Filter>playGround\store</Filter>
     </ClInclude>
+    <ClInclude Include="goodsStore.h">
+      <Filter>playGround\store</Filter>
+    </ClInclude>
+    <ClInclude Include="hospital.h">
+      <Filter>playGround\store</Filter>
+    </ClInclude>
+    <ClInclude Include="church.h">
+      <Filter>playGround\store</Filter>
+    </ClInclude>
+    <ClInclude Include="castleScene.h">
+      <Filter>playGround\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="inventoryScene.h">
+      <Filter>playGround\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="itemManager.h">
+      <Filter>playGround\item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -265,6 +286,24 @@
     </ClCompile>
     <ClCompile Include="cookStore.cpp">
       <Filter>playGround\store</Filter>
+    </ClCompile>
+    <ClCompile Include="goodsStore.cpp">
+      <Filter>playGround\store</Filter>
+    </ClCompile>
+    <ClCompile Include="hospital.cpp">
+      <Filter>playGround\store</Filter>
+    </ClCompile>
+    <ClCompile Include="church.cpp">
+      <Filter>playGround\store</Filter>
+    </ClCompile>
+    <ClCompile Include="castleScene.cpp">
+      <Filter>playGround\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="inventoryScene.cpp">
+      <Filter>playGround\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="itemManager.cpp">
+      <Filter>playGround\item</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

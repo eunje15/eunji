@@ -31,6 +31,8 @@ HRESULT princess::init()
 	_face.x = 80;
 	_face.y = _body.y - _face.img->getFrameHeight() + 1;
 
+	_gold = 1000;
+
 	return S_OK;
 }
 
@@ -155,4 +157,10 @@ void princess::setStatus()
 	_status.personality = atoi(vStr[25].c_str());
 	_status.total = atoi(vStr[26].c_str());
 	_status.plusNorth = vStr[27];
+}
+
+void princess::setStress(int stress)
+{
+	_status.stress -= stress; 
+	if (_status.stress < 0) _status.stress = 0;
 }

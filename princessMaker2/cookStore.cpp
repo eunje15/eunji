@@ -18,7 +18,7 @@ HRESULT cookStore::init()
 	_npc.frameX = 13, _npc.frameY = 0;
 	setDialog("「어서와. 맛있는 요리를 먹고 가라고!」");
 	_dialogIdx = 0;
-	_dialogType = COOK_DIALOG_NONE;
+	_type = COOK_NONE;
 	_fin = false;
 
 	for (int i = 0; i < 2; i++)
@@ -61,9 +61,11 @@ HRESULT cookStore::init()
 
 void cookStore::update()
 {
-	switch (_dialogType)
+	if (_dialogType == DIALOG_ING) return;
+
+	switch (_type)
 	{
-	case COOK_DIALOG_FIN:
+	case COOK_FIN:
 		for (int i = 0; i < 2; i++)
 		{
 			_chooseBox[i].isSelected = false;
@@ -73,17 +75,17 @@ void cookStore::update()
 				if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 				{
 					if (i == 0)
-						_dialogType = COOK_DIALOG_SELECT;
+						_type = COOK_SELECT;
 					else if (i == 1)
 						_fin = true;
 				}
 			}
 		}
 		break;
-	case COOK_DIALOG_SELECT:
+	case COOK_SELECT:
 		if (!_selectItem)
 		{
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				_itemImg[i].frameX = 0;
 				if (PtInRect(&_itemImg[i].data.rc, _ptMouse))
@@ -97,7 +99,9 @@ void cookStore::update()
 						_itemImg[i].frameX = 0;
 						string str = "「 " + _vItem[i]->getName() + "은/는 " + to_string(_vItem[i]->getPrice()) + "G 입니다.」";
 						setDialog(str);
-						_dialogType = COOK_DIALOG_CLICK;
+						_type = COOK_CLICK;
+						_dialogIdx = 0;
+						_dialogType = DIALOG_ING;
 					}
 				}
 			}
@@ -112,7 +116,7 @@ void cookStore::update()
 			}
 		}
 		break;
-	case COOK_DIALOG_CLICK:
+	case COOK_CLICK:
 		for (int i = 0; i < 3; i++)
 		{
 			_buyBox[i].isSelected = false;
@@ -127,7 +131,7 @@ void cookStore::update()
 					}
 					else if (i == 1)
 					{
-						_dialogType = COOK_DIALOG_SELECT;
+						_type = COOK_SELECT;
 						_selectItem = false;
 					}
 					else
@@ -138,7 +142,7 @@ void cookStore::update()
 			}
 		}
 		break;
-	case COOK_DIALOG_NONE:
+	case COOK_NONE:
 		break;
 	}
 }
@@ -154,9 +158,9 @@ void cookStore::render()
 		{
 			TextOut(DC, 180, 310 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
 		}
-		switch (_dialogType)
+		switch (_type)
 		{
-		case COOK_DIALOG_FIN:
+		case COOK_FIN:
 			IMAGEMANAGER->findImage("2Back")->render(DC, 600, 280);
 			for (int i = 0; i < 2; i++)
 			{
@@ -172,7 +176,7 @@ void cookStore::render()
 				TextOut(DC, _chooseBox[i].rc.left + 2, _chooseBox[i].rc.top + 5, _chooseBox[i].str.c_str(), strlen(_chooseBox[i].str.c_str()));
 			}
 			break;
-		case COOK_DIALOG_SELECT:
+		case COOK_SELECT:
 			for (int i = 0; i < 3; i++)
 			{
 				if (_selectItem && !_itemImg[i].data.isChoose) continue;
@@ -183,13 +187,15 @@ void cookStore::render()
 				string gold = to_string(_vItem[i]->getPrice()) + "G";
 				TextOut(DC, _vItem[i]->getX() + 45, _vItem[i]->getY() + 25, gold.c_str(), strlen(gold.c_str()));
 
-				vector<pair<string, int>> vTemp = _vItem[i]->getProperty();
+				vector<pair<string, float>> vTemp = _vItem[i]->getProperty();
 				for (int j = 0; j < vTemp.size(); j++)
 				{
 					TextOut(DC, _vItem[i]->getX() + j * 80, _vItem[i]->getY() + 45, vTemp[j].first.c_str(), strlen(vTemp[j].first.c_str()));
 					if (vTemp[j].second > 0)
 						TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size() * 8 + j * 80, _vItem[i]->getY() + 45, "+", strlen("+"));
-					TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size() * 8 + 10 + j * 80, _vItem[i]->getY() + 45, to_string(vTemp[j].second).c_str(), strlen(to_string(vTemp[j].second).c_str()));
+					char stat[128];
+					sprintf_s(stat, "%.1f", vTemp[j].second);
+					TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size() * 8 + 10 + j * 80, _vItem[i]->getY() + 45, stat, strlen(stat));
 				}
 
 				_quitImg.img->frameRender(DC, _quitImg.data.rc.left, _quitImg.data.rc.top, _quitImg.frameX, 0);
@@ -197,7 +203,7 @@ void cookStore::render()
 				TextOut(DC, _quitImg.data.rc.left + 30, _quitImg.data.rc.top + 10, "관둔다", strlen("관둔다"));
 			}
 			break;
-		case COOK_DIALOG_CLICK:
+		case COOK_CLICK:
 			IMAGEMANAGER->findImage("3Back")->render(DC, 600, 280);
 			for (int i = 0; i < 3; i++)
 			{
@@ -232,11 +238,12 @@ void cookStore::setItem()
 		strcpy(str, vStr[i].c_str());
 		vector<string> temp = TXTDATA->charArraySeparation(str);
 		item* tItem = new item;
-		vector<pair<string, int>> property;
+		vector<pair<string, float>> property;
 		if (temp[2] == "X") continue;
 		for (int j = 3; j < temp.size() - 1; j += 2)
 		{
-			property.push_back(make_pair(temp[j], atoi(temp[j + 1].c_str())));
+			//property.push_back(make_pair(temp[j], atoi(temp[j + 1].c_str())));
+			property.push_back(make_pair(temp[j], atof(temp[j + 1].c_str())));
 		}
 		tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 3, i, 0);
 		_vItem.push_back(tItem);
@@ -271,7 +278,7 @@ void cookStore::setDialog(string dialog)
 
 bool cookStore::dialogRender()
 {
-	if (_dialogType != COOK_DIALOG_NONE) return true;
+	if (_dialogType != DIALOG_ING) return true;
 
 	if (_dialogIdx < _vDialog.size())
 	{
@@ -296,7 +303,8 @@ bool cookStore::dialogRender()
 	}
 	else
 	{
-		_dialogType = COOK_DIALOG_FIN;
+		if(_type == COOK_NONE) _type = COOK_FIN;
+		_dialogType = DIALOG_FIN;
 		return true;
 	}
 	return false;

@@ -15,8 +15,8 @@ HRESULT prologueDialog::init()
 	_princess = SCENEMANAGER->getPrincessAddress();
 	_scene = SCENE_WAR;
 	_frameY = 0;
-	_whoDialog = DIALOG_NONE;
-	_progress = FRAME_START;
+	_whoDialog = PRO_DIALOG_NONE;
+	_progress = PRO_FRAME_START;
 	setGodPhoto();
 	setWar();
 	return S_OK;
@@ -35,16 +35,16 @@ void prologueDialog::update()
 		case SCENE_WAR:
 			switch (_progress)
 			{
-			case DIALOG_START:
-				if (_whoDialog != DIALOG_NONE) break;
+			case PRO_DIALOG_START:
+				if (_whoDialog != PRO_DIALOG_NONE) break;
 				if (_frameY == 2 || _frameY == 4 || _frameY == 8 || _frameY == 10)
 				{
-					_progress = DIALOG_FIN;
+					_progress = PRO_DIALOG_FIN;
 					break;
 				}
 				changePrintDialog();
 				if (_frameY == 9) _strCount++;
-				_progress = DIALOG_ING;
+				_progress = PRO_DIALOG_ING;
 				/*switch (_frameY)
 				{
 				case 0:
@@ -68,16 +68,16 @@ void prologueDialog::update()
 					break;
 				}*/
 			break;
-			case DIALOG_ING:
+			case PRO_DIALOG_ING:
 				_count++;
 				if (!(_count % 120)) //120¿Ã ±‚∫ª
 				{
 					_count = 0;
-					if (_isRender) _progress = DIALOG_FIN;
+					if (_isRender) _progress = PRO_DIALOG_FIN;
 					else _isRender = true;
 				}
 			break;
-			case DIALOG_FIN:
+			case PRO_DIALOG_FIN:
 				_isRender = false;
 				switch (_frameY)
 				{
@@ -85,78 +85,78 @@ void prologueDialog::update()
 					_strCount++;
 					if (_strCount < 3)
 					{
-						_progress = DIALOG_START;
+						_progress = PRO_DIALOG_START;
 					}
 					else
-						_progress = FRAME_FIN;
+						_progress = PRO_FRAME_FIN;
 					break;
 				case 1:
 					_strCount++;
 					if (_strCount == 6)
 					{
-						_whoDialog = DIALOG_DEVIL;
+						_whoDialog = PRO_DIALOG_DEVIL;
 						setDialog();
-						_progress = DIALOG_START;
+						_progress = PRO_DIALOG_START;
 					}
 					else if (_strCount == 11)
-						_progress = FRAME_FIN;
+						_progress = PRO_FRAME_FIN;
 					else
-						_progress = DIALOG_START;
+						_progress = PRO_DIALOG_START;
 					break;
 				case 2:
-					_whoDialog = DIALOG_KING;
+					_whoDialog = PRO_DIALOG_KING;
 					setDialog();
-					_progress = DIALOG_START;
+					_progress = PRO_DIALOG_START;
 					break;
 				case 3:
-					_progress = FRAME_FIN;
+					_progress = PRO_FRAME_FIN;
 					break;
 				case 4:
 					Sleep(2000);
 					_strCount++;
-					_progress = FRAME_FIN;
+					_progress = PRO_FRAME_FIN;
 					break;
 				case 5:
 					_strCount++;
 					if (_strCount < 23)
 					{
-						_progress = DIALOG_START;
+						_progress = PRO_DIALOG_START;
 					}
 					else
-						_progress = FRAME_FIN;
+						_progress = PRO_FRAME_FIN;
 					break;
 				case 6:
 					_strCount++;
 					if (_strCount < 24)
 					{
-						_progress = DIALOG_START;
+						_progress = PRO_DIALOG_START;
 					}
 					else
-						_progress = FRAME_FIN;
+						_progress = PRO_FRAME_FIN;
 					break;
 				case 7:
 					_strCount++;
 					if (_strCount < 26)
 					{
-						_progress = DIALOG_START;
+						_progress = PRO_DIALOG_START;
 					}
 					else
-						_progress = FRAME_FIN;
+						_progress = PRO_FRAME_FIN;
 					break;
 				case 8:
-					_whoDialog = DIALOG_GOD;
+					_whoDialog = PRO_DIALOG_GOD;
 					setDialog();
-					_progress = DIALOG_START;
+					_progress = PRO_DIALOG_START;
 					break;
 				case 9:
 					_strCount++;
 					if (_strCount < 37)
 					{
 						_strCount--;
-						_progress = DIALOG_START;
+						_progress = PRO_DIALOG_START;
 					}
 					else
-						_progress = FRAME_FIN;
+						_progress = PRO_FRAME_FIN;
 					break;
 				case 10:
 					_alpha2 += 2;
@@ -169,20 +169,20 @@ void prologueDialog::update()
 					break;
 				}
 				break;
-			case FRAME_START:
+			case PRO_FRAME_START:
 				_alpha += 3;
 				if (_alpha >= 255)
 				{
 					_alpha = 255;
-					_progress = DIALOG_START;
+					_progress = PRO_DIALOG_START;
 				}
 				break;
-			case FRAME_FIN:
+			case PRO_FRAME_FIN:
 				_alpha -= 3;
 				if (_alpha <= 0)
 				{
 					_alpha = 0;
-					_progress = FRAME_START;
+					_progress = PRO_FRAME_START;
 					_frameY++;
 					if (_frameY == 9) _alpha2 = 0;
 				}
@@ -204,7 +204,7 @@ void prologueDialog::render()
 			break;
 		case SCENE_WAR:
 			warRender();
-			if(_whoDialog != DIALOG_NONE)
+			if(_whoDialog != PRO_DIALOG_NONE)
 				dialogRender();
 			break;
 		case SCENE_PRINCESS:
@@ -275,7 +275,7 @@ void prologueDialog::warRender()
 	IMAGEMANAGER->findImage("war")->alphaFrameRender(DC, 0, 0, 0, _frameY, _alpha);
 	if (_frameY == 10) IMAGEMANAGER->findImage("princessMaker")->alphaRender(DC, 0, 0, _alpha2);
 
-	if ((_whoDialog == DIALOG_NONE))
+	if ((_whoDialog == PRO_DIALOG_NONE))
 	{
 		if (!_isRender) return;
 
@@ -351,65 +351,65 @@ void prologueDialog::changePrintDialog()
 
 void prologueDialog::setDialog()
 {
-	if (_whoDialog == DIALOG_NONE) return;
+	if (_whoDialog == PRO_DIALOG_NONE) return;
 
-	if(_whoDialog == DIALOG_DEVIL)
+	if(_whoDialog == PRO_DIALOG_DEVIL)
 		DIALOG->setDialog(_vDialog[_strCount], 10);
-	else if (_whoDialog == DIALOG_KING)
+	else if (_whoDialog == PRO_DIALOG_KING)
 		DIALOG->setDialog(_vDialog[_strCount], 5);
-	else if(_whoDialog == DIALOG_GOD)
+	else if(_whoDialog == PRO_DIALOG_GOD)
 		DIALOG->setDialog(_vDialog[_strCount], 10);
 }
 
 void prologueDialog::dialogRender()
 {
-	if (_whoDialog == DIALOG_NONE) return;
+	if (_whoDialog == PRO_DIALOG_NONE) return;
 
 	IMAGEMANAGER->findImage("war")->alphaFrameRender(DC, 0, 0, 0, _frameY, _alpha);
 
 	IMAGEMANAGER->findImage("frame")->render(DC, WINSIZEX / 2 - 200, WINSIZEY / 2 - 100);
 	IMAGEMANAGER->findImage("dialogFrame")->render(DC, WINSIZEX / 2 - 58, WINSIZEY / 2 - 100);
-	if (_whoDialog == DIALOG_DEVIL)
+	if (_whoDialog == PRO_DIALOG_DEVIL)
 		IMAGEMANAGER->findImage("monFace")->frameRender(DC, WINSIZEX / 2 - 190, WINSIZEY / 2 - 90, 8, 1);
-	else if (_whoDialog == DIALOG_KING)
+	else if (_whoDialog == PRO_DIALOG_KING)
 	{
 		if(_strCount == 14)
 			IMAGEMANAGER->findImage("peopleFace")->frameRender(DC, WINSIZEX / 2 - 190, WINSIZEY / 2 - 90, 0, 2);
 		else
 			IMAGEMANAGER->findImage("peopleFace")->frameRender(DC, WINSIZEX / 2 - 190, WINSIZEY / 2 - 90, 1, 2);
 	}
-	else if(_whoDialog == DIALOG_GOD)
+	else if(_whoDialog == PRO_DIALOG_GOD)
 		IMAGEMANAGER->findImage("godFace")->frameRender(DC, WINSIZEX / 2 - 190, WINSIZEY / 2 - 90, _godIndex, 0);
 
 	string str = DIALOG->getCurrentDialog();
 	if (str == "end")
 	{
 		_strCount++;
-		if (_whoDialog == DIALOG_DEVIL)
+		if (_whoDialog == PRO_DIALOG_DEVIL)
 		{
 			if (_strCount < 9) setDialog();
 			else
 			{
-				_progress = DIALOG_START;
-				_whoDialog = DIALOG_NONE;
+				_progress = PRO_DIALOG_START;
+				_whoDialog = PRO_DIALOG_NONE;
 			}
 		}
-		else if (_whoDialog == DIALOG_KING)
+		else if (_whoDialog == PRO_DIALOG_KING)
 		{
 			if (_strCount < 16) setDialog();
 			else
 			{
-				_progress = FRAME_FIN;
-				_whoDialog = DIALOG_NONE;
+				_progress = PRO_FRAME_FIN;
+				_whoDialog = PRO_DIALOG_NONE;
 			}
 		}
-		else if (_whoDialog == DIALOG_GOD)
+		else if (_whoDialog == PRO_DIALOG_GOD)
 		{
 			if (_strCount < 36) setDialog();
 			else
 			{
-				_progress = FRAME_FIN;
-				_whoDialog = DIALOG_NONE;
+				_progress = PRO_FRAME_FIN;
+				_whoDialog = PRO_DIALOG_NONE;
 			}
 		}
 	}

@@ -18,7 +18,7 @@ HRESULT clothesStore::init()
 	_npc.frameX = 7, _npc.frameY = 1;
 	setDialog("「어서오세요.  아가씨에게 어울리는 멋진 옷 한벌 어떠신가요?」");
 	_dialogIdx = 0;
-	_dialogType = CLOTHES_DIALOG_NONE;
+	_type = CLOTHES_NONE;
 	_fin = false;
 
 	for (int i = 0; i < 2; i++)
@@ -66,9 +66,11 @@ HRESULT clothesStore::init()
 
 void clothesStore::update()
 {
-	switch (_dialogType)
+	if (_dialogType == DIALOG_ING) return;
+
+	switch (_type)
 	{
-	case CLOTHES_DIALOG_FIN:
+	case CLOTHES_FIN:
 		for (int i = 0; i < 2; i++)
 		{
 			_chooseBox[i].isSelected = false;
@@ -78,14 +80,14 @@ void clothesStore::update()
 				if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 				{
 					if (i == 0)
-						_dialogType = CLOTHES_DIALOG_SELECT;
+						_type = CLOTHES_SELECT;
 					else if (i == 1)
 						_fin = true;
 				}
 			}
 		}
 		break;
-	case CLOTHES_DIALOG_SELECT:
+	case CLOTHES_SELECT:
 		if (!_selectItem)
 		{
 			for (int i = 0; i < 6; i++)
@@ -100,9 +102,11 @@ void clothesStore::update()
 						_selectItem = true;
 						_itemImg[i].data.isChoose = true;
 						_itemImg[i].frameX = 0;
-						string str = "「" + _vItem[i]->getName() + "은/는 " + to_string(_vItem[i]->getPrice()) + "G 입니다.」";
+						string str = "「" + _vItem[i]->getName() + "은(는) " + to_string(_vItem[i]->getPrice()) + "G 입니다」";
 						setDialog(str);
-						_dialogType = CLOTHES_DIALOG_CLICK;
+						_type = CLOTHES_CLICK;
+						_dialogIdx = 0;
+						_dialogType = DIALOG_ING;
 					}
 				}
 			}
@@ -117,7 +121,7 @@ void clothesStore::update()
 			}
 		}
 		break;
-	case CLOTHES_DIALOG_CLICK:
+	case CLOTHES_CLICK:
 		for (int i = 0; i < 3; i++)
 		{
 			_buyBox[i].isSelected = false;
@@ -132,7 +136,7 @@ void clothesStore::update()
 					}
 					else if (i == 1)
 					{
-						_dialogType = CLOTHES_DIALOG_SELECT;
+						_type = CLOTHES_SELECT;
 						_selectItem = false;
 					}
 					else
@@ -143,7 +147,7 @@ void clothesStore::update()
 			}
 		}
 		break;
-	case CLOTHES_DIALOG_NONE:
+	case CLOTHES_NONE:
 		break;
 	}
 }
@@ -159,9 +163,9 @@ void clothesStore::render()
 		{
 			TextOut(DC, 180, 310 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
 		}
-		switch (_dialogType)
+		switch (_type)
 		{
-		case CLOTHES_DIALOG_FIN:
+		case CLOTHES_FIN:
 			IMAGEMANAGER->findImage("2Back")->render(DC, 600, 280);
 			for (int i = 0; i < 2; i++)
 			{
@@ -177,7 +181,7 @@ void clothesStore::render()
 				TextOut(DC, _chooseBox[i].rc.left + 2, _chooseBox[i].rc.top + 5, _chooseBox[i].str.c_str(), strlen(_chooseBox[i].str.c_str()));
 			}
 			break;
-		case CLOTHES_DIALOG_SELECT:
+		case CLOTHES_SELECT:
 			for (int i = 0; i < 6; i++)
 			{
 				if (_selectItem && !_itemImg[i].data.isChoose) continue;
@@ -188,14 +192,16 @@ void clothesStore::render()
 				string gold = to_string(_vItem[i]->getPrice()) + "G";
 				TextOut(DC, _vItem[i]->getX() + 45, _vItem[i]->getY() + 25, gold.c_str(), strlen(gold.c_str()));
 
-				vector<pair<string, int>> vTemp = _vItem[i]->getProperty();
+				vector<pair<string, float>> vTemp = _vItem[i]->getProperty();
 				for (int j = 0; j < vTemp.size(); j++)
 				{
 					if (vTemp[j].first == "나이") break;
 					TextOut(DC, _vItem[i]->getX() + j * 80, _vItem[i]->getY() + 45, vTemp[j].first.c_str(), strlen(vTemp[j].first.c_str()));
 					if (vTemp[j].second > 0)
 						TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size() * 8 + j * 80, _vItem[i]->getY() + 45, "+", strlen("+"));
-					TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size() * 8 + 10 + j * 80, _vItem[i]->getY() + 45, to_string(vTemp[j].second).c_str(), strlen(to_string(vTemp[j].second).c_str()));
+					char stat[128];
+					sprintf_s(stat, "%d", (int)vTemp[j].second);
+					TextOut(DC, _vItem[i]->getX() + vTemp[j].first.size() * 8 + 10 + j * 80, _vItem[i]->getY() + 45, stat, strlen(stat));
 				}
 
 				_quitImg.img->frameRender(DC, 444, 393, _quitImg.frameX, 0);
@@ -203,7 +209,7 @@ void clothesStore::render()
 				TextOut(DC, _quitImg.data.rc.left + 30, _quitImg.data.rc.top + 10, "관둔다", strlen("관둔다"));
 			}
 			break;
-		case CLOTHES_DIALOG_CLICK:
+		case CLOTHES_CLICK:
 			IMAGEMANAGER->findImage("3Back")->render(DC, 600, 280);
 			for (int i = 0; i < 3; i++)
 			{
@@ -238,7 +244,7 @@ void clothesStore::setItem()
 		strcpy(str, vStr[i].c_str());
 		vector<string> temp = TXTDATA->charArraySeparation(str);
 		item* tItem = new item;
-		vector<pair<string, int>> property;
+		vector<pair<string, float>> property;
 		if (temp[2] == "X") continue;
 		for (int j = 3; j < temp.size() - 1; j += 2)
 		{
@@ -277,7 +283,7 @@ void clothesStore::setDialog(string dialog)
 
 bool clothesStore::dialogRender()
 {
-	if (_dialogType != CLOTHES_DIALOG_NONE) return true;
+	if (_dialogType != DIALOG_ING) return true;
 
 	if (_dialogIdx < _vDialog.size())
 	{
@@ -302,7 +308,8 @@ bool clothesStore::dialogRender()
 	}
 	else
 	{
-		_dialogType = CLOTHES_DIALOG_FIN;
+		if(_type == CLOTHES_NONE) _type = CLOTHES_FIN;
+		_dialogType = DIALOG_FIN;
 		return true;
 	}
 	return false;

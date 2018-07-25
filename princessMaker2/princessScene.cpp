@@ -88,6 +88,20 @@ HRESULT princessScene::init()
 
 	_cookStore = new cookStore;
 	//_cookStore->init();
+
+	_goodsStore = new goodsStore;
+	//_goodsStore->init();
+
+	_church = new church;
+	//_church->init();
+
+	_hospital = new hospital;
+	//_hospital->init();
+
+	_castleScene = new castleScene;
+
+	_inventoryScene = new inventoryScene;
+
 	return S_OK;
 }
 
@@ -127,9 +141,11 @@ void princessScene::update()
 						break;
 					case 5:
 						_menuType = SELECT_CASTLE;
+						_castleScene->init();
 						break;
 					case 6:
 						_menuType = SELECT_WEAPON;
+						_inventoryScene->init();
 						break;
 					case 7:
 						_menuType = SELECT_SAVE;
@@ -190,12 +206,33 @@ void princessScene::update()
 				_storeType = STORE_SELECT;
 			break;
 		case STORE_GOODS:
+			_goodsStore->update();
+			if (_goodsStore->getFin())
+				_storeType = STORE_SELECT;
 			break;
 		case STORE_CHURCH:
+			_church->update();
+			if (_church->getFin())
+				_storeType = STORE_SELECT;
 			break;
 		case STORE_HOSTIPITAL:
+			_hospital->update();
+			if (_hospital->getFin())
+				_storeType = STORE_SELECT;
 			break;
 		}
+	}
+	else if (_menuType == SELECT_CASTLE)
+	{
+		_castleScene->update();
+		if (_castleScene->getFin())
+			_menuType = SELECT_NONE;
+	}
+	else if (_menuType == SELECT_WEAPON)
+	{
+		_inventoryScene->update();
+		if (_inventoryScene->getFin())
+			_menuType = SELECT_NONE;
 	}
 }
 
@@ -268,16 +305,23 @@ void princessScene::render()
 			_cookStore->render();
 			break;
 		case STORE_GOODS:
+			_goodsStore->render();
 			break;
 		case STORE_CHURCH:
+			_church->render();
 			break;
 		case STORE_HOSTIPITAL:
+			_hospital->render();
 			break;
 		}
 		break;
 	case SELECT_CASTLE:
+		IMAGEMANAGER->findImage("storeFrame")->render(DC, 32, 113);
+		IMAGEMANAGER->findImage("castlePicture")->render(DC, 52, 123);
+		_castleScene->render();
 		break;
 	case SELECT_WEAPON:
+		_inventoryScene->render();
 		break;
 	case SELECT_SAVE:
 		break;
@@ -841,12 +885,18 @@ void princessScene::clickStore()
 					break;
 					case 3:
 						_storeType = STORE_GOODS;
+						_goodsStore->init();
+						_goodsStore->setFin(false);
 					break;
 					case 4:
 						_storeType = STORE_CHURCH;
+						_church->init();
+						_church->setFin(false);
 					break;
 					case 5:
 						_storeType = STORE_HOSTIPITAL;
+						_hospital->init();
+						_hospital->setFin(false);
 					break;
 					case 6:
 						_menuType = SELECT_NONE;

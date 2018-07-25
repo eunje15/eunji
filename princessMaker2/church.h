@@ -3,33 +3,32 @@
 #include "item.h"
 #include "data.h"
 
-enum COOK_TYPE { COOK_FIN, COOK_SELECT, COOK_CLICK, COOK_NONE };
+class princess;
 
-
-class cookStore : public gameNode
-{
+enum CHURCH_TYPE { CHURCH_FIN, CHURCH_SELECT, CHURCH_NO_SELECT, CHURCH_NONE };
+class church : public gameNode
+{	
 private:
-	vector<item*> _vItem;
 	tagImg	_npc;
 	vector<string> _vDialog;
 	int _dialogIdx;
-	COOK_TYPE _type;
+	CHURCH_TYPE _type;
 	DIALOG_TYPE _dialogType;
-	tagString _chooseBox[2], _buyBox[3];
-	tagImg _itemImg[3];
-	tagImg _quitImg;
-	bool _fin, _selectItem;
+	tagString _chooseBox[2];
+	tagProgress _pKarma;
+	bool _fin;
+	
+	princess* _princess;
 
 public:
-	cookStore();
-	~cookStore();
+	church();
+	~church();
 
 	HRESULT init();
 	void update();
 	void render();
 	void release();
 
-	void setItem();
 	void setDialog(string dialog);
 	bool dialogRender();
 

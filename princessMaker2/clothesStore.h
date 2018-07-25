@@ -3,7 +3,7 @@
 #include "item.h"
 #include "data.h"
 
-enum CLOTHES_DIALOG_TYPE { CLOTHES_DIALOG_FIN, CLOTHES_DIALOG_SELECT, CLOTHES_DIALOG_CLICK, CLOTHES_DIALOG_NONE };
+enum CLOTHES_TYPE { CLOTHES_FIN, CLOTHES_SELECT, CLOTHES_CLICK, CLOTHES_NONE };
 
 class clothesStore : public gameNode
 {
@@ -12,7 +12,8 @@ private:
 	tagImg	_npc;
 	vector<string> _vDialog;
 	int _dialogIdx;
-	CLOTHES_DIALOG_TYPE _dialogType;
+	CLOTHES_TYPE _type;
+	DIALOG_TYPE _dialogType;
 	tagString _chooseBox[2], _buyBox[3];
 	tagImg _itemImg[6];
 	tagImg _quitImg;

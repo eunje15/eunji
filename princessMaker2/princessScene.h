@@ -5,6 +5,11 @@
 #include "weaponStore.h"
 #include "clothesStore.h"
 #include "cookStore.h"
+#include "goodsStore.h"
+#include "church.h"
+#include "hospital.h"
+#include "castleScene.h"
+#include "inventoryScene.h"
 
 enum SEASON_TYPE { SPRING, SUMMER, AUTUMN, WINTER };
 enum MENU_TYPE { SELECT_NONE, SELECT_STATUS, SELECT_TALK, SELECT_CHANGE_INFO, SELECT_INFO,
@@ -37,6 +42,12 @@ private:
 	weaponStore* _weaponStore;
 	clothesStore* _clothesStore;
 	cookStore* _cookStore;
+	goodsStore* _goodsStore;
+	church*	_church;
+	hospital* _hospital;
+
+	castleScene* _castleScene;
+	inventoryScene* _inventoryScene;
 
 public:
 	princessScene();

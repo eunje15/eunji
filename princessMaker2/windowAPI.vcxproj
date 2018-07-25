@@ -150,6 +150,8 @@
   <ItemGroup>
     <ClInclude Include="animation.h" />
     <ClInclude Include="button.h" />
+    <ClInclude Include="castleScene.h" />
+    <ClInclude Include="church.h" />
     <ClInclude Include="clothesStore.h" />
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="cookStore.h" />
@@ -160,10 +162,14 @@
     <ClInclude Include="effect.h" />
     <ClInclude Include="effectManager.h" />
     <ClInclude Include="gameNode.h" />
+    <ClInclude Include="goodsStore.h" />
+    <ClInclude Include="hospital.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="imageManager.h" />
     <ClInclude Include="iniDataManager.h" />
+    <ClInclude Include="inventoryScene.h" />
     <ClInclude Include="item.h" />
+    <ClInclude Include="itemManager.h" />
     <ClInclude Include="keyAniManager.h" />
     <ClInclude Include="keyManager.h" />
     <ClInclude Include="playGround.h" />
@@ -187,6 +193,8 @@
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="castleScene.cpp" />
+    <ClCompile Include="church.cpp" />
     <ClCompile Include="clothesStore.cpp" />
     <ClCompile Include="cookStore.cpp" />
     <ClCompile Include="cube.cpp" />
@@ -195,10 +203,14 @@
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effectManager.cpp" />
     <ClCompile Include="gameNode.cpp" />
+    <ClCompile Include="goodsStore.cpp" />
+    <ClCompile Include="hospital.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageManager.cpp" />
     <ClCompile Include="iniDataManager.cpp" />
+    <ClCompile Include="inventoryScene.cpp" />
     <ClCompile Include="item.cpp" />
+    <ClCompile Include="itemManager.cpp" />
     <ClCompile Include="keyAniManager.cpp" />
     <ClCompile Include="keyManager.cpp" />
     <ClCompile Include="playGround.cpp" />

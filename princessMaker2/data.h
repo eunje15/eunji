@@ -93,4 +93,6 @@ struct tagProgress
 	RECT strRc, dataRc;
 };
 
+enum DIALOG_TYPE { DIALOG_ING, DIALOG_FIN };
+
 #endif

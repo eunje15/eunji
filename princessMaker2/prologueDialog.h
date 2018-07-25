@@ -3,8 +3,8 @@
 #include "princess.h"
 
 enum SCENE_TYPE { SCENE_PROLOGUE, SCENE_WAR, SCENE_PRINCESS };
-enum DIALOG_TYPE { DIALOG_DEVIL, DIALOG_KING, DIALOG_GOD, DIALOG_NONE };
-enum DIALOG_PROGRESS { DIALOG_START, DIALOG_ING, DIALOG_FIN, FRAME_START, FRAME_FIN };
+enum PRO_DIALOG_TYPE { PRO_DIALOG_DEVIL, PRO_DIALOG_KING, PRO_DIALOG_GOD, PRO_DIALOG_NONE };
+enum PRO_DIALOG_PROGRESS { PRO_DIALOG_START, PRO_DIALOG_ING, PRO_DIALOG_FIN, PRO_FRAME_START, PRO_FRAME_FIN };
 class prologueDialog :	public gameNode
 {
 private:
@@ -12,8 +12,8 @@ private:
 
 	float _loop;
 	SCENE_TYPE _scene;
-	DIALOG_TYPE _whoDialog;
-	DIALOG_PROGRESS _progress;
+	PRO_DIALOG_TYPE _whoDialog;
+	PRO_DIALOG_PROGRESS _progress;
 
 	int _frameY, _count, _strCount;
 	bool _isRender;

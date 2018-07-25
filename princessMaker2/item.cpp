@@ -29,7 +29,7 @@ void item::release()
 {
 }
 
-void item::setItem(string name, int price, vector<pair<string, int>> property, int type, int frameX, int frameY)
+void item::setItem(string name, int price, vector<pair<string, float>> property, int type, int frameX, int frameY)
 {
 	_name = name;
 	_price = price;

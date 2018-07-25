@@ -3,26 +3,25 @@
 #include "item.h"
 #include "data.h"
 
-enum COOK_TYPE { COOK_FIN, COOK_SELECT, COOK_CLICK, COOK_NONE };
+enum GOODS_TYPE { GOODS_FIN, GOODS_SELECT, GOODS_CLICK, GOODS_NONE };
 
-
-class cookStore : public gameNode
+class goodsStore : public gameNode
 {
 private:
 	vector<item*> _vItem;
 	tagImg	_npc;
 	vector<string> _vDialog;
 	int _dialogIdx;
-	COOK_TYPE _type;
+	GOODS_TYPE _type;
 	DIALOG_TYPE _dialogType;
-	tagString _chooseBox[2], _buyBox[3];
-	tagImg _itemImg[3];
+	tagString _chooseBox[3], _buyBox[3];
+	tagImg _itemImg[6];
 	tagImg _quitImg;
 	bool _fin, _selectItem;
 
 public:
-	cookStore();
-	~cookStore();
+	goodsStore();
+	~goodsStore();
 
 	HRESULT init();
 	void update();

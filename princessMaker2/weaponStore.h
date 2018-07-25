@@ -3,7 +3,7 @@
 #include "item.h"
 #include "data.h"
 
-enum WEAPON_DIALOG_TYPE { WEAPON_DIALOG_FIN, WEAPON_DIALOG_SELECT, WEAPON_DIALOG_CLICK, WEAPON_DIALOG_NONE };
+enum WEAPON_TYPE { WEAPON_FIN, WEAPON_SELECT, WEAPON_CLICK, WEAPON_NONE };
 
 class weaponStore : public gameNode
 {
@@ -12,7 +12,8 @@ private:
 	tagImg	_npc;
 	vector<string> _vDialog;
 	int _dialogIdx;
-	WEAPON_DIALOG_TYPE _dialogType;
+	WEAPON_TYPE _type;
+	DIALOG_TYPE _dialogType;
 	tagString _chooseBox[2], _buyBox[3];
 	tagImg _itemImg[12];
 	tagImg _quitImg;
