@@ -40,6 +40,14 @@ void inventoryScene::update()
 			_chooseBox[i].frameX = 1;
 		}
 	}
+	for (int i = 0; i < _vInvenImg.size(); i++)
+	{
+		_vInvenImg[i].frameX = 0;
+		if (PtInRect(&_vInvenImg[i].data.rc, _ptMouse))
+		{
+			_vInvenImg[i].frameX = 1;
+		}
+	}
 }
 
 void inventoryScene::render()
@@ -52,6 +60,26 @@ void inventoryScene::render()
 		_chooseBox[i].img->frameRender(DC, _chooseBox[i].data.rc.left, _chooseBox[i].data.rc.top, _chooseBox[i].frameX, 0);
 		TextOut(DC, _chooseBox[i].data.rc.left + 20, _chooseBox[i].data.rc.top + 12, _chooseBox[i].data.str.c_str(), strlen(_chooseBox[i].data.str.c_str()));
 	}
+
+	for (int i = 0; i < _vInvenImg.size(); i++)
+	{
+		_vInvenImg[i].img->frameRender(DC, _vInvenImg[i].data.rc.left, _vInvenImg[i].data.rc.top, _vInvenImg[i].frameX, 0);
+		_vInven[i]->render();
+		TextOut(DC, _vInven[i]->getX() + 45, _vInven[i]->getY() + 5, _vInven[i]->getName().c_str(), strlen(_vInven[i]->getName().c_str()));
+		string gold = to_string(_vInven[i]->getPrice()) + "G";
+		TextOut(DC, _vInven[i]->getX() + 45, _vInven[i]->getY() + 25, gold.c_str(), strlen(gold.c_str()));
+
+		vector<pair<string, float>> vTemp = _vInven[i]->getProperty();
+		for (int j = 0; j < vTemp.size(); j++)
+		{
+			TextOut(DC, _vInven[i]->getX() + j * 80, _vInven[i]->getY() + 45, vTemp[j].first.c_str(), strlen(vTemp[j].first.c_str()));
+			if (vTemp[j].second > 0)
+				TextOut(DC, _vInven[i]->getX() + vTemp[j].first.size() * 8 + j * 80, _vInven[i]->getY() + 45, "+", strlen("+"));
+			char stat[128];
+			sprintf_s(stat, "%d", (int)vTemp[j].second);
+			TextOut(DC, _vInven[i]->getX() + vTemp[j].first.size() * 8 + 10 + j * 80, _vInven[i]->getY() + 45, stat, strlen(stat));
+		}
+	}
 }
 
 void inventoryScene::release()
@@ -61,6 +89,7 @@ void inventoryScene::release()
 void inventoryScene::setItem()
 {
 	_vInven = _princess->getVItem();
+	_vInvenImg.resize(_vInven.size());
 
 	for (int i = 0; i < _vInven.size(); i++)
 	{

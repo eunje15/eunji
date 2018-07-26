@@ -29,10 +29,11 @@ void item::release()
 {
 }
 
-void item::setItem(string name, int price, vector<pair<string, float>> property, int type, int frameX, int frameY)
+void item::setItem(string name, int price, bool isStore, vector<pair<string, float>> property, int type, int frameX, int frameY)
 {
 	_name = name;
 	_price = price;
+	_isStore = isStore;
 	_property = property;
 	_type = (ITEM_TYPE)type;
 	_frameX = frameX;
@@ -54,6 +55,7 @@ void item::setImage()
 		_img = IMAGEMANAGER->findImage("cook");
 	break;
 	case ITEM_GOODS:
+		_img = IMAGEMANAGER->findImage("goods");
 		break;
 	}
 }

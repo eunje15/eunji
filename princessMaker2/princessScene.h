@@ -10,6 +10,8 @@
 #include "hospital.h"
 #include "castleScene.h"
 #include "inventoryScene.h"
+#include "itemManager.h"
+#include "saveLoadScene.h"
 
 enum SEASON_TYPE { SPRING, SUMMER, AUTUMN, WINTER };
 enum MENU_TYPE { SELECT_NONE, SELECT_STATUS, SELECT_TALK, SELECT_CHANGE_INFO, SELECT_INFO,
@@ -32,11 +34,12 @@ private:
 	RECT _nameRc, _firstNameRc;
 	tagString _strStatus[4], _printStrStatus;
 	tagProgress _pInfo[10], _p4Stat[4], _pSkill[6], _pBasicStat[6];
+	tagProgressFloat _pBodyInfo[5];
 	tagString _dadTalk[3], _changeInfo[4], _dialog[4], _chooseAnswer[2];
 	bool _dialogSelect, _isClick;
 	cube* _cube;
 	vector<string> _vDialog;
-	tagImg _store[7];
+	tagImg _store[7], _goldImg[7], _bodyInfo[5][3];
 	string _storeDialog;
 
 	weaponStore* _weaponStore;
@@ -48,6 +51,9 @@ private:
 
 	castleScene* _castleScene;
 	inventoryScene* _inventoryScene;
+	saveLoadScene* _saveLoadScene;
+
+	itemManager* _im;
 
 public:
 	princessScene();
@@ -61,6 +67,8 @@ public:
 	void changeInfo();
 	void infoRender();
 	void statusRender();
+	void setGoldImg();
+	void setBodyInfo();
 	void dadTalkRender();
 	void changeInfoRender();
 	void release();

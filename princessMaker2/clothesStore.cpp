@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "clothesStore.h"
-
+#include "princess.h"
 
 clothesStore::clothesStore()
 {
@@ -11,13 +11,16 @@ clothesStore::~clothesStore()
 {
 }
 
-HRESULT clothesStore::init()
+HRESULT clothesStore::init(vector<item*> vItem)
 {
-	setItem();
+	_princess = SCENEMANAGER->getPrincessAddress();
+
+	setItem(vItem);
 	_npc.img = IMAGEMANAGER->findImage("peopleFace");
 	_npc.frameX = 7, _npc.frameY = 1;
 	setDialog("「어서오세요.  아가씨에게 어울리는 멋진 옷 한벌 어떠신가요?」");
 	_dialogIdx = 0;
+	_dialogType = DIALOG_ING;
 	_type = CLOTHES_NONE;
 	_fin = false;
 
@@ -132,7 +135,28 @@ void clothesStore::update()
 				{
 					if (i == 0)
 					{
-						//플레이어랑 연동시켜야해~
+						if (_princess->setItem(_vItem[_selectNumber]))
+						{
+							_princess->setGold(_vItem[_selectNumber]->getPrice());
+							string str = "「감사합니다.」";
+							setDialog(str);
+							_type = CLOTHES_SELECT;
+							_dialogIdx = 0;
+							_dialogType = DIALOG_FIN;
+							for (int i = 0; i < 12; i++)
+							{
+								_itemImg[i].data.isChoose = _itemImg[i].data.isSelected = false;
+							}
+							_selectItem = false;
+						}
+						else
+						{
+							string str = "「인벤토리창이 꽉 차서 물건을 구입할 수 없습니다.」";
+							setDialog(str);
+							_type = CLOTHES_NONE;
+							_dialogIdx = 0;
+							_dialogType = DIALOG_ING;
+						}
 					}
 					else if (i == 1)
 					{
@@ -234,25 +258,12 @@ void clothesStore::release()
 {
 }
 
-void clothesStore::setItem()
+void clothesStore::setItem(vector<item*> vItem)
 {
-	vector<string> vStr = TXTDATA->txtLoadCsv("dialog/clothes.csv");
-	int idx = 0;
-	for (int i = 0; i < vStr.size(); i++)
+	for (int i = 0; i < vItem.size(); i++)
 	{
-		char str[100000];
-		strcpy(str, vStr[i].c_str());
-		vector<string> temp = TXTDATA->charArraySeparation(str);
-		item* tItem = new item;
-		vector<pair<string, float>> property;
-		if (temp[2] == "X") continue;
-		for (int j = 3; j < temp.size() - 1; j += 2)
-		{
-			property.push_back(make_pair(temp[j], atoi(temp[j + 1].c_str())));
-		}
-		tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 2, i, 0);
-		_vItem.push_back(tItem);
-		//	idx++;
+		if (!vItem[i]->getIsStore()) continue;
+		_vItem.push_back(vItem[i]);
 	}
 }
 

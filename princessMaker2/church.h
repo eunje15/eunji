@@ -16,7 +16,7 @@ private:
 	DIALOG_TYPE _dialogType;
 	tagString _chooseBox[2];
 	tagProgress _pKarma;
-	bool _fin;
+	bool _fin,_haveMoney;
 	
 	princess* _princess;
 

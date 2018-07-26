@@ -26,6 +26,8 @@ struct tagInfo
 	string strBlood;
 };
 
+
+
 struct tagGod
 {
 	string planet;
@@ -67,6 +69,15 @@ struct tagStatus
 	string plusNorth;		//¹«½Å
 };
 
+struct tagBody
+{
+	float height;
+	float weight;
+	float bast;
+	float waist;
+	float hip;
+};
+
 
 
 struct tagString
@@ -89,6 +100,14 @@ struct tagProgress
 {
 	string str;
 	int data;
+	progressBar* progressBar;
+	RECT strRc, dataRc;
+};
+
+struct tagProgressFloat
+{
+	string str;
+	float data;
 	progressBar* progressBar;
 	RECT strRc, dataRc;
 };

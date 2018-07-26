@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "weaponStore.h"
+#include "princess.h"
 
 
 weaponStore::weaponStore()
@@ -11,13 +12,16 @@ weaponStore::~weaponStore()
 {
 }
 
-HRESULT weaponStore::init()
+HRESULT weaponStore::init(vector<item*> vWeapon, vector<item*> vArmor)
 {
-	setItem();
+	_princess = SCENEMANAGER->getPrincessAddress();
+
+	setItem(vWeapon, vArmor);
 	_npc.img = IMAGEMANAGER->findImage("peopleFace");
 	_npc.frameX = 6, _npc.frameY = 1;
 	setDialog("「어서오세요. 무기도 방어구도 좋은 것들만 모여 있습니다」");
 	_dialogIdx = 0;
+	_dialogType = DIALOG_ING;
 	_type = WEAPON_NONE;
 	_fin = false;
 
@@ -35,7 +39,7 @@ HRESULT weaponStore::init()
 		{
 			_itemImg[i * 4 + j].img = new image;
 			_itemImg[i * 4 + j].img->init("image/item/itemDialog(380x76,2x1).bmp", 380, 76, 2, 1, true, RGB(255, 0, 255));
-			_itemImg[i * 4 + j].data.rc = RectMake(20 + j*190, 445 + i*76, 190, 76);
+			_itemImg[i * 4 + j].data.rc = RectMake(20 + j*190, 521 - i*76, 190, 76);
 		}
 	}
 
@@ -104,6 +108,7 @@ void weaponStore::update()
 					_itemImg[i].data.isChoose = false;
 					if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 					{
+						_selectNumber = i;
 						_selectItem = true;
 						_itemImg[i].data.isChoose = true;
 						_itemImg[i].frameX = 0;
@@ -137,7 +142,28 @@ void weaponStore::update()
 				{
 					if (i == 0)
 					{
-						//플레이어랑 연동시켜야해~
+						if (_princess->setItem(_vItem[_selectNumber]))
+						{
+							_princess->setGold(_vItem[_selectNumber]->getPrice());
+							string str = "「감사합니다.」";
+							setDialog(str);
+							_type = WEAPON_SELECT;
+							_dialogIdx = 0;
+							_dialogType = DIALOG_FIN;
+							for (int i = 0; i < 12; i++)
+							{
+								_itemImg[i].data.isChoose = _itemImg[i].data.isSelected = false;
+							}
+							_selectItem = false;
+						}
+						else
+						{
+							string str = "「인벤토리창이 꽉 차서 물건을 구입할 수 없습니다.」";
+							setDialog(str);
+							_type = WEAPON_NONE;
+							_dialogIdx = 0;
+							_dialogType = DIALOG_ING;
+						}
 					}
 					else if (i == 1)
 					{
@@ -238,28 +264,17 @@ void weaponStore::release()
 {
 }
 
-void weaponStore::setItem()
+void weaponStore::setItem(vector<item*> vWeapon, vector<item*> vArmor)
 {
-	vector<string> vStr = TXTDATA->txtLoadCsv("dialog/weapon2.csv");
-	int idx = 0;
-	for (int i = 0; i < vStr.size(); i++)
+	for (int i = 0; i < vWeapon.size(); i++)
 	{
-		char str[100000];
-		strcpy(str, vStr[i].c_str());
-		vector<string> temp = TXTDATA->charArraySeparation(str);
-		item* tItem = new item;
-		vector<pair<string, float>> property;
-		if (temp[2] == "X") continue;
-		for (int j = 3; j < temp.size() - 1; j += 2)
-		{
-			property.push_back(make_pair(temp[j], atoi(temp[j + 1].c_str())));
-		}
-			if (i < 10)
-				tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 0, i, 0);
-			else
-				tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 1, i, 0);
-			_vItem.push_back(tItem);
-		//	idx++;
+		if (!vWeapon[i]->getIsStore()) continue;
+		_vItem.push_back(vWeapon[i]);
+	}
+	for (int i = 0; i < vArmor.size(); i++)
+	{
+		if (!vArmor[i]->getIsStore()) continue;
+		_vItem.push_back(vArmor[i]);
 	}
 }
 

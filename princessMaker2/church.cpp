@@ -39,6 +39,8 @@ HRESULT church::init()
 	_pKarma.progressBar->init(620, 340, 110, 20);
 	_pKarma.progressBar->setGauge(_pKarma.data, 500);
 
+	_haveMoney = false;
+
 	return S_OK;
 }
 
@@ -59,7 +61,14 @@ void church::update()
 				{
 					if (i == 0)
 					{
-						string str = "「감사합니다.당신들 부녀에게 신의 은총이 함께하기를」";
+						string str;
+						if (_princess->getGold() >= 100)
+						{
+							str = "「감사합니다.당신들 부녀에게 신의 은총이 함께하기를」";
+							_haveMoney = true;
+						}
+						else
+							str = "「돈이 없습니다」";
 						setDialog(str);
 						_type = CHURCH_SELECT;
 						_dialogIdx = 0;
@@ -118,6 +127,7 @@ void church::render()
 			}
 			break;
 		case CHURCH_SELECT:
+			if (!_haveMoney) break;
 			IMAGEMANAGER->findImage("progress1Back")->render(DC, 500, 330);
 			HBRUSH brush, oldBrush;
 			brush = CreateSolidBrush(RGB(111, 17, 17));

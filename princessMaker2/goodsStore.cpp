@@ -11,13 +11,14 @@ goodsStore::~goodsStore()
 {
 }
 
-HRESULT goodsStore::init()
+HRESULT goodsStore::init(vector<item*> vItem)
 {
-	setItem();
+	setItem(vItem);
 	_npc.img = IMAGEMANAGER->findImage("peopleFace");
 	_npc.frameX = 8, _npc.frameY = 1;
 	setDialog("「예, 이곳은 잡화점 입니다」");
 	_dialogIdx = 0;
+	_dialogType = DIALOG_ING;
 	_type = GOODS_NONE;
 	_fin = false;
 
@@ -237,25 +238,12 @@ void goodsStore::release()
 {
 }
 
-void goodsStore::setItem()
+void goodsStore::setItem(vector<item*> vItem)
 {
-	vector<string> vStr = TXTDATA->txtLoadCsv("dialog/goods.csv");
-	int idx = 0;
-	for (int i = 0; i < vStr.size(); i++)
+	for (int i = 0; i < vItem.size(); i++)
 	{
-		char str[100000];
-		strcpy(str, vStr[i].c_str());
-		vector<string> temp = TXTDATA->charArraySeparation(str);
-		item* tItem = new item;
-		vector<pair<string, float>> property;
-		if (temp[2] == "X") continue;
-		for (int j = 3; j < temp.size() - 1; j += 2)
-		{
-			property.push_back(make_pair(temp[j], atoi(temp[j + 1].c_str())));
-		}
-		tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 2, i, 0);
-		_vItem.push_back(tItem);
-		//	idx++;
+		if (!vItem[i]->getIsStore()) continue;
+		_vItem.push_back(vItem[i]);
 	}
 }
 

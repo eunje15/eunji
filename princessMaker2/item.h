@@ -13,7 +13,7 @@ private:
 	vector<pair<string, float>> _property;
 	bool _isWear;
 	float _x, _y;
-
+	bool _isStore;
 public:
 	item();
 	~item();
@@ -23,7 +23,7 @@ public:
 	void render();
 	void release();
 
-	void setItem(string name, int price, vector<pair<string, float>> property, int type, int frameX, int frameY);
+	void setItem(string name, int price, bool isStore, vector<pair<string, float>> property, int type, int frameX, int frameY);
 	void setImage();
 	void setXY(float x, float y);
 	float getX() { return _x; }
@@ -32,5 +32,6 @@ public:
 	string getName() { return _name; }
 	int getPrice() { return _price; }
 	vector<pair<string, float>> getProperty() { return _property; }
+	bool getIsStore() { return _isStore; }
 };
 

@@ -13,13 +13,23 @@ princess::~princess()
 
 HRESULT princess::init()
 {
+	//임시로 넣어놓음
 	_info.firstName = "윤";
 	_info.name = "딸래미";
 	_info.year = 1200, _info.mon = 2, _info.day = 28;
 	_info.blood = BLOOD_A;
 	_info.strBlood = "A";
 	_info.age = _age = 11;
+
+	_bodyInfo.height = 149.16;
+	_bodyInfo.weight = 41.90;
+	_bodyInfo.bast = 74.57;
+	_bodyInfo.waist = 55.82;
+	_bodyInfo.hip = 77.71;
+	//여기까지 임시로
+
 	setStatus();
+
 	char str[128];
 	sprintf_s(str, "body%d", _age);
 	_body.img = IMAGEMANAGER->findImage(str);
@@ -31,7 +41,7 @@ HRESULT princess::init()
 	_face.x = 80;
 	_face.y = _body.y - _face.img->getFrameHeight() + 1;
 
-	_gold = 1000;
+	_gold = 1000000;
 
 	return S_OK;
 }
@@ -163,4 +173,10 @@ void princess::setStress(int stress)
 {
 	_status.stress -= stress; 
 	if (_status.stress < 0) _status.stress = 0;
+}
+
+bool princess::setItem(item * newItem)
+{
+	if (_vInven.size() > 50) return false;
+	_vInven.push_back(newItem);
 }

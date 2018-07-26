@@ -8,6 +8,7 @@ class princess : public gameNode
 private:
 	tagInfo _info;
 	tagStatus _status;
+	tagBody _bodyInfo;
 	string _dadName;
 	tagImg _face, _body;
 	vector<item*> _vInven;
@@ -28,13 +29,16 @@ public:
 	void setDadName(string dadName) { _dadName = dadName; }
 	tagInfo getInfo() { return _info; }
 	tagStatus getStatus() { return _status; }
+	tagBody getBodyInfo() { return _bodyInfo; }
 	string getDadName() { return _dadName; }
 
-	void setGold(int gold) { _gold = gold; }
+	void setGold(int gold) { _gold -= gold; }
 	int getGold() { return _gold; }
 
 	void setStress(int stress);
 
 	vector<item*> getVItem() { return _vInven; }
+
+	bool setItem(item* newItem);
 };
 

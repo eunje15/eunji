@@ -23,12 +23,12 @@ public:
 	goodsStore();
 	~goodsStore();
 
-	HRESULT init();
+	HRESULT init(vector<item*> vItem);
 	void update();
 	void render();
 	void release();
 
-	void setItem();
+	void setItem(vector<item*> vItem);
 	void setDialog(string dialog);
 	bool dialogRender();
 

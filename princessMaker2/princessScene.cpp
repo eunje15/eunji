@@ -15,6 +15,9 @@ HRESULT princessScene::init()
 {
 	_princess = SCENEMANAGER->getPrincessAddress();
 
+	_im = new itemManager;
+	_im->init();
+
 	_back = IMAGEMANAGER->findImage("back");
 	_cal.img = IMAGEMANAGER->findImage("cal");
 	_cal.x = _cal.y = 0;
@@ -77,11 +80,15 @@ HRESULT princessScene::init()
 
 	_perHealth = _perBad = _personalConnect = 0;
 
+	setGoldImg();
+	setBodyInfo();
+
 	_cube = new cube;
 	_cube->init();
 
 	_weaponStore = new weaponStore;
 	//_weaponStore->init();
+	
 
 	_clothesStore = new clothesStore;
 	//_clothesStore->init();
@@ -101,6 +108,8 @@ HRESULT princessScene::init()
 	_castleScene = new castleScene;
 
 	_inventoryScene = new inventoryScene;
+
+	_saveLoadScene = new saveLoadScene;
 
 	return S_OK;
 }
@@ -149,6 +158,7 @@ void princessScene::update()
 						break;
 					case 7:
 						_menuType = SELECT_SAVE;
+						_saveLoadScene->init();
 						break;
 					case 8:
 						_menuType = SELECT_SCHEDULE;
@@ -192,31 +202,37 @@ void princessScene::update()
 			break;
 		case STORE_WEAPON:
 			_weaponStore->update();
+			setGoldImg();
 			if (_weaponStore->getFin())
 				_storeType = STORE_SELECT;
 			break;
 		case STORE_ARMOR:
 			_clothesStore->update();
+			setGoldImg();
 			if (_clothesStore->getFin())
 				_storeType = STORE_SELECT;
 			break;
 		case STORE_COOK:
 			_cookStore->update();
+			setGoldImg();
 			if (_cookStore->getFin())
 				_storeType = STORE_SELECT;
 			break;
 		case STORE_GOODS:
 			_goodsStore->update();
+			setGoldImg();
 			if (_goodsStore->getFin())
 				_storeType = STORE_SELECT;
 			break;
 		case STORE_CHURCH:
 			_church->update();
+			setGoldImg();
 			if (_church->getFin())
 				_storeType = STORE_SELECT;
 			break;
 		case STORE_HOSTIPITAL:
 			_hospital->update();
+			setGoldImg();
 			if (_hospital->getFin())
 				_storeType = STORE_SELECT;
 			break;
@@ -232,6 +248,12 @@ void princessScene::update()
 	{
 		_inventoryScene->update();
 		if (_inventoryScene->getFin())
+			_menuType = SELECT_NONE;
+	}
+	else if (_menuType == SELECT_SAVE)
+	{
+		_saveLoadScene->update();
+		if (_saveLoadScene->getFin())
 			_menuType = SELECT_NONE;
 	}
 }
@@ -256,6 +278,21 @@ void princessScene::render()
 	IMAGEMANAGER->findImage("number")->frameRender(DC, 615, 80, 1, 0);
 	IMAGEMANAGER->findImage("number")->frameRender(DC, 630, 80, _princess->getInfo().age % 10, 0);
 	_constellationImg.img->frameRender(DC, 650, 70, _constellationImg.frameX, 0);
+	for (int i = 0; i < 7; i++)
+	{
+		if (!_goldImg[i].data.isSelected) continue;
+		_goldImg[i].img->frameRender(DC, _goldImg[i].data.rc.left, _goldImg[i].data.rc.top, _goldImg[i].frameX, 0);
+	}
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			//Rectangle(DC, _bodyInfo[i][j].data.rc.left, _bodyInfo[i][j].data.rc.top, _bodyInfo[i][j].data.rc.right, _bodyInfo[i][j].data.rc.bottom);
+			if (!_bodyInfo[i][j].data.isSelected) continue;
+			_bodyInfo[i][j].img->frameRender(DC, _bodyInfo[i][j].data.rc.left, _bodyInfo[i][j].data.rc.top, _bodyInfo[i][j].frameX, 0);
+
+		}
+	}
 	
 	switch (_menuType)
 	{
@@ -324,6 +361,7 @@ void princessScene::render()
 		_inventoryScene->render();
 		break;
 	case SELECT_SAVE:
+		_saveLoadScene->render();
 		break;
 	case SELECT_SCHEDULE:
 		break;
@@ -530,11 +568,31 @@ void princessScene::infoRender()
 	TextOut(DC, 40, 440, str1.c_str(), strlen(str1.c_str()));
 
 	//info3
-	TextOut(DC, WINSIZEX - 250, 300, "Å°", strlen("Å°"));
+	/*TextOut(DC, WINSIZEX - 250, 300, "Å°", strlen("Å°"));
 	TextOut(DC, WINSIZEX - 250, 320, "¸ö¹«°Ô", strlen("¸ö¹«°Ô"));
 	TextOut(DC, WINSIZEX - 250, 340, "°¡½¿", strlen("°¡½¿"));
 	TextOut(DC, WINSIZEX - 250, 360, "Çã¸®", strlen("Çã¸®"));
-	TextOut(DC, WINSIZEX - 250, 380, "¾ûµ¢ÀÌ", strlen("¾ûµ¢ÀÌ"));
+	TextOut(DC, WINSIZEX - 250, 380, "¾ûµ¢ÀÌ", strlen("¾ûµ¢ÀÌ"));*/
+	for (int i = 0; i < 5; i++)
+	{
+		HBRUSH brush, oldBrush;
+		brush = CreateSolidBrush(RGB(111, 17, 17));
+		oldBrush = (HBRUSH)SelectObject(DC, brush);
+		FillRect(DC, &_pBodyInfo[i].strRc, brush);
+		Rectangle(DC, _pBodyInfo[i].strRc.left, _pBodyInfo[i].strRc.top, _pBodyInfo[i].strRc.right, _pBodyInfo[i].strRc.bottom);
+		TextOut(DC, _pBodyInfo[i].strRc.left, _pBodyInfo[i].strRc.top + 2, _pBodyInfo[i].str.c_str(), strlen(_pBodyInfo[i].str.c_str()));
+		SelectObject(DC, oldBrush);
+		DeleteObject(brush);
+		brush = CreateSolidBrush(RGB(0, 0, 0));
+		oldBrush = (HBRUSH)SelectObject(DC, brush);
+		Rectangle(DC, _pBodyInfo[i].dataRc.left, _pBodyInfo[i].dataRc.top, _pBodyInfo[i].dataRc.right, _pBodyInfo[i].dataRc.bottom);
+		char str[128];
+		sprintf_s(str, "%6.2f", _pBodyInfo[i].data);
+		TextOut(DC, _pBodyInfo[i].dataRc.left, _pBodyInfo[i].dataRc.top + 2, str, strlen(str));
+		SelectObject(DC, oldBrush);
+		DeleteObject(brush);
+		_pBodyInfo[i].progressBar->render();
+	}
 
 	//info4
 	TextOut(DC, WINSIZEX - 270, 425, "¹«±â", strlen("¹«±â"));
@@ -612,6 +670,69 @@ void princessScene::statusRender()
 		SelectObject(DC, oldBrush);
 		DeleteObject(brush);
 	}
+}
+
+void princessScene::setGoldImg()
+{
+	int gold = _princess->getGold();
+
+	for (int i = 0; i < 7; i++)
+	{
+		_goldImg[i].img = IMAGEMANAGER->findImage("number");
+		_goldImg[i].frameX = gold % 10;
+		_goldImg[i].data.isSelected = true;
+		_goldImg[i].data.rc = RectMake(760 - i*10,88,10,20);
+		if ((gold = gold / 10) == 0) break;
+	}
+}
+
+void princessScene::setBodyInfo()
+{
+	tagBody bodyInfo = _princess->getBodyInfo();
+
+	for (int i = 0; i < 5; i++)
+	{
+		int idx;
+
+		if (i == 0) idx = bodyInfo.height;
+		else if (i == 1) idx = bodyInfo.weight;
+		else if (i == 2) idx = bodyInfo.bast;
+		else if (i == 3) idx = bodyInfo.waist;
+		else if (i == 4) idx = bodyInfo.hip;
+
+		for (int j = 0; j < 3; j++)
+		{
+			_bodyInfo[i][j].img = IMAGEMANAGER->findImage("number");
+			_bodyInfo[i][j].frameX = idx % 10;
+			_bodyInfo[i][j].data.isSelected = true;
+			if(i < 3)
+				_bodyInfo[i][j].data.rc = RectMake(630 - (j)*10 + i*34, 189, 10, 20);
+			else
+				_bodyInfo[i][j].data.rc = RectMake(630 - (j) * 10 + i * 36, 189, 10, 20);
+			if ((idx = idx / 10) == 0) break;
+		}
+	}
+
+	_pBodyInfo[0].str = "Å°", _pBodyInfo[0].data = _princess->getBodyInfo().height;
+	_pBodyInfo[1].str = "¸ö¹«°Ô", _pBodyInfo[1].data = _princess->getBodyInfo().weight;
+	_pBodyInfo[2].str = "°¡½¿", _pBodyInfo[2].data = _princess->getBodyInfo().bast;
+	_pBodyInfo[3].str = "Çã¸®", _pBodyInfo[3].data = _princess->getBodyInfo().waist;
+	_pBodyInfo[4].str = "¾ûµ¢ÀÌ", _pBodyInfo[4].data = _princess->getBodyInfo().hip;
+	
+
+	for (int i = 0; i < 5; i++)
+	{
+		_pBodyInfo[i].strRc = RectMake(WINSIZEX - 250, 300 + i * 20, 80, 20);
+		_pBodyInfo[i].dataRc = RectMake(WINSIZEX - 170, 300 + i * 20, 60, 20);
+
+		_pBodyInfo[i].progressBar = new progressBar;
+		_pBodyInfo[i].progressBar->init(WINSIZEX - 110, 300 + i * 20, 80, 20);
+		if(i == 0)
+			_pBodyInfo[i].progressBar->setGauge(_pBodyInfo[i].data, 200);
+		else
+			_pBodyInfo[i].progressBar->setGauge(_pBodyInfo[i].data, 150);
+	}
+
 }
 
 void princessScene::dadTalkRender()
@@ -870,22 +991,22 @@ void princessScene::clickStore()
 				{
 					case 0:
 						_storeType = STORE_WEAPON;
-						_weaponStore->init();
+						_weaponStore->init(_im->getVWeapon(), _im->getVArmor());
 						_weaponStore->setFin(false);
 					break;
 					case 1:
 						_storeType = STORE_ARMOR;
-						_clothesStore->init();
+						_clothesStore->init(_im->getVClothes());
 						_clothesStore->setFin(false);
 					break;
 					case 2:
 						_storeType = STORE_COOK;
-						_cookStore->init();
+						_cookStore->init(_im->getVCook());
 						_cookStore->setFin(false);
 					break;
 					case 3:
 						_storeType = STORE_GOODS;
-						_goodsStore->init();
+						_goodsStore->init(_im->getVGoods());
 						_goodsStore->setFin(false);
 					break;
 					case 4:

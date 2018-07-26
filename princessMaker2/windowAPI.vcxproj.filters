@@ -192,6 +192,9 @@
     <ClInclude Include="itemManager.h">
       <Filter>playGround\item</Filter>
     </ClInclude>
+    <ClInclude Include="saveLoadScene.h">
+      <Filter>playGround\scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -304,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="itemManager.cpp">
       <Filter>playGround\item</Filter>
+    </ClCompile>
+    <ClCompile Include="saveLoadScene.cpp">
+      <Filter>playGround\scene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

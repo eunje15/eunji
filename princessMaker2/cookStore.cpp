@@ -11,14 +11,15 @@ cookStore::~cookStore()
 {
 }
 
-HRESULT cookStore::init()
+HRESULT cookStore::init(vector<item*> vItem)
 {
-	setItem();
+	setItem(vItem);
 	_npc.img = IMAGEMANAGER->findImage("peopleFace");
 	_npc.frameX = 13, _npc.frameY = 0;
 	setDialog("「어서와. 맛있는 요리를 먹고 가라고!」");
 	_dialogIdx = 0;
 	_type = COOK_NONE;
+	_dialogType = DIALOG_ING;
 	_fin = false;
 
 	for (int i = 0; i < 2; i++)
@@ -228,26 +229,12 @@ void cookStore::release()
 {
 }
 
-void cookStore::setItem()
+void cookStore::setItem(vector<item*> vItem)
 {
-	vector<string> vStr = TXTDATA->txtLoadCsv("dialog/cook.csv");
-	int idx = 0;
-	for (int i = 0; i < vStr.size(); i++)
+	for (int i = 0; i < vItem.size(); i++)
 	{
-		char str[100000];
-		strcpy(str, vStr[i].c_str());
-		vector<string> temp = TXTDATA->charArraySeparation(str);
-		item* tItem = new item;
-		vector<pair<string, float>> property;
-		if (temp[2] == "X") continue;
-		for (int j = 3; j < temp.size() - 1; j += 2)
-		{
-			//property.push_back(make_pair(temp[j], atoi(temp[j + 1].c_str())));
-			property.push_back(make_pair(temp[j], atof(temp[j + 1].c_str())));
-		}
-		tItem->setItem(temp[0], atoi(temp[1].c_str()), property, 3, i, 0);
-		_vItem.push_back(tItem);
-		//	idx++;
+		if (!vItem[i]->getIsStore()) continue;
+		_vItem.push_back(vItem[i]);
 	}
 }
 
