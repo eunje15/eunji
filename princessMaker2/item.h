@@ -26,6 +26,7 @@ public:
 	void setItem(string name, int price, bool isStore, vector<pair<string, float>> property, int type, int frameX, int frameY);
 	void setImage();
 	void setXY(float x, float y);
+	void setName(string name) { _name = name; }
 	float getX() { return _x; }
 	float getY() { return _y; }
 

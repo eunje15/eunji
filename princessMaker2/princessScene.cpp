@@ -46,7 +46,7 @@ HRESULT princessScene::init()
 	_status.x = WINSIZEX - _status.img->getWidth();
 	_status.y = 0;
 	setStringStatus();
-	_printStrStatus.str = _strStatus[1].str; //임시
+	_princess->setDietType(_strStatus[1].str); //임시
 	_printStrStatus.rc = RectMake(600,166, _status.img->getWidth(), 22);
 	_nameRc = RectMake(600, 12, _status.img->getWidth(), 22);
 	_firstNameRc = RectMake(600, 34, _status.img->getWidth(), 22);
@@ -254,7 +254,9 @@ void princessScene::update()
 	{
 		_saveLoadScene->update();
 		if (_saveLoadScene->getFin())
+		{
 			_menuType = SELECT_NONE;
+		}
 	}
 }
 
@@ -274,7 +276,7 @@ void princessScene::render()
 	_status.img->render(DC, _status.x, _status.y);
 	DrawText(DC, _princess->getInfo().name.c_str(), strlen(_princess->getInfo().name.c_str()), &_nameRc, DT_CENTER | DT_VCENTER);
 	DrawText(DC, _princess->getInfo().firstName.c_str(), strlen(_princess->getInfo().firstName.c_str()), &_firstNameRc, DT_CENTER | DT_VCENTER);
-	DrawText(DC, _printStrStatus.str.c_str(), strlen(_printStrStatus.str.c_str()), &_printStrStatus.rc, DT_CENTER | DT_VCENTER);
+	DrawText(DC, _princess->getInfo().dietType.c_str(), strlen(_princess->getInfo().dietType.c_str()), &_printStrStatus.rc, DT_CENTER | DT_VCENTER);
 	IMAGEMANAGER->findImage("number")->frameRender(DC, 615, 80, 1, 0);
 	IMAGEMANAGER->findImage("number")->frameRender(DC, 630, 80, _princess->getInfo().age % 10, 0);
 	_constellationImg.img->frameRender(DC, 650, 70, _constellationImg.frameX, 0);
@@ -513,7 +515,7 @@ void princessScene::changeInfo()
 					{
 						if (_strStatus[i].isChoose)
 						{
-							_printStrStatus.str = _strStatus[i].str;
+							_princess->setDietType(_strStatus[i].str);
 						}
 					}
 				}
@@ -564,7 +566,7 @@ void princessScene::infoRender()
 	TextOut(DC, 40, 375, "건강합니다", strlen("건강합니다"));
 	TextOut(DC, 40, 400, "솔직합니다", strlen("솔직합니다"));
 
-	string str1 = "건강「" + _printStrStatus.str+"」";
+	string str1 = "건강「" + _princess->getInfo().dietType+"」";
 	TextOut(DC, 40, 440, str1.c_str(), strlen(str1.c_str()));
 
 	//info3
