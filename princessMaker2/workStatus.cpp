@@ -45,3 +45,4 @@ void workStatus::setVector(vector<pair<string, pair <int, int>>> property, vecto
 	_success = success;
 	_frameX = frameX;
 }
+

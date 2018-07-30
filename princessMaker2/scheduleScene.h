@@ -16,14 +16,14 @@ private:
 	SCHEDULE_TYPE _type;
 	DIALOG_TYPE _dialogType;
 	tagImg _calImg[42];
-	tagImg _teachImg[10], _workImg[6], _fightImg[4], _relaxImg[2];
-	tagString _chooseBox[4], _selectBox[2];
-	string _scheduleWeek[3];
+	tagImg _teachImg[10], _workImg[15], _fightImg[4], _relaxImg[2];
 	vector<string> _vDialog;
+	tagString _chooseBox[4], _selectBox[2];
+	string _scheduleWeek[4];
+	
 	int _dialogIdx, _scheduleIdx, _selectNum;
 	statusManager* _sm;
 public:
-
 	scheduleScene();
 	~scheduleScene();
 
