@@ -131,7 +131,7 @@ void saveLoadScene::release()
 
 void saveLoadScene::saveData(int idx)
 {
-
+	FILE 
 }
 
 void saveLoadScene::setDialog(string dialog)
