@@ -22,6 +22,7 @@ struct tagInfo
 	int mon;
 	int day;
 	int age;
+	int dayOfWeek;
 	int gold;
 	BLOOD_TYPE blood;
 	string strBlood;
@@ -122,6 +123,15 @@ struct tagDate
 	int year;
 	int mon;
 	int day;
+	int dayOfWeek; //¿œ : 0 ~ ≈‰ : 6
+};
+
+struct tagStatusData
+{
+	int startP;
+	int endP;
+	int plusStart;
+	int plusEnd;
 };
 
 enum DIALOG_TYPE { DIALOG_ING, DIALOG_FIN };

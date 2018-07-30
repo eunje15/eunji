@@ -16,7 +16,7 @@ HRESULT princess::init()
 	//임시로 넣어놓음
 	_info.firstName = "윤";
 	_info.name = "딸래미";
-	_info.year = 1200, _info.mon = 2, _info.day = 28;
+	_info.year = 1200, _info.mon = 2, _info.day = 28, _info.dayOfWeek = 1;
 	_info.blood = BLOOD_A;
 	_info.strBlood = "A";
 	_info.age = 11;
@@ -26,6 +26,13 @@ HRESULT princess::init()
 	_bodyInfo.bast = 74.57;
 	_bodyInfo.waist = 55.82;
 	_bodyInfo.hip = 77.71;
+
+	_date.name = _info.name;
+	_date.firstName = _info.firstName;
+	_date.year = _info.year;
+	_date.mon = _info.mon;
+	_date.day = _info.day;
+	_date.dayOfWeek = _info.dayOfWeek;
 	//여기까지 임시로
 
 	setStatus();
@@ -176,12 +183,23 @@ void princess::setStress(int stress)
 }
 
 
-bool princess::setItem(item * newItem)
+bool princess::setItem(item* newItem)
 {
 	if (_vInven.size() > 50) return false;
 	_vInven.push_back(newItem);
 }
 
-void princess::setDataItem()
+void princess::setDataItem(vector<item*> vTotal)
 {
+	for (int i = 0; i < _vItemName.size(); i++)
+	{
+		for (int j = 0; j < vTotal.size(); j++)
+		{
+			if (_vItemName[i] == vTotal[j]->getName())
+			{
+				_vInven.push_back(vTotal[j]);
+				break;
+			}
+		}
+	}
 }

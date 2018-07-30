@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "saveLoadScene.h"
 #include "princess.h"
+#include "item.h"
 
 saveLoadScene::saveLoadScene()
 {
@@ -312,10 +313,16 @@ void saveLoadScene::saveData(int idx)
 	WriteFile(file, &_princess->getInfo(), sizeof(tagInfo), &save, NULL);
 	WriteFile(file, &_princess->getStatus(), sizeof(tagStatus), &save, NULL);
 	WriteFile(file, &_princess->getBodyInfo(), sizeof(tagBody), &save, NULL);
+	int vItemSize = _princess->getVItem().size();
+	WriteFile(file, &vItemSize, sizeof(int), &save, NULL);
+	vector<string> vItemName;
 	for (int i = 0; i < _princess->getVItem().size(); i++)
 	{
-		WriteFile(file, &_princess->getVItem()[i]->getName(), sizeof(_princess->getVItem()[i]->getName()), &save, NULL);
+		//WriteFile(file, &_princess->getVItem()[i]->getName(), sizeof(_princess->getVItem()[i]->getName()), &save, NULL);
+		vItemName.push_back(_princess->getVItem()[i]->getName());
 	}
+	char* temp = TXTDATA->vectorArrayCombine(vItemName);
+	WriteFile(file, temp, 100000, &save, NULL);
 
 	CloseHandle(file);
 }
@@ -329,7 +336,8 @@ void saveLoadScene::loadData(int idx)
 	tagStatus status;
 	tagBody bodyInfo;
 	vector<string> name;
-	name.resize(_princess->getVItem().size());
+	int vItemSize;
+	//name.resize(_princess->getVItem().size());
 
 	char str[128];
 	sprintf_s(str, "data/princess%d.txt", 9 - idx);
@@ -340,20 +348,28 @@ void saveLoadScene::loadData(int idx)
 	ReadFile(file, &info, sizeof(tagInfo), &load, NULL);
 	ReadFile(file, &status, sizeof(tagStatus), &load, NULL);
 	ReadFile(file, &bodyInfo, sizeof(tagBody), &load, NULL);
-	for (int i = 0; i < _princess->getVItem().size(); i++)
+	ReadFile(file, &vItemSize, sizeof(int), &load, NULL);
+	char str2[100000] = "";
+
+	/*for (int i = 0; i < vItemSize; i++)
 	{
 		ReadFile(file, &name[i], sizeof(_princess->getVItem()[i]->getName()), &load, NULL);
-	}
+	}*/
+
+	ReadFile(file, str2, 100000, &load, NULL);
+
+	vector<string> vName = TXTDATA->charArraySeparation(str2);
 
 	_princess->setInfo(info);
 	_princess->setStatus(status);
 	_princess->setBodyInfo(bodyInfo);
-	for (int i = 0; i < _princess->getVItem().size(); i++)
+	/*for (int i = 0; i < _princess->getVItem().size(); i++)
 	{
 		_princess->setVItemName(i, name[i]);
-	}
+	}*/
 
-	_princess->setDataItem();
+	_princess->setVItemName(vName);
+	_princess->setDataItem(_vTotal);
 
 	ZeroMemory(&info, sizeof(tagInfo));
 	ZeroMemory(&status, sizeof(tagStatus));
@@ -386,7 +402,7 @@ void saveLoadScene::setSaveTitle(bool isSave, int idx)
 	}
 	CloseHandle(file);
 
-	tagDate temp = { idx, _princess->getInfo().name, _princess->getInfo().firstName, _princess->getInfo().year, _princess->getInfo().mon,_princess->getInfo().day };
+	tagDate temp = { idx, _princess->getInfo().name, _princess->getInfo().firstName, _princess->getDate().year, _princess->getDate().mon,_princess->getDate().day, _princess->getDate().dayOfWeek };
 
 	if (isSave)
 	{	

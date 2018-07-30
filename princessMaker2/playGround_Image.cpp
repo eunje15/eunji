@@ -96,5 +96,14 @@ HRESULT playGround::image_init()
 
 	//===============성이미지=======================
 	IMAGEMANAGER->addImage("castlePicture", "image/main/castlePicture(252x163).bmp", 252, 163, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("smallDay", "image/main/smallDay2(20x620,1x31).bmp", 20, 620, 1, 31, true, RGB(255, 0, 255));
+
+	//===============스케줄이미지===================
+	IMAGEMANAGER->addFrameImage("teachImg", "image/schedule/teachImg(400x40,x10x1).bmp", 400, 40, 10, 1, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("workImg", "image/schedule/workImg(240x40,6x1).bmp", 240, 40, 6, 1, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("fightImg", "image/schedule/fightImg(160x40,4x1).bmp", 160, 40, 4, 1, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("relaxImg", "image/schedule/relaxImg(80x40,2x1).bmp", 80, 40, 2, 1, false, RGB(255, 0, 255));
+
+
 	return S_OK;
 }

@@ -18,6 +18,9 @@ HRESULT princessScene::init()
 	_im = new itemManager;
 	_im->init();
 
+	_sm = new statusManager;
+	_sm->init();
+
 	_back = IMAGEMANAGER->findImage("back");
 	_cal.img = IMAGEMANAGER->findImage("cal");
 	_cal.x = _cal.y = 0;
@@ -110,7 +113,10 @@ HRESULT princessScene::init()
 	_inventoryScene = new inventoryScene;
 
 	_saveLoadScene = new saveLoadScene;
+	_saveLoadScene->setVTotalItem(_im->getVTotal());
 
+	_scheduleScene = new scheduleScene;
+	_scheduleScene->setStatusManagerAddressLink(_sm);
 	return S_OK;
 }
 
@@ -162,6 +168,7 @@ void princessScene::update()
 						break;
 					case 8:
 						_menuType = SELECT_SCHEDULE;
+						_scheduleScene->init(_year,_mon);
 						break;
 					}
 					_menubox[i].isData = true;
@@ -254,9 +261,14 @@ void princessScene::update()
 	{
 		_saveLoadScene->update();
 		if (_saveLoadScene->getFin())
-		{
 			_menuType = SELECT_NONE;
-		}
+		
+	}
+	else if (_menuType == SELECT_SCHEDULE)
+	{
+		_scheduleScene->update();
+		if (_scheduleScene->getFin())
+			_menuType = SELECT_NONE;
 	}
 }
 
@@ -366,6 +378,7 @@ void princessScene::render()
 		_saveLoadScene->render();
 		break;
 	case SELECT_SCHEDULE:
+		_scheduleScene->render();
 		break;
 	}
 	char str[128];

@@ -11,6 +11,7 @@ private:
 	vector<item*> _vClothes;
 	vector<item*> _vGoods;
 	vector<item*> _vCook;
+	vector<item*> _vTotal;
 
 	DATA_TYPE _type;
 public:
@@ -28,5 +29,6 @@ public:
 	vector<item*> getVClothes() { return _vClothes; }
 	vector<item*> getVGoods() { return _vGoods; }
 	vector<item*> getVCook() { return _vCook; }
+	vector<item*> getVTotal() { return _vTotal; }
 };
 

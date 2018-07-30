@@ -12,6 +12,8 @@
 #include "inventoryScene.h"
 #include "itemManager.h"
 #include "saveLoadScene.h"
+#include "scheduleScene.h"
+#include "statusManager.h"
 
 enum SEASON_TYPE { SPRING, SUMMER, AUTUMN, WINTER };
 enum MENU_TYPE { SELECT_NONE, SELECT_STATUS, SELECT_TALK, SELECT_CHANGE_INFO, SELECT_INFO,
@@ -52,8 +54,10 @@ private:
 	castleScene* _castleScene;
 	inventoryScene* _inventoryScene;
 	saveLoadScene* _saveLoadScene;
+	scheduleScene* _scheduleScene;
 
 	itemManager* _im;
+	statusManager* _sm;
 
 public:
 	princessScene();

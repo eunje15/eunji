@@ -2,7 +2,7 @@
 #include "gameNode.h"
 
 enum ITEM_TYPE { ITEM_WEAPON, ITEM_ARMOR, ITEM_CLOTHES, ITEM_COOK, ITEM_GOODS };
-class item : public gameNode
+class item : public gameNode 
 {
 private:
 	string _name;

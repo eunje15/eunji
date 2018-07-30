@@ -5,6 +5,7 @@
 enum SAVELOAD_TYPE {SAVELOAD_FIN, SAVELOAD_SAVE, SAVELOAD_LOAD, SAVELOAD_NONE};
 
 class princess;
+class item;
 
 class saveLoadScene : public gameNode
 {
@@ -20,6 +21,8 @@ private:
 	bool _fin;
 	int _selectNum;
 	string _godName, _godPlanet;
+
+	vector<item*> _vTotal;
 
 	//tagInfo info;
 
@@ -45,5 +48,7 @@ public:
 
 	bool getFin() { return _fin; }
 	void setFin(bool fin) { _fin = fin; }
+
+	void setVTotalItem(vector<item*> vTotal) { _vTotal = vTotal; }
 };
 

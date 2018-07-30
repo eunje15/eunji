@@ -10,8 +10,9 @@ private:
 	tagStatus _status;
 	tagBody _bodyInfo;
 	tagImg _face, _body;
+	tagDate _date;
 	vector<item*> _vInven;
-	
+	vector<string> _vItemName;
 public:
 	princess();
 	~princess();
@@ -39,9 +40,13 @@ public:
 	void setStress(int stress);
 
 	vector<item*> getVItem() { return _vInven; }
-	void setVItemName(int idx, string name) { _vInven[idx]->setName(name); }
+	//void setVItemName(int idx, string name) { _vInven[idx]->setName(name); }
 
+	void setVItemName(vector<string> vName) { _vItemName = vName; }
 	bool setItem(item* newItem);
-	void setDataItem();
+	void setDataItem(vector<item*> vTotal);
+
+	tagDate getDate() { return _date; }
+	void setDate(tagDate date) { _date = date; }
 };
 

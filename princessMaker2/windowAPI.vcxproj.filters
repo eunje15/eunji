@@ -67,6 +67,9 @@
     <Filter Include="playGround\scene">
       <UniqueIdentifier>{7ac0d17a-e064-4549-a288-e06d42a3cef2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\stat">
+      <UniqueIdentifier>{a7a83e5d-676b-49b2-9ba0-bd80ce14d0ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -195,6 +198,21 @@
     <ClInclude Include="saveLoadScene.h">
       <Filter>playGround\scene</Filter>
     </ClInclude>
+    <ClInclude Include="scheduleScene.h">
+      <Filter>playGround\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="status.h">
+      <Filter>playGround\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="statusManager.h">
+      <Filter>playGround\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="workStatus.h">
+      <Filter>playGround\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="relaxStatus.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -310,6 +328,21 @@
     </ClCompile>
     <ClCompile Include="saveLoadScene.cpp">
       <Filter>playGround\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scheduleScene.cpp">
+      <Filter>playGround\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="status.cpp">
+      <Filter>playGround\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="statusManager.cpp">
+      <Filter>playGround\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="workStatus.cpp">
+      <Filter>playGround\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="relaxStatus.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
