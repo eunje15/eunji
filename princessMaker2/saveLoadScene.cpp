@@ -22,6 +22,7 @@ HRESULT saveLoadScene::init()
 	_dialogType = DIALOG_FIN;
 	_type = SAVELOAD_FIN;
 	_fin = false;
+	_selectNum = -1;
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -32,6 +33,14 @@ HRESULT saveLoadScene::init()
 	_chooseBox[1].str = "시간을 되돌린다";
 	_chooseBox[2].str = "잠시동안의 이별";
 
+	for (int i = 0; i < 2; i++)
+	{
+		_selectBox[i].rc = RectMake(490, 314 + i * 28, 120, 28);
+		_selectBox[i].isSelected = _selectBox[i].isChoose = false;
+	}
+	_selectBox[0].str = "시간을 기록한다";
+	_selectBox[1].str = "취소";
+
 
 	for (int i = 9; i >= 0; i--)
 	{
@@ -40,6 +49,9 @@ HRESULT saveLoadScene::init()
 		_saveLoadInfo[i].data.rc = RectMake(0, WINSIZEY - (i + 1)* 35, 460, 35);
 		_saveLoadInfo[i].data.str = to_string(10 - i) + ".";
 	}
+
+	setSaveTitle(false, -1);
+
 	return S_OK;
 }
 
@@ -56,23 +68,112 @@ void saveLoadScene::update()
 				_chooseBox[i].isSelected = true;
 				if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 				{
+					_selectNum = -1;
 					if (i == 0)
+					{
 						_type = SAVELOAD_SAVE;
+						_selectBox[0].str = "시간을 기록한다";
+					}
+					else if (i == 1)
+					{
+						_type = SAVELOAD_LOAD;
+						_selectBox[0].str = "시간을 되돌린다";
+					}
+					else
+						PostMessage(_hWnd, WM_DESTROY, 0, 0);
 				}
 			}
 		}
 		break;
 	case SAVELOAD_SAVE:
-		for (int i = 0; i < 10; i++)
+		if (_selectNum == -1)
 		{
-			_saveLoadInfo[i].frameY = 0;
-			if (PtInRect(&_saveLoadInfo[i].data.rc, _ptMouse))
+			for (int i = 0; i < 10; i++)
 			{
-				_saveLoadInfo[i].frameY = 1;
+				_saveLoadInfo[i].frameY = 0;
+				if (PtInRect(&_saveLoadInfo[i].data.rc, _ptMouse))
+				{
+					_saveLoadInfo[i].frameY = 1;
+					if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+					{
+						_selectNum = i;
+					}
+				}
+			}
+		}
+		else if (_selectNum == 99)
+		{
+			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+				_fin = true;
+		}
+		else
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				_selectBox[i].isSelected = false;
+				if (PtInRect(&_selectBox[i].rc, _ptMouse))
+				{
+					_selectBox[i].isSelected = true;
+					if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+					{
+						if (i == 0)
+						{
+							saveData(_selectNum);
+							setSaveTitle(true, _selectNum);
+							_selectNum = 99;
+						}
+						else
+							_selectNum = -1;
+					}
+				}
 			}
 		}
 		break; 
 	case SAVELOAD_LOAD:
+		if (_selectNum == -1)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				_saveLoadInfo[i].frameY = 0;
+				if (PtInRect(&_saveLoadInfo[i].data.rc, _ptMouse))
+				{
+					_saveLoadInfo[i].frameY = 1;
+					if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+					{
+						if (!_saveLoadInfo[i].data.isChoose) break;
+						/*loadData(i);
+						_fin = true;*/
+						_selectNum = i;
+					}
+				}
+			}
+		}
+		else if (_selectNum == 99)
+		{
+			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+				_fin = true;
+		}
+		else
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				_selectBox[i].isSelected = false;
+				if (PtInRect(&_selectBox[i].rc, _ptMouse))
+				{
+					_selectBox[i].isSelected = true;
+					if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+					{
+						if (i == 0)
+						{
+							loadData(_selectNum);
+							_selectNum = 99;
+						}
+						else
+							_selectNum = -1;
+					}
+				}
+			}
+		}
 			break;
 	case SAVELOAD_NONE:
 		break;
@@ -81,16 +182,18 @@ void saveLoadScene::update()
 
 void saveLoadScene::render()
 {
-	IMAGEMANAGER->findImage("wideBack")->render(DC, 40, 460);
+	
 	if (dialogRender())
 	{
-		for (int i = 0; i < _vDialog.size(); i++)
-		{
-			TextOut(DC, 50, 470 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
-		}
+		
 		switch (_type)
 		{
 		case SAVELOAD_FIN:
+			IMAGEMANAGER->findImage("wideBack")->render(DC, 40, 460);
+			for (int i = 0; i < _vDialog.size(); i++)
+			{
+				TextOut(DC, 50, 470 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+			}
 			IMAGEMANAGER->findImage("3Back")->render(DC,590,280);
 			for (int i = 0; i < 3; i++)
 			{
@@ -110,14 +213,81 @@ void saveLoadScene::render()
 			IMAGEMANAGER->findImage("frame")->render(DC, WINSIZEX - 150, _saveLoadInfo[9].data.rc.top);
 			_npc.img->frameRender(DC, WINSIZEX - 140, _saveLoadInfo[9].data.rc.top + 10, _npc.frameX, 0);
 			IMAGEMANAGER->findImage("info2Back")->render(DC, 540, 410);
-			TextOut(DC, 550, 420, "시간을 기록해라", strlen("시간을 기록해라"));
-			for (int i = 0; i < 10; i++)
+			
+			if (_selectNum == -1)
 			{
-				_saveLoadInfo[i].img->frameRender(DC, _saveLoadInfo[i].data.rc.left, _saveLoadInfo[i].data.rc.top, 0, _saveLoadInfo[i].frameY);
-				TextOut(DC, _saveLoadInfo[i].data.rc.left + 10, _saveLoadInfo[i].data.rc.top + 8, _saveLoadInfo[i].data.str.c_str(), strlen(_saveLoadInfo[i].data.str.c_str()));
+				TextOut(DC, 550, 420, "원하는 기록장소를 택해라", strlen("원하는 기록장소를 택해라"));
+				for (int i = 0; i < 10; i++)
+				{
+					_saveLoadInfo[i].img->frameRender(DC, _saveLoadInfo[i].data.rc.left, _saveLoadInfo[i].data.rc.top, 0, _saveLoadInfo[i].frameY);
+					TextOut(DC, _saveLoadInfo[i].data.rc.left + 10, _saveLoadInfo[i].data.rc.top + 8, _saveLoadInfo[i].data.str.c_str(), strlen(_saveLoadInfo[i].data.str.c_str()));
+				}
+			}
+			else if (_selectNum == 99)
+			{
+				TextOut(DC, 550, 420, "확실히 기록되었다", strlen("확실히 기록되었다"));
+			}
+			else
+			{
+				TextOut(DC, 550, 420, "원하는 기록장소를 택해라", strlen("원하는 기록장소를 택해라"));
+				_saveLoadInfo[_selectNum].img->frameRender(DC, _saveLoadInfo[_selectNum].data.rc.left, _saveLoadInfo[_selectNum].data.rc.top, 0, _saveLoadInfo[_selectNum].frameY);
+				TextOut(DC, _saveLoadInfo[_selectNum].data.rc.left + 10, _saveLoadInfo[_selectNum].data.rc.top + 8, _saveLoadInfo[_selectNum].data.str.c_str(), strlen(_saveLoadInfo[_selectNum].data.str.c_str()));
+
+				IMAGEMANAGER->findImage("2Back")->render(DC, 485, 300);
+				for (int i = 0; i < 2; i++)
+				{
+					if (_selectBox[i].isSelected)
+					{
+						HBRUSH brush, oldBrush;
+						brush = CreateSolidBrush(RGB(43, 0, 0));
+						oldBrush = (HBRUSH)SelectObject(DC, brush);
+						FillRect(DC, &_selectBox[i].rc, brush);
+						SelectObject(DC, oldBrush);
+						DeleteObject(brush);
+					}
+					TextOut(DC, _selectBox[i].rc.left + 2, _selectBox[i].rc.top + 5, _selectBox[i].str.c_str(), strlen(_selectBox[i].str.c_str()));
+				}
 			}
 			break;
 		case SAVELOAD_LOAD:
+			IMAGEMANAGER->findImage("frame")->render(DC, WINSIZEX - 150, _saveLoadInfo[9].data.rc.top);
+			_npc.img->frameRender(DC, WINSIZEX - 140, _saveLoadInfo[9].data.rc.top + 10, _npc.frameX, 0);
+			IMAGEMANAGER->findImage("info2Back")->render(DC, 540, 410);
+
+			if (_selectNum == -1)
+			{
+				TextOut(DC, 550, 420, "언제로 돌아갈 것인가", strlen("언제로 돌아갈 것인가"));
+				for (int i = 0; i < 10; i++)
+				{
+					_saveLoadInfo[i].img->frameRender(DC, _saveLoadInfo[i].data.rc.left, _saveLoadInfo[i].data.rc.top, 0, _saveLoadInfo[i].frameY);
+					TextOut(DC, _saveLoadInfo[i].data.rc.left + 10, _saveLoadInfo[i].data.rc.top + 8, _saveLoadInfo[i].data.str.c_str(), strlen(_saveLoadInfo[i].data.str.c_str()));
+				}
+			}
+			else if (_selectNum == 99)
+			{
+				TextOut(DC, 550, 420, "확실히 되돌렸다", strlen("확실히 되돌렸다"));
+			}
+			else
+			{
+				TextOut(DC, 550, 420, "언제로 돌아갈 것인가", strlen("언제로 돌아갈 것인가"));
+				_saveLoadInfo[_selectNum].img->frameRender(DC, _saveLoadInfo[_selectNum].data.rc.left, _saveLoadInfo[_selectNum].data.rc.top, 0, _saveLoadInfo[_selectNum].frameY);
+				TextOut(DC, _saveLoadInfo[_selectNum].data.rc.left + 10, _saveLoadInfo[_selectNum].data.rc.top + 8, _saveLoadInfo[_selectNum].data.str.c_str(), strlen(_saveLoadInfo[_selectNum].data.str.c_str()));
+
+				IMAGEMANAGER->findImage("2Back")->render(DC, 485, 300);
+				for (int i = 0; i < 2; i++)
+				{
+					if (_selectBox[i].isSelected)
+					{
+						HBRUSH brush, oldBrush;
+						brush = CreateSolidBrush(RGB(43, 0, 0));
+						oldBrush = (HBRUSH)SelectObject(DC, brush);
+						FillRect(DC, &_selectBox[i].rc, brush);
+						SelectObject(DC, oldBrush);
+						DeleteObject(brush);
+					}
+					TextOut(DC, _selectBox[i].rc.left + 2, _selectBox[i].rc.top + 5, _selectBox[i].str.c_str(), strlen(_selectBox[i].str.c_str()));
+				}
+			}
 			break;
 		case SAVELOAD_NONE:
 			break;
@@ -131,7 +301,136 @@ void saveLoadScene::release()
 
 void saveLoadScene::saveData(int idx)
 {
-	FILE 
+	HANDLE file;
+	DWORD save;
+
+	char str[128];
+	sprintf_s(str, "data/princess%d.txt", 9 - idx);
+
+	file = CreateFile(str, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	WriteFile(file, &_princess->getInfo(), sizeof(tagInfo), &save, NULL);
+	WriteFile(file, &_princess->getStatus(), sizeof(tagStatus), &save, NULL);
+	WriteFile(file, &_princess->getBodyInfo(), sizeof(tagBody), &save, NULL);
+	for (int i = 0; i < _princess->getVItem().size(); i++)
+	{
+		WriteFile(file, &_princess->getVItem()[i]->getName(), sizeof(_princess->getVItem()[i]->getName()), &save, NULL);
+	}
+
+	CloseHandle(file);
+}
+
+void saveLoadScene::loadData(int idx)
+{
+	HANDLE file;
+	DWORD load;
+
+	tagInfo info;
+	tagStatus status;
+	tagBody bodyInfo;
+	vector<string> name;
+	name.resize(_princess->getVItem().size());
+
+	char str[128];
+	sprintf_s(str, "data/princess%d.txt", 9 - idx);
+
+	file = CreateFile(str, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	
+	ReadFile(file, &info, sizeof(tagInfo), &load, NULL);
+	ReadFile(file, &status, sizeof(tagStatus), &load, NULL);
+	ReadFile(file, &bodyInfo, sizeof(tagBody), &load, NULL);
+	for (int i = 0; i < _princess->getVItem().size(); i++)
+	{
+		ReadFile(file, &name[i], sizeof(_princess->getVItem()[i]->getName()), &load, NULL);
+	}
+
+	_princess->setInfo(info);
+	_princess->setStatus(status);
+	_princess->setBodyInfo(bodyInfo);
+	for (int i = 0; i < _princess->getVItem().size(); i++)
+	{
+		_princess->setVItemName(i, name[i]);
+	}
+
+	_princess->setDataItem();
+
+	ZeroMemory(&info, sizeof(tagInfo));
+	ZeroMemory(&status, sizeof(tagStatus));
+	ZeroMemory(&bodyInfo, sizeof(tagBody));
+	name.clear();
+	CloseHandle(file);
+}
+	
+
+void saveLoadScene::setSaveTitle(bool isSave, int idx)
+{
+	HANDLE file;
+	DWORD load;
+
+	int count = 0;
+	tagDate* date = NULL;
+
+	file = CreateFile("data/saveTitle.txt", GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	ReadFile(file, &count, sizeof(int), &load, NULL);
+	
+	if (count != 0)
+	{
+		date = new tagDate[count];
+
+		for (int i = 0; i < count; i++)
+		{
+			ReadFile(file, &date[i], sizeof(tagDate), &load, NULL);
+		}
+	}
+	CloseHandle(file);
+
+	tagDate temp = { idx, _princess->getInfo().name, _princess->getInfo().firstName, _princess->getInfo().year, _princess->getInfo().mon,_princess->getInfo().day };
+
+	if (isSave)
+	{	
+		bool noData = true;
+		for (int i = 0; i < count; i++)
+		{
+			if (date[i].idx == idx)
+			{
+				noData = false;
+				date[i] = temp;
+				break;
+			}
+		}
+		file = CreateFile("data/saveTitle.txt", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (noData)
+		{
+			count++;
+			WriteFile(file, &count, sizeof(int), &load, NULL);
+			WriteFile(file, date, sizeof(tagDate)*(count - 1), &load, NULL);
+			WriteFile(file, &temp, sizeof(tagDate), &load, NULL);
+			count--;
+		}
+		else
+		{
+			WriteFile(file, &count, sizeof(int), &load, NULL);
+			WriteFile(file, date, sizeof(tagDate)*(count), &load, NULL);
+		}
+		CloseHandle(file);
+	}
+	
+	string str = "";
+
+	for (int i = 0; i < count; i++)
+	{
+		_saveLoadInfo[date[i].idx].data.isChoose = true;
+		str = date[i].name +  " " + date[i].firstName + " (" + to_string(date[i].year) + "," + to_string(date[i].mon) + "," + to_string(date[i].day) + " )";
+		_saveLoadInfo[date[i].idx].data.str += str;
+	}
+	if (isSave)
+	{
+		_saveLoadInfo[idx].data.isChoose = true;
+		str = temp.name + " " + temp.firstName + " (" + to_string(temp.year) + "," + to_string(temp.mon) + "," + to_string(temp.day) + " )";
+		_saveLoadInfo[idx].data.str += str;
+	}
 }
 
 void saveLoadScene::setDialog(string dialog)
@@ -161,6 +460,8 @@ void saveLoadScene::setDialog(string dialog)
 bool saveLoadScene::dialogRender()
 {
 	if (_dialogType != DIALOG_ING) return true;
+
+	IMAGEMANAGER->findImage("wideBack")->render(DC, 40, 460);
 
 	if (_dialogIdx < _vDialog.size())
 	{

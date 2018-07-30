@@ -22,8 +22,10 @@ struct tagInfo
 	int mon;
 	int day;
 	int age;
+	int gold;
 	BLOOD_TYPE blood;
 	string strBlood;
+	string dietType;
 };
 
 
@@ -110,6 +112,16 @@ struct tagProgressFloat
 	float data;
 	progressBar* progressBar;
 	RECT strRc, dataRc;
+};
+
+struct tagDate
+{
+	int idx;
+	string name;
+	string firstName;
+	int year;
+	int mon;
+	int day;
 };
 
 enum DIALOG_TYPE { DIALOG_ING, DIALOG_FIN };

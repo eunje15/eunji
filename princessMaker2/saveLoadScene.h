@@ -9,17 +9,20 @@ class princess;
 class saveLoadScene : public gameNode
 {
 private:
-	princess * _princess;
-
+	princess* _princess;
 	tagImg _npc;
 	vector<string> _vDialog;
 	int _dialogIdx;
 	DIALOG_TYPE _dialogType;
 	SAVELOAD_TYPE _type;
-	tagString _chooseBox[3];
+	tagString _chooseBox[3], _selectBox[2];
 	tagImg _saveLoadInfo[10];
 	bool _fin;
+	int _selectNum;
 	string _godName, _godPlanet;
+
+	//tagInfo info;
+
 public:
 	saveLoadScene();
 	~saveLoadScene();
@@ -30,6 +33,10 @@ public:
 	void release();
 
 	void saveData(int idx);
+
+	void loadData(int idx);
+
+	void setSaveTitle(bool isSave, int idx);
 
 	void setDialog(string dialog);
 	bool dialogRender();
