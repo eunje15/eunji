@@ -57,8 +57,11 @@ HRESULT scheduleScene::init(int year, int mon)
 	_dialogIdx = _scheduleIdx = 0;
 	_selectNum = -1;
 	setScheduleImage();
-
 	
+	_fin = _select = _scheduleStart = false;
+
+	_education = new educationScene;
+
 	return S_OK;
 }
 
@@ -82,11 +85,21 @@ void scheduleScene::update()
 						setDialog("딸에게 무엇을 가르치시겠습니까?");
 					}
 					else if (i == 1)
+					{
 						_type = SCHEDULE_WORK;
+						setDialog("어느 일을 시키시겠습니까?");
+					}
 					else if (i == 2)
+					{
 						_type = SCHEDULE_FIGHT;
+						setDialog("무사수행을 어디로 보내시겠습니까?");
+					}
 					else if (i == 3)
+					{
 						_type = SCHEDULE_RELAX;
+						setDialog("어떤 휴식을 주시겠습니까?");
+
+					}
 				}
 			}
 		}
@@ -135,6 +148,7 @@ void scheduleScene::update()
 									if (count == 10)
 									{
 										_scheduleWeek[_scheduleIdx] = "teach";
+										_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 										_scheduleIdx++;
 										break;
 									}
@@ -146,6 +160,7 @@ void scheduleScene::update()
 										if (count == 11)
 										{
 											_scheduleWeek[_scheduleIdx] = "teach";
+											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -155,6 +170,7 @@ void scheduleScene::update()
 										if (count == 10)
 										{
 											_scheduleWeek[_scheduleIdx] = "teach";
+											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -233,6 +249,7 @@ void scheduleScene::update()
 									if (count == 10)
 									{
 										_scheduleWeek[_scheduleIdx] = "work";
+										_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 										_scheduleIdx++;
 										break;
 									}
@@ -244,6 +261,7 @@ void scheduleScene::update()
 										if (count == 11)
 										{
 											_scheduleWeek[_scheduleIdx] = "work";
+											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -253,6 +271,7 @@ void scheduleScene::update()
 										if (count == 10)
 										{
 											_scheduleWeek[_scheduleIdx] = "work";
+											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -287,6 +306,104 @@ void scheduleScene::update()
 		}
 		break;
 	case SCHEDULE_FIGHT:
+		if (!_select)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				_fightImg[i].frameX = 0;
+				if (PtInRect(&_fightImg[i].data.rc, _ptMouse))
+				{
+					_fightImg[i].frameX = 1;
+					if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+					{
+						_select = true;
+						_selectNum = i;
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				_selectBox[i].isSelected = false;
+				if (PtInRect(&_selectBox[i].rc, _ptMouse))
+				{
+					_selectBox[i].isSelected = true;
+					if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+					{
+						_select = false;
+						if (i == 0)
+						{
+							int count = 0;
+							for (int i = 0; i < 42; i++)
+							{
+								if (!_calImg[i].data.isChoose || _calImg[i].data.isSelected) continue;
+								count++;
+								_calImg[i].frameX = _fightImg[_selectNum].frameY;
+								_calImg[i].data.isSelected = true;
+								if (_scheduleIdx < 2)
+								{
+									if (count == 10)
+									{
+										_scheduleWeek[_scheduleIdx] = "fight";
+										_itemIdx[_scheduleIdx] = _calImg[i].frameX;
+										_scheduleIdx++;
+										break;
+									}
+								}
+								else
+								{
+									if (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12)
+									{
+										if (count == 11)
+										{
+											_scheduleWeek[_scheduleIdx] = "fight";
+											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
+											_scheduleIdx++;
+											break;
+										}
+									}
+									else
+									{
+										if (count == 10)
+										{
+											_scheduleWeek[_scheduleIdx] = "fight";
+											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
+											_scheduleIdx++;
+											break;
+										}
+									}
+								}
+							}
+							_type = SCHEDULE_NONE;
+							string str = "네, 스케줄에 편성하겠습니다. 이번달 딸의 예정은?";
+							if (_scheduleIdx == 1)
+								str += "(두번째)";
+							else if (_scheduleIdx == 2)
+								str += "(세번째)";
+							setDialog(str);
+							_dialogType = DIALOG_FIN;
+						}
+						else
+						{
+							_type = SCHEDULE_NONE;
+							string str = "이번달 딸의 예정은?";
+							if (_scheduleIdx == 0)
+								str += "(첫번째)";
+							else if (_scheduleIdx == 1)
+								str += "(두번째)";
+							else if (_scheduleIdx == 2)
+								str += "(세번째)";
+							setDialog(str);
+							_dialogType = DIALOG_FIN;
+						}
+					}
+				}
+			}
+
+		}
 		break;
 	case SCHEDULE_RELAX:
 		if (!_select)
@@ -331,6 +448,7 @@ void scheduleScene::update()
 									if (count == 10)
 									{
 										_scheduleWeek[_scheduleIdx] = "relax";
+										_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 										_scheduleIdx++;
 										break;
 									}
@@ -342,6 +460,7 @@ void scheduleScene::update()
 										if (count == 11)
 										{
 											_scheduleWeek[_scheduleIdx] = "relax";
+											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -351,6 +470,7 @@ void scheduleScene::update()
 										if (count == 10)
 										{
 											_scheduleWeek[_scheduleIdx] = "relax";
+											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -385,25 +505,128 @@ void scheduleScene::update()
 
 		}
 		 break;
+	case SCHEDULE_OK:
+		for (int i = 0; i < 2; i++)
+		{
+			_selectBox[i].isSelected = false;
+			if (PtInRect(&_selectBox[i].rc, _ptMouse))
+			{
+				_selectBox[i].isSelected = true;
+				if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+				{
+					if (i == 0)
+					{
+						//_fin = true;
+						_type = SCHEDULE_GO;
+						_scheduleIdx = 0;
+						_select = false;
+
+						string str;
+						if (_princess->getInfo().dietType == "어쨌든 튼튼하게")
+							str = "식비가 80G 필요합니다.", _gold = 80;
+						else if (_princess->getInfo().dietType == "무리하지 않는다")
+							str = "식비가 30G 필요합니다.", _gold = 30;
+						else if (_princess->getInfo().dietType == "얌전한 아이로")
+							str = "식비가 10G 필요합니다.", _gold = 10;
+						else if (_princess->getInfo().dietType == "다이어트를 시킨다")
+							str = "식비가 5G 필요합니다.", _gold = 5;
+
+						setDialog(str);
+						_dialogIdx = 0;
+						_dialogType = DIALOG_ING;
+					}
+					else
+					{
+						_type = SCHEDULE_NONE;
+						_scheduleIdx = 0;
+						_select = false;
+						for (int i = 0; i < 3; i++)
+						{
+							_scheduleWeek[i] = "";
+						}
+						for (int i = 0; i < 42; i++)
+						{
+							_calImg[i].data.isSelected = false;
+						}
+					}
+				}
+			}
+		}
+		break;
+	case SCHEDULE_GO:
+		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+		{
+			if (!_scheduleStart)
+			{
+				_princess->setGold(_gold);
+				_scheduleStart = true;
+				if (_scheduleWeek[0] == "teach")
+					_education->init(_sm->getVTeach()[_itemIdx[0]], 10);
+			}
+		}
+
+		if (_scheduleStart)
+		{
+			if (_scheduleIdx > 2) break;
+			if (_scheduleWeek[_scheduleIdx] == "teach")
+			{
+				_education->update();
+				if (_education->getFin())
+				{
+					_scheduleIdx++;
+					//if(_sch)
+				}
+			}
+		}
+		break;
 	}
-	
+	if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
+	{
+		if (_type == SCHEDULE_NONE) _fin = true;
+		_type = SCHEDULE_NONE;
+		string str = "이번달 딸의 예정은?";
+		if (_scheduleIdx == 0)
+			str += "(첫번째)";
+		else if (_scheduleIdx == 1)
+			str += "(두번째)";
+		else if (_scheduleIdx == 2)
+			str += "(세번째)";
+		setDialog(str);
+		_select = false;
+		_dialogType = DIALOG_FIN;
+		for (int i = 0; i < 3; i++)
+		{
+			_scheduleWeek[i] = "";
+		}
+		for (int i = 0; i < 42; i++)
+		{
+			_calImg[i].data.isSelected = false;
+		}
+	}
 }
+
+
 
 void scheduleScene::render()
 {
-	IMAGEMANAGER->findImage("schedule")->render(DC, 10, 110);
-	IMAGEMANAGER->findImage("year")->frameRender(DC, 100, 119, 0, _year - 1200);
-	IMAGEMANAGER->findImage("month")->frameRender(DC, 160, 119, 0, _mon - 1);
+	if (!_scheduleStart)
+	{
+		IMAGEMANAGER->findImage("schedule")->render(DC, 10, 110);
+		IMAGEMANAGER->findImage("year")->frameRender(DC, 100, 119, 0, _year - 1200);
+		IMAGEMANAGER->findImage("month")->frameRender(DC, 160, 119, 0, _mon - 1);
 
-	IMAGEMANAGER->findImage("dialogFrame")->render(DC, 10, 426);
-	IMAGEMANAGER->findImage("frame")->render(DC, 20 + IMAGEMANAGER->findImage("dialogFrame")->getWidth(), 426);
-	IMAGEMANAGER->findImage("cube")->frameRender(DC, 30 + IMAGEMANAGER->findImage("dialogFrame")->getWidth(), 436, 0, 0);
-
+		IMAGEMANAGER->findImage("dialogFrame")->render(DC, 10, 426);
+		IMAGEMANAGER->findImage("frame")->render(DC, 20 + IMAGEMANAGER->findImage("dialogFrame")->getWidth(), 426);
+		IMAGEMANAGER->findImage("cube")->frameRender(DC, 30 + IMAGEMANAGER->findImage("dialogFrame")->getWidth(), 436, 0, 0);
+	}
 	if (dialogRender())
 	{
-		for (int i = 0; i < _vDialog.size(); i++)
+		if (!_scheduleStart)
 		{
-			TextOut(DC, 20, 440 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+			for (int i = 0; i < _vDialog.size(); i++)
+			{
+				TextOut(DC, 20, 440 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+			}
 		}
 		switch (_type)
 		{
@@ -499,6 +722,33 @@ void scheduleScene::render()
 			}
 			break;
 		case SCHEDULE_FIGHT:
+			if (!_select)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					_fightImg[i].img->frameRender(DC, _fightImg[i].data.rc.left, _fightImg[i].data.rc.top, _fightImg[i].frameX, 0);
+					IMAGEMANAGER->findImage("fightImg")->frameRender(DC, _fightImg[i].data.rc.left + 5, _fightImg[i].data.rc.top + 7, _fightImg[i].frameY, 0);
+					TextOut(DC, _fightImg[i].data.rc.left + 50, _fightImg[i].data.rc.top + 7, _sm->getVFight()[i]->getDirection().c_str(), strlen(_sm->getVFight()[i]->getDirection().c_str()));
+					TextOut(DC, _fightImg[i].data.rc.left + 50, _fightImg[i].data.rc.top + 30, _sm->getVFight()[i]->getWhere().c_str(), strlen(_sm->getVFight()[i]->getWhere().c_str()));
+				}
+			}
+			else
+			{
+				IMAGEMANAGER->findImage("3Back")->render(DC, 590, 300);
+				for (int i = 0; i < 2; i++)
+				{
+					if (_selectBox[i].isSelected)
+					{
+						HBRUSH brush, oldBrush;
+						brush = CreateSolidBrush(RGB(43, 0, 0));
+						oldBrush = (HBRUSH)SelectObject(DC, brush);
+						FillRect(DC, &_selectBox[i].rc, brush);
+						SelectObject(DC, oldBrush);
+						DeleteObject(brush);
+					}
+					TextOut(DC, _selectBox[i].rc.left + 2, _selectBox[i].rc.top + 5, _selectBox[i].str.c_str(), strlen(_selectBox[i].str.c_str()));
+				}
+			}
 			break;
 		case SCHEDULE_RELAX:
 			if (!_select)
@@ -530,27 +780,66 @@ void scheduleScene::render()
 				}
 			}
 			break;
+		case SCHEDULE_OK:
+			IMAGEMANAGER->findImage("3Back")->render(DC, 590, 300);
+			for (int i = 0; i < 2; i++)
+			{
+				if (_selectBox[i].isSelected)
+				{
+					HBRUSH brush, oldBrush;
+					brush = CreateSolidBrush(RGB(43, 0, 0));
+					oldBrush = (HBRUSH)SelectObject(DC, brush);
+					FillRect(DC, &_selectBox[i].rc, brush);
+					SelectObject(DC, oldBrush);
+					DeleteObject(brush);
+				}
+				TextOut(DC, _selectBox[i].rc.left + 2, _selectBox[i].rc.top + 5, _selectBox[i].str.c_str(), strlen(_selectBox[i].str.c_str()));
+			}
+			break;
+		case SCHEDULE_GO:
+			if (_scheduleStart)
+			{
+				if (_scheduleIdx > 2) break;
+				if (_scheduleWeek[_scheduleIdx] == "teach")
+				{
+					_education->render();
+				}
+			}
+			break;
 		}
 	}
-	int count = 0;
-	for (int i = 0; i < 42; i++)
+
+	if (!_scheduleStart)
 	{
-		if (!_calImg[i].data.isChoose) break;
-		if (_calImg[i].data.isSelected)
+		int count = 0;
+		for (int i = 0; i < 42; i++)
 		{
-			/*if (count / 10 < 0)
+			if (!_calImg[i].data.isChoose) break;
+			if (_calImg[i].data.isSelected)
 			{
-				IMAGEMANAGER->findImage("teachImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
-			}*/
-			if(_scheduleWeek[count / 10] == "teach")
-				IMAGEMANAGER->findImage("teachImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
-			else if(_scheduleWeek[count / 10] == "work")
-				IMAGEMANAGER->findImage("workImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
-			else if (_scheduleWeek[count / 10] == "relax")
-				IMAGEMANAGER->findImage("relaxImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
-			count++;
+				/*if (count / 10 < 0)
+				{
+					IMAGEMANAGER->findImage("teachImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
+				}*/
+				if (_scheduleWeek[count / 10] == "teach")
+					IMAGEMANAGER->findImage("teachImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
+				else if (_scheduleWeek[count / 10] == "work")
+					IMAGEMANAGER->findImage("workImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
+				else if (_scheduleWeek[count / 10] == "fight")
+					IMAGEMANAGER->findImage("fightImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
+				else if (_scheduleWeek[count / 10] == "relax")
+					IMAGEMANAGER->findImage("relaxImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
+				count++;
+			}
+			IMAGEMANAGER->findImage("smallDay")->frameRender(DC, _calImg[i].x, _calImg[i].y, 0, atoi(_calImg[i].data.str.c_str()) - 1);
 		}
-		IMAGEMANAGER->findImage("smallDay")->frameRender(DC, _calImg[i].x, _calImg[i].y, 0, atoi(_calImg[i].data.str.c_str()) - 1);
+		if (_scheduleIdx == 3)
+		{
+			_type = SCHEDULE_OK;
+			_selectBox[0].str = "스케줄을 실행한다";
+			setDialog("이대로 스케줄을 진행하시겠습니까?");
+			_dialogType = DIALOG_FIN;
+		}
 	}
 }
 
@@ -588,6 +877,7 @@ void scheduleScene::setDialog(string dialog)
 
 void scheduleScene::setScheduleImage()
 {
+	//교육
 	for (int i = 0; i < 5; i++)
 	{
 		for (int j = 0; j < 2; j++)
@@ -599,7 +889,7 @@ void scheduleScene::setScheduleImage()
 			_teachImg[j + 2 * i].frameY = j + 2 * i;
 		}
 	}
-
+	//알바
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 2; j++)
@@ -616,7 +906,19 @@ void scheduleScene::setScheduleImage()
 			}
 		}
 	}
+	//무사수행
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			_fightImg[i * 2 + j].img = new image;
+			_fightImg[i * 2 + j].img->init("image/main/storeSelect(320x52,2x1).bmp", 320, 52, 2, 1, true, RGB(255, 0, 255));
+			_fightImg[i * 2 + j].data.rc = RectMake(460 + 170 * j, 300 + i*60, 160, 52);
+			_fightImg[i * 2 + j].frameY = i * 2 + j;
+		}
+	}
 
+	//휴식
 	for (int i = 0; i < 2; i++)
 	{
 		_relaxImg[i].img = new image;

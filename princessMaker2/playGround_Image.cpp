@@ -100,10 +100,84 @@ HRESULT playGround::image_init()
 
 	//===============스케줄이미지===================
 	IMAGEMANAGER->addFrameImage("teachImg", "image/schedule/teachImg(400x40,x10x1).bmp", 400, 40, 10, 1, false, RGB(255, 0, 255));
-	IMAGEMANAGER->addFrameImage("workImg", "image/schedule/workImg(240x40,6x1).bmp", 240, 40, 6, 1, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("workImg", "image/schedule/workImg(600x40,15x1).bmp", 600, 40, 15, 1, false, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("fightImg", "image/schedule/fightImg(160x40,4x1).bmp", 160, 40, 4, 1, false, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("relaxImg", "image/schedule/relaxImg(80x40,2x1).bmp", 80, 40, 2, 1, false, RGB(255, 0, 255));
 
+
+
+	//================교육이미지========================
+	IMAGEMANAGER->addImage("교육액자", "image/education/교육액자(420x180).bmp", 420, 180, true, RGB(255, 0, 255));
+
+	IMAGEMANAGER->addImage("자연과학배경", "image/education/자연과학배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("자연과학친구1", "image/education/자연과학친구1(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("자연과학친구2", "image/education/자연과학친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("자연과학공주", "image/education/자연과학공주(350x100,7x1).bmp", 350, 100, 7, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("자연과학선생", "image/education/자연과학선생(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
+
+	IMAGEMANAGER->addImage("시문배경", "image/education/시문배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("시문친구1", "image/education/시문친구1(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(1, 202, 0));
+	IMAGEMANAGER->addFrameImage("시문친구2", "image/education/시문친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("시문공주", "image/education/시문공주(500x100,10x1).bmp", 500, 100, 10, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("시문선생", "image/education/시문선생(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
+
+	IMAGEMANAGER->addImage("신학배경", "image/education/신학배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("신학친구3", "image/education/신학친구1(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("신학친구2", "image/education/신학친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("신학친구1", "image/education/신학친구3(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("신학공주", "image/education/신학공주(300x100,6x1).bmp", 300, 100, 6, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("신학선생", "image/education/신학선생(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+
+	IMAGEMANAGER->addImage("군사학배경", "image/education/군사학배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("군사학친구1", "image/education/군사학친구1(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("군사학친구2", "image/education/군사학친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("군사학공주", "image/education/군사학공주(350x100,7x1).bmp", 350, 100, 7, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("군사학선생", "image/education/군사학선생(150x100,3x1).bmp", 150, 100, 3, 1, true, RGB(0, 204, 0));
+
+	IMAGEMANAGER->addImage("검술배경", "image/education/검술배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("검술친구3", "image/education/검술친구1(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("검술친구2", "image/education/검술친구2(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("검술친구1", "image/education/검술친구3(250x100,5x1).bmp", 250, 100, 5, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("검술공주", "image/education/검술공주(400x100,8x1).bmp", 400, 100, 8, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("검술선생", "image/education/검술선생(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+
+	IMAGEMANAGER->addImage("격투술배경", "image/education/격투술배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("격투술친구1", "image/education/격투술친구1(150x100,3x1).bmp", 150, 100, 3, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("격투술친구2", "image/education/격투술친구2(150x100,3x1).bmp", 150, 100, 3, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("격투술공주", "image/education/격투술공주(350x100,7x1).bmp", 350, 100, 7, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("격투술선생", "image/education/격투술선생(50x100).bmp", 50, 100, 1, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addImage("격투술막대기", "image/education/격투술막대기(50x100).bmp", 50, 100, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("격투술횃불", "image/education/격투술횃불(250x100,5x1).bmp", 250, 100, 5, 1, true, RGB(0, 204, 0));
+
+
+	IMAGEMANAGER->addImage("마법배경", "image/education/마법배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("마법친구1", "image/education/마법친구1(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("마법공주", "image/education/마법공주(700x100,14x1).bmp", 700, 100, 14, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("마법선생", "image/education/마법선생(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("마법횃불2", "image/education/해골횃불1(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("마법횃불1", "image/education/해골횃불2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+
+
+	IMAGEMANAGER->addImage("예법배경", "image/education/예법배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("예법친구1", "image/education/예법친구1(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("예법친구2", "image/education/예법친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("예법친구3", "image/education/예법친구3(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("예법공주", "image/education/예법공주(350x100,7x1).bmp", 350, 100, 7, 1, true, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("예법선생", "image/education/예법선생(250x70,5x1).bmp", 250, 70, 5, 1, true, RGB(0, 203, 0));
+
+
+	IMAGEMANAGER->addImage("발레배경", "image/education/발레배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("발레친구1", "image/education/발레친구1(196x99,4x1).bmp", 196, 99, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("발레친구2", "image/education/발레친구2(196x99,4x1).bmp", 196, 99, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("발레공주", "image/education/발레공주(392x99,8x1).bmp", 392, 99, 8, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("발레선생", "image/education/발레선생(98x99,2x1).bmp", 98, 99, 2, 1, true, RGB(0, 204, 0));
+
+
+	IMAGEMANAGER->addImage("미술배경", "image/education/미술배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("미술친구1", "image/education/미술친구1(150x100,3x1).bmp", 150, 100, 3, 1, true, RGB(1, 202, 0));
+	IMAGEMANAGER->addFrameImage("미술친구2", "image/education/미술친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(1, 202, 0));
+	IMAGEMANAGER->addFrameImage("미술공주", "image/education/미술공주(350x100,7x1).bmp", 350, 100, 7, 1, true, RGB(1, 202, 0));
+	IMAGEMANAGER->addFrameImage("미술선생", "image/education/미술선생(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(1, 202, 0));
 
 	return S_OK;
 }

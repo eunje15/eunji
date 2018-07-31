@@ -210,8 +210,17 @@
     <ClInclude Include="workStatus.h">
       <Filter>playGround\stat</Filter>
     </ClInclude>
+    <ClInclude Include="fightStatus.h">
+      <Filter>playGround\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="educationScene.h">
+      <Filter>playGround\scene</Filter>
+    </ClInclude>
     <ClInclude Include="relaxStatus.h">
       <Filter>playGround\stat</Filter>
+    </ClInclude>
+    <ClInclude Include="testClass.h">
+      <Filter>playGround\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -341,8 +350,17 @@
     <ClCompile Include="workStatus.cpp">
       <Filter>playGround\stat</Filter>
     </ClCompile>
+    <ClCompile Include="fightStatus.cpp">
+      <Filter>playGround\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="educationScene.cpp">
+      <Filter>playGround\scene</Filter>
+    </ClCompile>
     <ClCompile Include="relaxStatus.cpp">
       <Filter>playGround\stat</Filter>
+    </ClCompile>
+    <ClCompile Include="testClass.cpp">
+      <Filter>playGround\scene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

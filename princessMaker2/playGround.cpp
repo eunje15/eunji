@@ -29,6 +29,8 @@ HRESULT playGround::init(void)
 	SCENEMANAGER->changeScene("공주씬");
 	_str = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", "처녀자리");
 
+	//SCENEMANAGER->addScene("테스트", new testClass);
+	//SCENEMANAGER->changeScene("테스트");
 	return S_OK;
 }
 

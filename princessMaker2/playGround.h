@@ -4,6 +4,7 @@
 #include "princess.h"
 #include "prologueDialog.h"
 #include "princessScene.h"
+#include "testClass.h"
 
 class playGround : public gameNode
 {

@@ -177,7 +177,7 @@ void princessScene::update()
 		}
 	}
 	
-	if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
+	if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON) && _menuType != SELECT_SCHEDULE)
 	{
 		_menuType = SELECT_NONE;
 		_storeType = STORE_NONE;
@@ -270,6 +270,8 @@ void princessScene::update()
 		if (_scheduleScene->getFin())
 			_menuType = SELECT_NONE;
 	}
+
+	setGoldImg();
 }
 
 void princessScene::render()
@@ -292,6 +294,7 @@ void princessScene::render()
 	IMAGEMANAGER->findImage("number")->frameRender(DC, 615, 80, 1, 0);
 	IMAGEMANAGER->findImage("number")->frameRender(DC, 630, 80, _princess->getInfo().age % 10, 0);
 	_constellationImg.img->frameRender(DC, 650, 70, _constellationImg.frameX, 0);
+
 	for (int i = 0; i < 7; i++)
 	{
 		if (!_goldImg[i].data.isSelected) continue;

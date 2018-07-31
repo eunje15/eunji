@@ -18,7 +18,7 @@ HRESULT statusManager::init()
 	_type = STATUS_DATA_WORK;
 	loadWorkData("dialog/work.csv");
 	_type = STATUS_DATA_FIGHT;
-	//loadData("dialog/fight.csv");
+	setFightData();
 	_type = STATUS_DATA_RELAX;
 	setRelaxData();
 	return S_OK;
@@ -55,17 +55,9 @@ void statusManager::loadData(const char * dataName)
 			tagData.plusEnd = atoi(temp[j + 3].c_str());
 			property.push_back(tagData);
 		}
-		switch (_type)
-		{
-		case STATUS_DATA_TEACH:
-			tStatus->setStatus(temp[0], temp[1], atoi(temp[2].c_str()), atoi(temp[3].c_str()), property, 0, i, 0);
-			_vTeach.push_back(tStatus);
-			break;
-		case STATUS_DATA_FIGHT:
-			tStatus->setStatus(temp[0], temp[1], atoi(temp[2].c_str()), atoi(temp[3].c_str()), property, 2, i, 0);
-			_vFight.push_back(tStatus);
-			break;
-		}
+
+		tStatus->setStatus(temp[0], temp[1], atoi(temp[2].c_str()), atoi(temp[3].c_str()), property, i, 0);
+		_vTeach.push_back(tStatus);
 	}
 }
 
@@ -95,6 +87,25 @@ void statusManager::loadWorkData(const char * dataName)
 		}
 		work->setVector(property, success, i);
 		_vWork.push_back(work);
+	}
+}
+
+void statusManager::setFightData()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		fightStatus* data = new fightStatus;
+		string str,str2;
+		if (i == 0)
+			str = "동부", str2 ="산림지대";
+		else if (i == 1)
+			str = "서부", str2 = "사막지대";
+		else if (i == 2)
+			str = "남부", str2 = "폭포지대";
+		else
+			str = "북부", str2 = "빙산지대";
+		data->init(str, str2);
+		_vFight.push_back(data);
 	}
 }
 

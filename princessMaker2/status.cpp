@@ -29,37 +29,19 @@ void status::release()
 {
 }
 
-void status::setStatus(string name, string teacher, int tuition, int plus, vector<tagStatusData> property, int type, int frameX, int frameY)
+void status::setStatus(string name, string teacher, int tuition, int plus, vector<tagStatusData> property, int frameX, int frameY)
 {
 	_name = name;
 	_teacher = teacher;
 	_tuition = tuition;
 	_property = property;
-	_type = (STATUS_TYPE)type;
 	_frameX = frameX;
 	_frameY = frameY;
 	_step = 0;
-	setImage();
+	_img = IMAGEMANAGER->findImage("teachImg");
 }
 
-void status::setImage()
-{
-	switch (_type)
-	{
-	case STATUS_TEACH:
-		_img = IMAGEMANAGER->findImage("teachImg");
-		break;
-	case STATUS_WORK:
-		_img = IMAGEMANAGER->findImage("workImg");
-		break;
-	case STATUS_FIGHT:
-		_img = IMAGEMANAGER->findImage("fightImg");
-		break;
-	case STATUS_RELAX:
-		_img = IMAGEMANAGER->findImage("relaxImg");
-		break;
-	}
-}
+
 
 void status::upgradeStep()
 {
