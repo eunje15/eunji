@@ -560,8 +560,9 @@ void scheduleScene::update()
 			{
 				_princess->setGold(_gold);
 				_scheduleStart = true;
-				if (_scheduleWeek[0] == "teach")
-					_education->init(_sm->getVTeach()[_itemIdx[0]], 10);
+				setSchedule();
+				//if (_scheduleWeek[0] == "teach")
+					//_education->init(_sm->getVTeach()[_itemIdx[0]], 10);
 			}
 		}
 
@@ -574,7 +575,7 @@ void scheduleScene::update()
 				if (_education->getFin())
 				{
 					_scheduleIdx++;
-					//if(_sch)
+					setSchedule();
 				}
 			}
 		}
@@ -845,6 +846,34 @@ void scheduleScene::render()
 
 void scheduleScene::release()
 {
+}
+
+void scheduleScene::setSchedule()
+{
+	if (_scheduleIdx > 2)
+	{
+		_fin = true;
+		return;
+	}
+	if (_scheduleWeek[_scheduleIdx] == "teach")
+	{
+		if(_scheduleIdx == 2 && (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12))
+			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 11);
+		else	
+			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 10);
+	}
+	else if (_scheduleWeek[_scheduleIdx] == "work")
+	{
+
+	}
+	else if (_scheduleWeek[_scheduleIdx] == "fight")
+	{
+
+	}
+	else if(_scheduleWeek[_scheduleIdx] == "relax")
+	{
+
+	}
 }
 
 

@@ -166,11 +166,11 @@ HRESULT playGround::image_init()
 	IMAGEMANAGER->addFrameImage("예법선생", "image/education/예법선생(250x70,5x1).bmp", 250, 70, 5, 1, true, RGB(0, 203, 0));
 
 
-	IMAGEMANAGER->addImage("발레배경", "image/education/발레배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
-	IMAGEMANAGER->addFrameImage("발레친구1", "image/education/발레친구1(196x99,4x1).bmp", 196, 99, 4, 1, true, RGB(0, 204, 0));
-	IMAGEMANAGER->addFrameImage("발레친구2", "image/education/발레친구2(196x99,4x1).bmp", 196, 99, 4, 1, true, RGB(0, 204, 0));
-	IMAGEMANAGER->addFrameImage("발레공주", "image/education/발레공주(392x99,8x1).bmp", 392, 99, 8, 1, true, RGB(0, 204, 0));
-	IMAGEMANAGER->addFrameImage("발레선생", "image/education/발레선생(98x99,2x1).bmp", 98, 99, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addImage("무용배경", "image/education/발레배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
+	IMAGEMANAGER->addFrameImage("무용친구1", "image/education/발레친구1(196x99,4x1).bmp", 196, 99, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("무용친구2", "image/education/발레친구2(196x99,4x1).bmp", 196, 99, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("무용공주", "image/education/발레공주(392x99,8x1).bmp", 392, 99, 8, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("무용선생", "image/education/발레선생(98x99,2x1).bmp", 98, 99, 2, 1, true, RGB(0, 204, 0));
 
 
 	IMAGEMANAGER->addImage("미술배경", "image/education/미술배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));

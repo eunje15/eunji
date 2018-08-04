@@ -30,6 +30,7 @@ public:
 	void setDadName(string dadName) { _info.firstName = dadName; }
 	tagInfo getInfo() { return _info; }
 	tagStatus getStatus() { return _status; }
+	tagStatus* getStatusP() { return &_status; }
 	tagBody getBodyInfo() { return _bodyInfo; }
 	string getDadName() { return _info.firstName; }
 
@@ -48,5 +49,10 @@ public:
 
 	tagDate getDate() { return _date; }
 	void setDate(tagDate date) { _date = date; }
+
+	void setDayOfWeek(int dayOfWeek) { _date.dayOfWeek = dayOfWeek; }
+	int getDayOfWeek() { return _date.dayOfWeek; }
+	void setDay(int day) { _date.day = day; }
+	int getDay() { return _date.day; }
 };
 

@@ -26,7 +26,11 @@ HRESULT princessScene::init()
 	_cal.x = _cal.y = 0;
 
 	//임시로 지정
-	_year = 1200, _mon = 2, _day = 28, _dayOfWeek = 0;
+	_year = _princess->getDate().year;
+	_mon = _princess->getDate().mon;
+	_day = _princess->getDate().day;
+	_dayOfWeek = _princess->getDate().dayOfWeek;
+	//_year = 1200, _mon = 2, _day = 28, _dayOfWeek = 0;
 	_yearImg.img = IMAGEMANAGER->findImage("year");
 	_yearImg.frameY = _year - 1200;
 	_monImg.img = IMAGEMANAGER->findImage("month");
@@ -271,6 +275,7 @@ void princessScene::update()
 			_menuType = SELECT_NONE;
 	}
 
+	setDate();
 	setGoldImg();
 }
 
@@ -751,6 +756,14 @@ void princessScene::setBodyInfo()
 			_pBodyInfo[i].progressBar->setGauge(_pBodyInfo[i].data, 150);
 	}
 
+}
+
+void princessScene::setDate()
+{
+	_day = _princess->getDate().day;
+	_dayImg.frameY = _day - 1;
+	_dayOfWeek = _princess->getDate().dayOfWeek;
+	_dayOfWeekImg.frameY = _dayOfWeek;
 }
 
 void princessScene::dadTalkRender()

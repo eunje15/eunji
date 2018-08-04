@@ -16,7 +16,7 @@ HRESULT princess::init()
 	//임시로 넣어놓음
 	_info.firstName = "윤";
 	_info.name = "딸래미";
-	_info.year = 1200, _info.mon = 2, _info.day = 28, _info.dayOfWeek = 1;
+	_info.year = 1200, _info.mon = 1, _info.day = 1, _info.dayOfWeek = 0;
 	_info.blood = BLOOD_A;
 	_info.strBlood = "A";
 	_info.age = 11;

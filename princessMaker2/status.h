@@ -30,7 +30,7 @@ public:
 	void upgradeStep();
 	string getStringStep();
 	int getTuition() {	return _tuition; }
-
 	int getFrameIndex() { return _frameX; }
+	vector<tagStatusData> getProperty(){ return _property; }
 };
 

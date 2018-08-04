@@ -73,6 +73,7 @@ public:
 	void statusRender();
 	void setGoldImg();
 	void setBodyInfo();
+	void setDate();
 	void dadTalkRender();
 	void changeInfoRender();
 	void release();

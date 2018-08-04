@@ -37,6 +37,8 @@ public:
 	void render();
 	void release();
 
+	void setSchedule();
+
 	void setDialog(string dialog);
 
 	void setScheduleImage();

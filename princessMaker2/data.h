@@ -128,6 +128,7 @@ struct tagDate
 
 struct tagStatusData
 {
+	string name;
 	int startP;
 	int endP;
 	int plusStart;
@@ -135,5 +136,6 @@ struct tagStatusData
 };
 
 enum DIALOG_TYPE { DIALOG_ING, DIALOG_FIN };
+enum STATUS_TYPE {STATUS_START, STATUS_TEACH, STATUS_ING, STATUS_FIN };
 
 #endif

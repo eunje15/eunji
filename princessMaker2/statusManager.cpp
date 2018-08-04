@@ -46,13 +46,14 @@ void statusManager::loadData(const char * dataName)
 		vector<string> temp = TXTDATA->charArraySeparation(str);
 		status* tStatus = new status;
 		vector<tagStatusData> property;
-		for (int j = 4; j < temp.size() - 4; j += 4)
+		for (int j = 4; j < temp.size() - 4; j += 5)
 		{
 			tagStatusData tagData;
-			tagData.startP = atoi(temp[j].c_str());
-			tagData.endP = atoi(temp[j + 1].c_str());
-			tagData.plusStart = atoi(temp[j + 2].c_str());
-			tagData.plusEnd = atoi(temp[j + 3].c_str());
+			tagData.name = temp[j];
+			tagData.startP = atoi(temp[j + 1].c_str());
+			tagData.endP = atoi(temp[j + 2].c_str());
+			tagData.plusStart = atoi(temp[j + 3].c_str());
+			tagData.plusEnd = atoi(temp[j + 4].c_str());
 			property.push_back(tagData);
 		}
 
