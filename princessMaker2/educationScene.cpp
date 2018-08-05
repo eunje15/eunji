@@ -48,17 +48,16 @@ HRESULT educationScene::init(status* education, int dayCount)
 	setTeachDialog();
 
 	_gold = _education->getTuition();
-	_success = _count = _frameCount = _dayIdx = 0;
+	_success = _count = _frameCount = _dayIdx = _printDay = 0;
 	_frameX = _startF;
-	_fin = false;
+	_fin = _goldOk = _eduFin = false;
 	_statusProgess = STATUS_START;
 	string str = _princess->getInfo().name + "는 오늘부터 " + _eduName +  "을 배웁니다";
 	setDialog(str);
 	_dialogX = 20, _dialogY = WINSIZEY - 180;
 	_dialogIdx = 0, _dialogType = DIALOG_ING;
 
-	_princess->setGold(_gold);
-
+	
 	return S_OK;
 }
 
@@ -85,9 +84,19 @@ void educationScene::update()
 		}
 		break;
 	case STATUS_ING:
+		if (!_goldOk)
+		{
+			_princess->setGold(_gold);
+			_pGold.data += _gold;
+			_goldOk = true;
+		}
 		changeFrame();
 		break;
 	case STATUS_FIN:
+		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+		{
+			_fin = true;
+		}
 		break;
 	}
 		
@@ -109,7 +118,7 @@ void educationScene::render()
 			break;
 		case STATUS_TEACH:
 			IMAGEMANAGER->findImage("frame")->render(DC, 35, 225);
-			IMAGEMANAGER->findImage("peopleFace")->frameRender(DC, 45, 235, 0, 4);
+			IMAGEMANAGER->findImage("교육선생")->frameRender(DC, 45, 235, _teacherFrameX, 0);
 			IMAGEMANAGER->findImage("dialogFrame")->render(DC, 180, 225);
 			if (dialogRender())
 			{
@@ -127,7 +136,15 @@ void educationScene::render()
 			}
 			break;
 		case STATUS_FIN:
-			_fin = true;
+			IMAGEMANAGER->findImage("info2Back")->render(DC, 440, 238); 
+			if (dialogRender())
+			{
+				for (int i = 0; i < _vDialog.size(); i++)
+				{
+					TextOut(DC, _dialogX, _dialogY + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+				}
+			}
+			eduRender();
 			break;
 		}
 }
@@ -140,8 +157,10 @@ void educationScene::initStatus()
 {
 	_pGold.str = "사용금액", _pGold.data = 0;
 
-	_pGold.strRc = RectMake(10, 230, 80, 20);
-	_pGold.dataRc = RectMake(90, 230, 30, 20);
+	_pGold.strRc = RectMake(45, 205, 80, 25);
+	_pGold.dataRc = RectMake(125, 205, 50, 25);
+
+	_eduStatus.clear();
 
 	for (int i = 0; i < _education->getProperty().size(); i++)
 	{
@@ -381,13 +400,17 @@ void educationScene::setTeachDialog()
 {
 	vector<string> vStr = TXTDATA->txtLoad("dialog/선생다이얼로그.txt");
 	_teachDialog = vStr[(int)_type];
+	_teacherFrameX = (int)_type;
 }
 
 void educationScene::changeFrame()
 {
+	if (_eduFin) return;
+
 	if (_dayIdx >= _dayCount)
 	{
-		_statusProgess = STATUS_FIN;
+		setResultDialog();
+		_eduFin = true;
 		return;
 	}
 	_count++;
@@ -395,56 +418,62 @@ void educationScene::changeFrame()
 	{
 		if (_dayOfWeek != SUN)
 		{
-
-		
-		for (int i = 0; i < _friends.size(); i++)
-		{
-			if (_friends[i]->getFrameX() < _friends[i]->getMaxFrameX())
-				_friends[i]->setFrameX(_friends[i]->getFrameX() + 1);
+			for (int i = 0; i < _friends.size(); i++)
+			{
+				if (_friends[i]->getFrameX() < _friends[i]->getMaxFrameX())
+					_friends[i]->setFrameX(_friends[i]->getFrameX() + 1);
+				else
+					_friends[i]->setFrameX(0);
+			}
+			if (_frameX >= _endF)
+			{
+				_frameX = _startF;
+				_frameCount++;
+			}
 			else
-				_friends[i]->setFrameX(0);
-		}
-		if (_frameX >= _endF)
-		{
-			_frameX = _startF;
-			_frameCount++;
+				_frameX++;
 		}
 		else
-			_frameX++;
-		}
-		if (_frameCount == 3 || _dayOfWeek == SUN)
+			_frameCount++;
+		if (_frameCount == 3)
 		{
 			_day++;
-			_princess->setDay(_day);
+			//_princess->setDay(_day);
+			if (_dayOfWeek != SUN)
+				_printDay++;
 			_dayIdx++;
 			_frameCount = 0;
 			switch (_dayOfWeek)
 			{
 			case MON:
 				_dayOfWeek = TUE;
+				_goldOk = false;
 				break;
 			case TUE:
 				_dayOfWeek = WED;
+				_goldOk = false;
 				break;
 			case WED:
 				_dayOfWeek = THU;
+				_goldOk = false;
 				break;
 			case THU:
 				_dayOfWeek = FRI;
+				_goldOk = false;
 				break;
 			case FRI:
 				_dayOfWeek = SAT;
+				_goldOk = false;
 				break;
 			case SAT:
 				_dayOfWeek = SUN;
-				setDialog("오늘은 일요일입니다.");
-				_dialogIdx = 0;
 				break;
 			case SUN:
 				_dayOfWeek = MON;
+				_goldOk = false;
 				break;
 			}
-			_princess->setDayOfWeek(int(_dayOfWeek));
+			//_princess->setDayOfWeek(int(_dayOfWeek));
 			if (_dayOfWeek != MON)
 			{
 				if (_status == EDU_STUDY)
@@ -455,7 +484,12 @@ void educationScene::changeFrame()
 						if (_eduStatus[i].first == "항마력")
 							randNum = RND->getInt(2);
 						else
-							randNum = RND->getFromIntTo(_education->getProperty()[i].startP, _education->getProperty()[i].endP);
+						{
+							if (_education->getProperty()[i].startP != _education->getProperty()[i].endP)
+								randNum = RND->getFromIntTo(_education->getProperty()[i].startP, _education->getProperty()[i].endP);
+							else
+								randNum = _education->getProperty()[i].endP;
+						}
 						changeStatus(_eduStatus[i].first, randNum);
 						if (_eduStatus[i].first == "항마력")
 							_eduStatus[i].second -= randNum;
@@ -463,8 +497,6 @@ void educationScene::changeFrame()
 							_eduStatus[i].second += randNum;
 					}
 				}
-				_princess->setGold(_gold);
-				_pGold.data += _gold;
 			}
 			switch (_type)
 			{
@@ -659,6 +691,11 @@ void educationScene::changeFrame()
 				}
 				break;
 			}
+			if (_dayIdx < _dayCount)
+			{
+				_princess->setDay(_day);
+				_princess->setDayOfWeek(_dayOfWeek);
+			}
 		}
 	}
 }
@@ -715,13 +752,15 @@ void educationScene::setDialog(string dialog)
 		string temp = _eduName + " " + to_string(_dayCount + 1) + "일차";
 		_vDialog.push_back(temp);
 	}*/
+	int strLength = 40;
+	if (_statusProgess == STATUS_FIN) strLength = 28;
 	while (1)
 	{
-		if (strSize > 40)
+		if (strSize > strLength)
 		{
-			_vDialog.push_back(str.substr(idx, 40));
-			idx += 40;
-			strSize -= 40;
+			_vDialog.push_back(str.substr(idx, strLength));
+			idx += strLength;
+			strSize -= strLength;
 		}
 		else
 		{
@@ -729,6 +768,28 @@ void educationScene::setDialog(string dialog)
 			break;
 		}
 	}
+	DIALOG->setDialog(_vDialog[0], 5);
+}
+
+void educationScene::setResultDialog()
+{
+	_statusProgess = STATUS_FIN;
+	_vDialog.clear();
+	string str = to_string(_printDay) + "일간의 수업 결과는...";
+	_vDialog.push_back(str);
+	for (int i = 0; i < _eduStatus.size(); i++)
+	{
+		if (_eduStatus[i].second > 0)
+		{
+			if (_eduStatus[i].first != "항마력")
+				str = _eduStatus[i].first + "이 " + to_string(_eduStatus[i].second) + "올라갔다!";
+			else
+				str = "항마력이 " + to_string(_eduStatus[i].second*(-1)) + "내려갔다!";
+			_vDialog.push_back(str);
+		}
+	}
+	if (_vDialog.size() == 1)
+		_vDialog.push_back("아무 것도 증가하지 않았다!");
 	DIALOG->setDialog(_vDialog[0], 5);
 }
 
@@ -770,14 +831,14 @@ void educationScene::eduRender()
 	IMAGEMANAGER->findImage("교육액자")->render(DC, 10, 240);
 	int backX = 20, backY = 250;
 	_back->render(DC, backX, backY);
-	IMAGEMANAGER->findImage("storeQuit")->render(DC, 10, 190);
+	IMAGEMANAGER->findImage("goldBack")->render(DC, _pGold.strRc.left - 35, _pGold.strRc.top - 10);
 
 	HBRUSH brush, oldBrush;
 	brush = CreateSolidBrush(RGB(111, 17, 17));
 	oldBrush = (HBRUSH)SelectObject(DC, brush);
 	FillRect(DC, &_pGold.strRc, brush);
 	Rectangle(DC, _pGold.strRc.left, _pGold.strRc.top, _pGold.strRc.right, _pGold.strRc.bottom);
-	TextOut(DC, _pGold.strRc.left, _pGold.strRc.top + 2, _pGold.str.c_str(), strlen(_pGold.str.c_str()));
+	TextOut(DC, _pGold.strRc.left + 5, _pGold.strRc.top + 7, _pGold.str.c_str(), strlen(_pGold.str.c_str()));
 	SelectObject(DC, oldBrush);
 	DeleteObject(brush);
 
@@ -786,11 +847,13 @@ void educationScene::eduRender()
 	Rectangle(DC, _pGold.dataRc.left, _pGold.dataRc.top, _pGold.dataRc.right, _pGold.dataRc.bottom);
 	char str[128];
 	sprintf_s(str, "%3dG", _pGold.data);
-	TextOut(DC, _pGold.dataRc.left + 2, _pGold.dataRc.top + 2, str, strlen(str));
+	TextOut(DC, _pGold.dataRc.left + 5, _pGold.dataRc.top + 7, str, strlen(str));
 	SelectObject(DC, oldBrush);
 	DeleteObject(brush);
 
-	if (_dayOfWeek == SUN)
+	if (_statusProgess == STATUS_FIN) return;
+
+	if (_dayOfWeek == SUN && (_dayIdx < _dayCount))
 	{
 		TextOut(DC, 450, 250, "오늘은 일요일입니다.", strlen("오늘은 일요일입니다."));
 		return;
@@ -901,7 +964,7 @@ void educationScene::eduRender()
 		break;
 	}
 
-	string temp = _eduName + " " + to_string(_dayIdx + 1) + "일차";
+	string temp = _eduName + " " + to_string(_printDay + 1) + "일차";
 	TextOut(DC, 450, 250, temp.c_str(), strlen(temp.c_str()));
 	char str2[128];
 	switch (_status)

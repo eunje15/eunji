@@ -271,11 +271,29 @@ void princessScene::update()
 	else if (_menuType == SELECT_SCHEDULE)
 	{
 		_scheduleScene->update();
+		setDate();
 		if (_scheduleScene->getFin())
+		{
 			_menuType = SELECT_NONE;
+			if(_mon < 12)
+				_mon++;
+			else
+			{
+				_mon = 1;
+				_year++;
+			}
+			if (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12)
+				_finDay = 31;
+			else
+				_finDay = 30;
+
+			_day = 1;
+			_dayImg.frameY = _day - 1;
+			_dayOfWeek = _princess->getDate().dayOfWeek;
+			_dayOfWeekImg.frameY = _dayOfWeek;
+		}
 	}
 
-	setDate();
 	setGoldImg();
 }
 
@@ -760,6 +778,18 @@ void princessScene::setBodyInfo()
 
 void princessScene::setDate()
 {
+	if (_scheduleScene->getProgess() == 2)
+	{
+		_scheduleScene->setProgess(0);
+		_day = _princess->getDate().day + 1;
+		_dayImg.frameY = _day - 1;
+		_dayOfWeek = _princess->getDate().dayOfWeek + 1;
+		if (_dayOfWeek == 7) _dayOfWeek = 0;
+		_dayOfWeekImg.frameY = _dayOfWeek;
+		_princess->setDay(_day);
+		_princess->setDayOfWeek(_dayOfWeek);
+		return;
+	}
 	_day = _princess->getDate().day;
 	_dayImg.frameY = _day - 1;
 	_dayOfWeek = _princess->getDate().dayOfWeek;

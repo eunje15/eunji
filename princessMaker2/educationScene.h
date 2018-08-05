@@ -18,7 +18,7 @@ private:
 	DIALOG_TYPE _dialogType;
 	int _dialogIdx;
 
-	int _day, _dayCount, _dayIdx;
+	int _day, _dayCount, _dayIdx, _printDay;
 	int _gold;
 	int _startF, _endF, _count, _frameCount, _frameX, _success;
 	int _teacherFrameX;
@@ -37,7 +37,7 @@ private:
 	image* _princessImg;
 	vector<image*> _friends;
 
-	bool _fin;
+	bool _fin, _goldOk, _eduFin;
 
 	tagProgress _pGold;
 	tagProgress _vPStatus;
@@ -55,6 +55,7 @@ public:
 	void setImage();
 	void setTeachDialog();
 	void setDialog(string dialog);
+	void setResultDialog();
 
 	void changeFrame();
 	void changeStatus(string name, int value);

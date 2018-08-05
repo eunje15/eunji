@@ -59,6 +59,7 @@ HRESULT scheduleScene::init(int year, int mon)
 	setScheduleImage();
 	
 	_fin = _select = _scheduleStart = false;
+	_progress = SCHEDULE_START;
 
 	_education = new educationScene;
 
@@ -159,8 +160,8 @@ void scheduleScene::update()
 									{
 										if (count == 11)
 										{
-											_scheduleWeek[_scheduleIdx] = "teach";
-											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
+											_scheduleWeek[_scheduleIdx] = _scheduleWeek[_scheduleIdx + 1] = "teach";
+											_itemIdx[_scheduleIdx] = _itemIdx[_scheduleIdx + 1] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -260,8 +261,8 @@ void scheduleScene::update()
 									{
 										if (count == 11)
 										{
-											_scheduleWeek[_scheduleIdx] = "work";
-											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
+											_scheduleWeek[_scheduleIdx] = _scheduleWeek[_scheduleIdx + 1] = "work";
+											_itemIdx[_scheduleIdx] = _itemIdx[_scheduleIdx + 1] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -359,8 +360,8 @@ void scheduleScene::update()
 									{
 										if (count == 11)
 										{
-											_scheduleWeek[_scheduleIdx] = "fight";
-											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
+											_scheduleWeek[_scheduleIdx] = _scheduleWeek[_scheduleIdx + 1] = "fight";
+											_itemIdx[_scheduleIdx] = _itemIdx[_scheduleIdx + 1] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -459,8 +460,8 @@ void scheduleScene::update()
 									{
 										if (count == 11)
 										{
-											_scheduleWeek[_scheduleIdx] = "relax";
-											_itemIdx[_scheduleIdx] = _calImg[i].frameX;
+											_scheduleWeek[_scheduleIdx] = _scheduleWeek[_scheduleIdx + 1] = "relax";
+											_itemIdx[_scheduleIdx] = _itemIdx[_scheduleIdx + 1] = _calImg[i].frameX;
 											_scheduleIdx++;
 											break;
 										}
@@ -574,10 +575,15 @@ void scheduleScene::update()
 				_education->update();
 				if (_education->getFin())
 				{
-					_scheduleIdx++;
-					setSchedule();
+					if (_progress == SCHEDULE_ING)
+					{
+						_scheduleIdx++;
+						_progress = SCHEDULE_FIN;
+					}
 				}
 			}
+			if(_progress == SCHEDULE_START)
+				setSchedule();
 		}
 		break;
 	}
@@ -818,6 +824,8 @@ void scheduleScene::render()
 			if (!_calImg[i].data.isChoose) break;
 			if (_calImg[i].data.isSelected)
 			{
+				if (i == 30)
+					int a = 0;
 				/*if (count / 10 < 0)
 				{
 					IMAGEMANAGER->findImage("teachImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
@@ -850,6 +858,9 @@ void scheduleScene::release()
 
 void scheduleScene::setSchedule()
 {
+	if (_progress != SCHEDULE_START) return;
+
+	_progress = SCHEDULE_ING;
 	if (_scheduleIdx > 2)
 	{
 		_fin = true;

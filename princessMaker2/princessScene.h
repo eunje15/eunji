@@ -27,7 +27,7 @@ private:
 	image *_back, *_selectMenu;
 	MENU_TYPE _menuType;
 	STORE_TYPE _storeType;
-	int _year, _mon, _day, _dayOfWeek;
+	int _year, _mon, _day, _dayOfWeek, _finDay;
 	int _perHealth, _perBad, _personalConnect, _idx, _count;
 	SEASON_TYPE _season;
 	tagImg _cal, _status, _menu, _flower, _frame;

@@ -108,7 +108,9 @@ HRESULT playGround::image_init()
 
 	//================교육이미지========================
 	IMAGEMANAGER->addImage("교육액자", "image/education/교육액자(420x180).bmp", 420, 180, true, RGB(255, 0, 255));
-
+	IMAGEMANAGER->addFrameImage("교육선생", "image/education/teachers(1200x130,10x1).bmp", 1200, 130, 10, 1, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("goldBack", "image/education/goldBack(200x44).bmp", 200, 44, false, RGB(255, 0, 255));
+	
 	IMAGEMANAGER->addImage("자연과학배경", "image/education/자연과학배경(400x160).bmp", 400, 160, false, RGB(0, 203, 0));
 	IMAGEMANAGER->addFrameImage("자연과학친구1", "image/education/자연과학친구1(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
 	IMAGEMANAGER->addFrameImage("자연과학친구2", "image/education/자연과학친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 203, 0));
