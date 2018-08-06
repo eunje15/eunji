@@ -1,50 +1,51 @@
 #pragma once
 #include "gameNode.h"
-#include "status.h"
-#include "data.h"
+#include"data.h"
+#include "workStatus.h"
 
-enum EDU_TYPE { EDU_SCHOOL, EDU_POETRY, EDU_THEOLOGY, EDU_STRATEGY, EDU_SWORDS, EDU_FIGHTING, EDU_MAGIC, EDU_SCIENCE, EDU_BALLET, EDU_ART };
-enum EDU_STATUS { EDU_STUDY, EDU_SLEEP, EDU_NOSTUDY };
+enum WORK_TYPE { WORK_HOUSE, WORK_NURSERY, WORK_INN, WORK_FARM, WORK_CHURCH, WORK_RESTAURANT, WORK_WOOD, WORK_HAIR, WORK_PLASTERER, WORK_HUNTER, WORK_GRAVE, WORK_COACH, WORK_DRINK,WORK_NIGHT_DRINK, WORK_NIGHT_CLUB };
+enum WORK_STATUS { WORK_STUDY, WORK_SLEEP, WORK_NOSTUDY };
 
 class princess;
 
-class educationScene : public gameNode
+class partTimeScene : public gameNode
 {
 private:
 	princess* _princess;
-	status* _education;
+	workStatus* _work;
 	vector<string> _vDialog;
 	DIALOG_TYPE _dialogType;
 	int _dialogIdx;
 
 	int _day, _dayCount, _dayIdx, _printDay;
 	int _gold;
+	workStatus _curStatus;
 	int _startF, _endF, _count, _frameCount, _frameX, _success;
 	int _teacherFrameX;
 	int _dialogX, _dialogY;
 
-	string _eduName;
+	string _workName;
 	vector<string> _teachDialog;
-	EDU_TYPE _type;
-	EDU_STATUS _status;
-	STATUS_TYPE _statusProgress;
+	WORK_TYPE _type;
+	WORK_STATUS _status;
+	STATUS_TYPE _progress;
 	DAYOFWEEK _dayOfWeek;
-	vector<pair<string,int>> _eduStatus;
+	vector<pair<string, int>> _workStatus;
 
 	image* _back;
 	image* _princessImg;
 	vector<image*> _friends;
 
-	bool _fin, _goldOk, _eduFin;
+	bool _fin, _goldOk, _workFin;
 
 	tagProgress _pGold;
-	vector<pair<image*,tagProgress>> _vPStatus;
+	vector<pair<image*, tagProgress>> _vPStatus;
 
 public:
-	educationScene();
-	~educationScene();
+	partTimeScene();
+	~partTimeScene();
 
-	HRESULT init(status* education, int dayCount);
+	HRESULT init(workStatus* work, int dayCount);
 	void update();
 	void render();
 	void release();
@@ -56,11 +57,11 @@ public:
 	void setResultDialog();
 
 	void changeFrame();
-	EDU_STATUS selectStatus();
+	WORK_STATUS selectStatus();
 	int changeStatus(string name, int value);
 
 	bool dialogRender();
-	void eduRender();
+	void workRender();
 
 	bool getFin() { return _fin; }
 };

@@ -183,7 +183,6 @@ void saveLoadScene::update()
 
 void saveLoadScene::render()
 {
-	
 	if (dialogRender())
 	{
 		
@@ -305,6 +304,7 @@ void saveLoadScene::saveData(int idx)
 	HANDLE file;
 	DWORD save;
 
+	int season = (int)_princess->getSeason();
 	char str[128];
 	sprintf_s(str, "data/princess%d.txt", 9 - idx);
 
@@ -313,6 +313,8 @@ void saveLoadScene::saveData(int idx)
 	WriteFile(file, &_princess->getInfo(), sizeof(tagInfo), &save, NULL);
 	WriteFile(file, &_princess->getStatus(), sizeof(tagStatus), &save, NULL);
 	WriteFile(file, &_princess->getBodyInfo(), sizeof(tagBody), &save, NULL);
+	WriteFile(file, &_princess->getDate(), sizeof(tagDate), &save, NULL);
+	WriteFile(file, &season, sizeof(int), &save, NULL);
 	int vItemSize = _princess->getVItem().size();
 	WriteFile(file, &vItemSize, sizeof(int), &save, NULL);
 	vector<string> vItemName;
@@ -335,8 +337,10 @@ void saveLoadScene::loadData(int idx)
 	tagInfo info;
 	tagStatus status;
 	tagBody bodyInfo;
+	tagDate date;
 	vector<string> name;
 	int vItemSize;
+	int season;
 	//name.resize(_princess->getVItem().size());
 
 	char str[128];
@@ -348,6 +352,8 @@ void saveLoadScene::loadData(int idx)
 	ReadFile(file, &info, sizeof(tagInfo), &load, NULL);
 	ReadFile(file, &status, sizeof(tagStatus), &load, NULL);
 	ReadFile(file, &bodyInfo, sizeof(tagBody), &load, NULL);
+	ReadFile(file, &date, sizeof(tagDate), &load, NULL);
+	ReadFile(file, &season, sizeof(int), &load, NULL);
 	ReadFile(file, &vItemSize, sizeof(int), &load, NULL);
 	char str2[100000] = "";
 
@@ -363,6 +369,8 @@ void saveLoadScene::loadData(int idx)
 	_princess->setInfo(info);
 	_princess->setStatus(status);
 	_princess->setBodyInfo(bodyInfo);
+	_princess->setDate(date);
+	_princess->setSeason((SEASON_TYPE)season);
 	/*for (int i = 0; i < _princess->getVItem().size(); i++)
 	{
 		_princess->setVItemName(i, name[i]);
@@ -374,6 +382,7 @@ void saveLoadScene::loadData(int idx)
 	ZeroMemory(&info, sizeof(tagInfo));
 	ZeroMemory(&status, sizeof(tagStatus));
 	ZeroMemory(&bodyInfo, sizeof(tagBody));
+	ZeroMemory(&date, sizeof(tagDate));
 	name.clear();
 	CloseHandle(file);
 }

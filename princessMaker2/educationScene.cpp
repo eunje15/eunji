@@ -51,7 +51,7 @@ HRESULT educationScene::init(status* education, int dayCount)
 	_success = _count = _frameCount = _dayIdx = _printDay = 0;
 	_frameX = _startF;
 	_fin = _goldOk = _eduFin = false;
-	_statusProgess = STATUS_START;
+	_statusProgress = STATUS_START;
 	string str = _princess->getInfo().name + "는 오늘부터 " + _eduName +  "을 배웁니다";
 	setDialog(str);
 	_dialogX = 20, _dialogY = WINSIZEY - 180;
@@ -64,13 +64,13 @@ HRESULT educationScene::init(status* education, int dayCount)
 void educationScene::update()
 {
 	if (_dialogType == DIALOG_ING) return;
-	switch (_statusProgess)
+	switch (_statusProgress)
 	{
 	case STATUS_START:
 		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 		{
-			_statusProgess = STATUS_TEACH;
-			setDialog(_teachDialog);
+			_statusProgress = STATUS_TEACH;
+			setDialog(_teachDialog[1]);
 			_dialogX = 190, _dialogY = 235;
 			_dialogIdx = 0, _dialogType = DIALOG_ING;
 		}
@@ -78,7 +78,7 @@ void educationScene::update()
 	case STATUS_TEACH:
 		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 		{
-			_statusProgess = STATUS_ING;
+			_statusProgress = STATUS_ING;
 			_dialogType = DIALOG_FIN;
 			_dialogX = 450, _dialogY = 250;
 		}
@@ -86,7 +86,7 @@ void educationScene::update()
 	case STATUS_ING:
 		if (!_goldOk)
 		{
-			_princess->setGold(_gold);
+			_princess->setGold(-_gold);
 			_pGold.data += _gold;
 			_goldOk = true;
 		}
@@ -104,7 +104,7 @@ void educationScene::update()
 
 void educationScene::render()
 {
-		switch (_statusProgess)
+		switch (_statusProgress)
 		{
 		case STATUS_START:
 			IMAGEMANAGER->findImage("교육액자")->render(DC, 10, WINSIZEY - 190);
@@ -161,10 +161,38 @@ void educationScene::initStatus()
 	_pGold.dataRc = RectMake(125, 205, 50, 25);
 
 	_eduStatus.clear();
+	_vPStatus.clear();
 
 	for (int i = 0; i < _education->getProperty().size(); i++)
 	{
 		_eduStatus.push_back(make_pair(_education->getProperty()[i].name, 0));
+	}
+
+	for (int i = 0; i < _eduStatus.size() + 1; i++)
+	{
+		image* img = new image;
+		img->init("image/education/progessBack(300x44).bmp", 240, 44, false, RGB(255, 0, 255));
+
+		tagProgress temp;
+
+		if (i == _eduStatus.size())
+		{
+			temp.str = "스트레스";
+			temp.data = _princess->getStatus().stress;
+		}
+		else
+		{
+			temp.str = _eduStatus[i].first;
+			temp.data = changeStatus(_eduStatus[i].first, 0);
+		}
+		temp.strRc = RectMake(50 + 250 * (i % 2), 440 + (i / 2) * 50, 80, 25);
+		temp.dataRc = RectMake(130 + 250 * (i % 2), 440 + (i / 2) * 50, 30, 25);
+
+		temp.progressBar = new progressBar;
+		temp.progressBar->init(160 + 250 * (i % 2), 440 + (i / 2)* 50, 110, 20);
+		temp.progressBar->setGauge(temp.data, 500);
+
+		_vPStatus.push_back(make_pair(img, temp));
 	}
 }
 
@@ -398,9 +426,13 @@ void educationScene::setImage()
 
 void educationScene::setTeachDialog()
 {
-	vector<string> vStr = TXTDATA->txtLoad("dialog/선생다이얼로그.txt");
-	_teachDialog = vStr[(int)_type];
+	vector<string> vStr = TXTDATA->txtDataLoadSlash("dialog/선생다이얼로그.txt");
+	char cStr[100000];
+	strcpy(cStr, vStr[(int)_type].c_str());
 	_teacherFrameX = (int)_type;
+	//vector<string> temp = TXTDATA->charArraySeparation(cStr);
+	_teachDialog = TXTDATA->charArraySeparation(cStr);
+	//_teachDialog[1] = temp[1];
 }
 
 void educationScene::changeFrame()
@@ -414,7 +446,7 @@ void educationScene::changeFrame()
 		return;
 	}
 	_count++;
-	if (!(_count % 20))
+	if (!(_count % 5))
 	{
 		if (_dayOfWeek != SUN)
 		{
@@ -492,207 +524,365 @@ void educationScene::changeFrame()
 						}
 						changeStatus(_eduStatus[i].first, randNum);
 						if (_eduStatus[i].first == "항마력")
+						{
 							_eduStatus[i].second -= randNum;
+							_vPStatus[i].second.data -= randNum;
+						}
 						else
+						{
 							_eduStatus[i].second += randNum;
+							_vPStatus[i].second.data += randNum;
+						}
 					}
 				}
 			}
 			switch (_type)
 			{
 			case EDU_SCHOOL:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 2;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 3, _endF = 4;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 5, _endF = 6;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 2;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 3, _endF = 4;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 5, _endF = 6;
+				//	break;
+				//}
 				break;
 			case EDU_POETRY:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 3;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 4, _endF = 7;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 8, _endF = 9;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 3;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 4, _endF = 7;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 8, _endF = 9;
+				//	break;
+				//}
 				break;
 			case EDU_THEOLOGY:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 1;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 2, _endF = 3;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 4, _endF = 5;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 1;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 2, _endF = 3;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 4, _endF = 5;
+				//	break;
+				//}
 				break;
 			case EDU_STRATEGY:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 2;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 3, _endF = 4;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 5, _endF = 6;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 2;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 3, _endF = 4;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 5, _endF = 6;
+				//	break;
+				//}
 				break;
 			case EDU_SWORDS:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 3;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 4, _endF = 5;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 6, _endF = 7;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 3;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 4, _endF = 5;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 6, _endF = 7;
+				//	break;
+				//}
 				break;
 			case EDU_FIGHTING:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 2;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 3, _endF = 4;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 5, _endF = 6;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 2;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 3, _endF = 4;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 5, _endF = 6;
+				//	break;
+				//}
 				break;
 			case EDU_MAGIC:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 7;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 8, _endF = 11;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 12, _endF = 13;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 7;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 8, _endF = 11;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 12, _endF = 13;
+				//	break;
+				//}
 				break;
 			case EDU_SCIENCE:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 2;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 3, _endF = 4;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 5, _endF = 6;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 2;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 3, _endF = 4;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 5, _endF = 6;
+				//	break;
+				//}
 				break;
 			case EDU_BALLET:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 3;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 4, _endF = 5;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 6, _endF = 7;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 3;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 4, _endF = 5;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 6, _endF = 7;
+				//	break;
+				//}
 				break;
 			case EDU_ART:
-				switch (RND->getInt(3))
+				if (selectStatus() == EDU_STUDY)
 				{
-				case 0:
-					//setDialog("서서히 성과가 나타나고 있습니다.");
-					//_dialogType = DIALOG_FIN;
 					_status = EDU_STUDY;
 					_startF = 0, _endF = 2;
-					break;
-				case 1:
+				}
+				else if (selectStatus() == EDU_SLEEP)
+				{
 					_status = EDU_SLEEP;
 					_startF = 3, _endF = 4;
-					break;
-				case 2:
+				}
+				else
+				{
 					_status = EDU_NOSTUDY;
 					_startF = 5, _endF = 6;
-					break;
 				}
+				//switch (RND->getInt(3))
+				//{
+				//case 0:
+				//	//setDialog("서서히 성과가 나타나고 있습니다.");
+				//	//_dialogType = DIALOG_FIN;
+				//	_status = EDU_STUDY;
+				//	_startF = 0, _endF = 2;
+				//	break;
+				//case 1:
+				//	_status = EDU_SLEEP;
+				//	_startF = 3, _endF = 4;
+				//	break;
+				//case 2:
+				//	_status = EDU_NOSTUDY;
+				//	_startF = 5, _endF = 6;
+				//	break;
+				//}
 				break;
 			}
 			if (_dayIdx < _dayCount)
 			{
+				_princess->getStatusP()->stress += 1;
+				_vPStatus[_vPStatus.size() - 1].second.data += 1;
 				_princess->setDay(_day);
 				_princess->setDayOfWeek(_dayOfWeek);
 			}
@@ -700,36 +890,86 @@ void educationScene::changeFrame()
 	}
 }
 
-void educationScene::changeStatus(string name, int value)
+EDU_STATUS educationScene::selectStatus()
 {
+	if (_princess->getStatus().stress > _princess->getStatus().faith)
+		return EDU_SLEEP;
+	if (_princess->getStatus().stress > _princess->getStatus().morality)
+		return EDU_NOSTUDY;
+	return EDU_STUDY;
+}
+
+int educationScene::changeStatus(string name, int value)
+{
+	int temp;
 	if (name == "지능")
+	{
+		temp = _princess->getStatus().intelligence;
 		_princess->getStatusP()->intelligence += value;
+	}
 	else if (name == "전투기술")
+	{
+		temp = _princess->getStatus().warriorSkill;
 		_princess->getStatusP()->warriorSkill += value;
+	}
 	else if (name == "마법기술")
+	{
+		temp = _princess->getStatus().magicSkill;
 		_princess->getStatusP()->magicSkill += value;
+	}
 	else if (name == "기품")
+	{
+		temp = _princess->getStatus().elegance;
 		_princess->getStatusP()->elegance += value;
+	}
 	else if (name == "체력")
+	{
+		temp = _princess->getStatus().hp;
 		_princess->getStatusP()->hp += value;
+	}
 	else if (name == "감수성")
+	{
+		temp = _princess->getStatus().sensitivity;
 		_princess->getStatusP()->sensitivity += value;
+	}
 	else if (name == "신앙심")
+	{
+		temp = _princess->getStatus().faith;
 		_princess->getStatusP()->faith += value;
+	}
 	else if (name == "공격력")
+	{
+		temp = _princess->getStatus().power;
 		_princess->getStatusP()->power += value;
+	}
 	else if (name == "방어력")
+	{
+		temp = _princess->getStatus().defPower;
 		_princess->getStatusP()->defPower += value;
+	}
 	else if (name == "마력")
+	{
+		temp = _princess->getStatus().spell;
 		_princess->getStatusP()->spell += value;
+	}
 	else if (name == "예의범절")
+	{
+		temp = _princess->getStatus().manner;
 		_princess->getStatusP()->manner += value;
+	}
 	else if (name == "매력")
+	{
+		temp = _princess->getStatus().sexual;
 		_princess->getStatusP()->sexual += value;
+	}
 	else if (name == "예술")
+	{
+		temp = _princess->getStatus().art;
 		_princess->getStatusP()->art += value;
+	}
 	else if (name == "항마력")
 	{
+		temp = _princess->getStatus().spellDefence;
 		if (value == 0)
 			_princess->getStatusP()->spellDefence += 0;
 		
@@ -737,6 +977,7 @@ void educationScene::changeStatus(string name, int value)
 			_princess->getStatusP()->spellDefence += -1;
 		
 	}
+	return temp;
 }
 
 void educationScene::setDialog(string dialog)
@@ -747,13 +988,15 @@ void educationScene::setDialog(string dialog)
 	int idx = 0;
 	if (_vDialog.size() > 0)
 		_vDialog.clear();
+	if (_statusProgress == STATUS_TEACH)
+		_vDialog.push_back(_teachDialog[0]);
 	/*if (_statusProgess == STATUS_ING)
 	{
 		string temp = _eduName + " " + to_string(_dayCount + 1) + "일차";
 		_vDialog.push_back(temp);
 	}*/
 	int strLength = 40;
-	if (_statusProgess == STATUS_FIN) strLength = 28;
+	if (_statusProgress == STATUS_FIN || _statusProgress == STATUS_TEACH) strLength = 28;
 	while (1)
 	{
 		if (strSize > strLength)
@@ -773,7 +1016,7 @@ void educationScene::setDialog(string dialog)
 
 void educationScene::setResultDialog()
 {
-	_statusProgess = STATUS_FIN;
+	_statusProgress = STATUS_FIN;
 	_vDialog.clear();
 	string str = to_string(_printDay) + "일간의 수업 결과는...";
 	_vDialog.push_back(str);
@@ -851,7 +1094,7 @@ void educationScene::eduRender()
 	SelectObject(DC, oldBrush);
 	DeleteObject(brush);
 
-	if (_statusProgess == STATUS_FIN) return;
+	if (_statusProgress == STATUS_FIN) return;
 
 	if (_dayOfWeek == SUN && (_dayIdx < _dayCount))
 	{
@@ -982,5 +1225,29 @@ void educationScene::eduRender()
 		sprintf_s(str2, "프레임카운트 :%d, 농땡이중", _frameCount);
 		TextOut(DC, WINSIZEX / 2, WINSIZEY / 2, str2, strlen(str2));
 		break;
+	}
+
+	for (int i = 0; i < _vPStatus.size(); i++)
+	{
+		_vPStatus[i].first->render(DC, _vPStatus[i].second.strRc.left - 10, _vPStatus[i].second.strRc.top - 10);
+		HBRUSH brush, oldBrush;
+		brush = CreateSolidBrush(RGB(111, 17, 17));
+		oldBrush = (HBRUSH)SelectObject(DC, brush);
+		FillRect(DC, &_vPStatus[i].second.strRc, brush);
+		Rectangle(DC, _vPStatus[i].second.strRc.left, _vPStatus[i].second.strRc.top, _vPStatus[i].second.strRc.right, _vPStatus[i].second.strRc.bottom);
+		TextOut(DC, _vPStatus[i].second.strRc.left, _vPStatus[i].second.strRc.top + 2, _vPStatus[i].second.str.c_str(), strlen(_vPStatus[i].second.str.c_str()));
+		SelectObject(DC, oldBrush);
+		DeleteObject(brush);
+
+		brush = CreateSolidBrush(RGB(0, 0, 0));
+		oldBrush = (HBRUSH)SelectObject(DC, brush);
+		Rectangle(DC, _vPStatus[i].second.dataRc.left, _vPStatus[i].second.dataRc.top, _vPStatus[i].second.dataRc.right, _vPStatus[i].second.dataRc.bottom);
+		char str[128];
+		sprintf_s(str, "%3d", _vPStatus[i].second.data);
+		TextOut(DC, _vPStatus[i].second.dataRc.left + 2, _vPStatus[i].second.dataRc.top + 2, str, strlen(str));
+		SelectObject(DC, oldBrush);
+		DeleteObject(brush);
+
+		_vPStatus[i].second.progressBar->render();
 	}
 }

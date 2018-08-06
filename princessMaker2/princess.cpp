@@ -20,6 +20,7 @@ HRESULT princess::init()
 	_info.blood = BLOOD_A;
 	_info.strBlood = "A";
 	_info.age = 11;
+	_info.dietType = "무리하지 않는다";
 
 	_bodyInfo.height = 149.16;
 	_bodyInfo.weight = 41.90;
@@ -33,6 +34,16 @@ HRESULT princess::init()
 	_date.mon = _info.mon;
 	_date.day = _info.day;
 	_date.dayOfWeek = _info.dayOfWeek;
+
+	if (3 <= _info.mon && _info.mon < 6)
+		_season = SPRING;
+	if (6 <= _info.mon && _info.mon < 9)
+		_season = SUMMER;
+	if (9 <= _info.mon && _info.mon < 12)
+		_season = AUTUMN;
+	if (_info.mon == 12 || _info.mon == 1 || _info.mon == 2)
+		_season = WINTER;
+
 	//여기까지 임시로
 
 	setStatus();

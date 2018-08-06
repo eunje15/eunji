@@ -222,6 +222,9 @@
     <ClInclude Include="testClass.h">
       <Filter>playGround\scene</Filter>
     </ClInclude>
+    <ClInclude Include="partTimeScene.h">
+      <Filter>playGround\scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -360,6 +363,9 @@
       <Filter>playGround\stat</Filter>
     </ClCompile>
     <ClCompile Include="testClass.cpp">
+      <Filter>playGround\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="partTimeScene.cpp">
       <Filter>playGround\scene</Filter>
     </ClCompile>
   </ItemGroup>

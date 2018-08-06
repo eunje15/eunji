@@ -15,7 +15,7 @@
 #include "scheduleScene.h"
 #include "statusManager.h"
 
-enum SEASON_TYPE { SPRING, SUMMER, AUTUMN, WINTER };
+
 enum MENU_TYPE { SELECT_NONE, SELECT_STATUS, SELECT_TALK, SELECT_CHANGE_INFO, SELECT_INFO,
 				 SELECT_TOWN, SELECT_CASTLE, SELECT_WEAPON, SELECT_SAVE, SELECT_SCHEDULE };
 enum STORE_TYPE { STORE_NONE, STORE_WEAPON, STORE_ARMOR, STORE_COOK, STORE_GOODS, STORE_CHURCH, STORE_HOSTIPITAL, STORE_SELECT };
@@ -38,7 +38,7 @@ private:
 	tagProgress _pInfo[10], _p4Stat[4], _pSkill[6], _pBasicStat[6];
 	tagProgressFloat _pBodyInfo[5];
 	tagString _dadTalk[3], _changeInfo[4], _dialog[4], _chooseAnswer[2];
-	bool _dialogSelect, _isClick;
+	bool _dialogSelect, _isClick, _scheduleOk;
 	cube* _cube;
 	vector<string> _vDialog;
 	tagImg _store[7], _goldImg[7], _bodyInfo[5][3];
@@ -66,6 +66,7 @@ public:
 	HRESULT init();
 	void update();
 	void render();
+	void setInfo();
 	void setStat();
 	void setDadTalk();
 	void changeInfo();
@@ -74,6 +75,8 @@ public:
 	void setGoldImg();
 	void setBodyInfo();
 	void setDate();
+	void setNextMonth();
+	void setLoadData();
 	void dadTalkRender();
 	void changeInfoRender();
 	void release();

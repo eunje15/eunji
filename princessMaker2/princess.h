@@ -13,6 +13,7 @@ private:
 	tagDate _date;
 	vector<item*> _vInven;
 	vector<string> _vItemName;
+	SEASON_TYPE _season;
 public:
 	princess();
 	~princess();
@@ -28,14 +29,23 @@ public:
 	void setStatus(tagStatus status) { _status = status; }
 	void setBodyInfo(tagBody bodyInfo) { _bodyInfo = bodyInfo; }
 	void setDadName(string dadName) { _info.firstName = dadName; }
+
 	tagInfo getInfo() { return _info; }
+	tagInfo* getInfoP() { return &_info; }
+
 	tagStatus getStatus() { return _status; }
 	tagStatus* getStatusP() { return &_status; }
+
 	tagBody getBodyInfo() { return _bodyInfo; }
+	tagBody* getBodyInfoP() { return &_bodyInfo; }
+
 	string getDadName() { return _info.firstName; }
 
-	void setGold(int gold) { _info.gold -= gold; }
+	void setGold(int gold) { _info.gold += gold; }
 	int getGold() { return _info.gold; }
+
+	void setSeason(int season) { _season = (SEASON_TYPE)season; }
+	SEASON_TYPE getSeason() { return _season; }
 
 	void setDietType(string type) { _info.dietType = type; }
 	void setStress(int stress);
@@ -50,6 +60,8 @@ public:
 	tagDate getDate() { return _date; }
 	void setDate(tagDate date) { _date = date; }
 
+	void setYear(int year) { _date.year = year; }
+	void setMonth(int mon) { _date.mon = mon; }
 	void setDayOfWeek(int dayOfWeek) { _date.dayOfWeek = dayOfWeek; }
 	int getDayOfWeek() { return _date.dayOfWeek; }
 	void setDay(int day) { _date.day = day; }

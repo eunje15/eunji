@@ -40,7 +40,14 @@ HRESULT princessScene::init()
 	_dayOfWeekImg.img = IMAGEMANAGER->findImage("dayOfWeek");
 	_dayOfWeekImg.frameY = _dayOfWeek;
 
-	_season = SPRING;
+	if (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12)
+		_finDay = 31;
+	else if (_mon == 2)
+		_finDay = 28;
+	else
+		_finDay = 30;
+
+	_season = _princess->getSeason();
 	_flower.img = IMAGEMANAGER->findImage("flower");
 	_flower.frameX = (int)_season;
 	_flower.x = 0, _flower.y = 155;
@@ -53,7 +60,8 @@ HRESULT princessScene::init()
 	_status.x = WINSIZEX - _status.img->getWidth();
 	_status.y = 0;
 	setStringStatus();
-	_princess->setDietType(_strStatus[1].str); //임시
+	//_princess->setDietType(_strStatus[1].str); //임시
+	_princess->setDietType(_princess->getInfo().dietType);
 	_printStrStatus.rc = RectMake(600,166, _status.img->getWidth(), 22);
 	_nameRc = RectMake(600, 12, _status.img->getWidth(), 22);
 	_firstNameRc = RectMake(600, 34, _status.img->getWidth(), 22);
@@ -89,6 +97,8 @@ HRESULT princessScene::init()
 
 	setGoldImg();
 	setBodyInfo();
+
+	_scheduleOk = false;
 
 	_cube = new cube;
 	_cube->init();
@@ -172,6 +182,11 @@ void princessScene::update()
 						break;
 					case 8:
 						_menuType = SELECT_SCHEDULE;
+						if (_scheduleOk)
+						{
+							setNextMonth();
+							_scheduleOk = false;
+						}
 						_scheduleScene->init(_year,_mon);
 						break;
 					}
@@ -265,8 +280,10 @@ void princessScene::update()
 	{
 		_saveLoadScene->update();
 		if (_saveLoadScene->getFin())
+		{
 			_menuType = SELECT_NONE;
-		
+			setLoadData();
+		}
 	}
 	else if (_menuType == SELECT_SCHEDULE)
 	{
@@ -275,22 +292,8 @@ void princessScene::update()
 		if (_scheduleScene->getFin())
 		{
 			_menuType = SELECT_NONE;
-			if(_mon < 12)
-				_mon++;
-			else
-			{
-				_mon = 1;
-				_year++;
-			}
-			if (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12)
-				_finDay = 31;
-			else
-				_finDay = 30;
-
-			_day = 1;
-			_dayImg.frameY = _day - 1;
-			_dayOfWeek = _princess->getDate().dayOfWeek;
-			_dayOfWeekImg.frameY = _dayOfWeek;
+			_scheduleOk = true;
+			//setNextMonth();
 		}
 	}
 
@@ -412,6 +415,11 @@ void princessScene::render()
 	SetTextColor(DC, RGB(255, 255, 255));
 	sprintf_s(str, "%d %d", _ptMouse.x, _ptMouse.y);
 	TextOut(DC, 50, 50, str, strlen(str));
+}
+
+void princessScene::setInfo()
+{
+	_constellationImg.frameX = _princess->getStatus().god.idx;
 }
 
 void princessScene::setStat()
@@ -781,19 +789,123 @@ void princessScene::setDate()
 	if (_scheduleScene->getProgess() == 2)
 	{
 		_scheduleScene->setProgess(0);
-		_day = _princess->getDate().day + 1;
-		_dayImg.frameY = _day - 1;
-		_dayOfWeek = _princess->getDate().dayOfWeek + 1;
-		if (_dayOfWeek == 7) _dayOfWeek = 0;
-		_dayOfWeekImg.frameY = _dayOfWeek;
-		_princess->setDay(_day);
-		_princess->setDayOfWeek(_dayOfWeek);
+		if (_day < _finDay)
+		{
+			_day = _princess->getDate().day + 1;
+			_dayImg.frameY = _day - 1;
+			_dayOfWeek = _princess->getDate().dayOfWeek + 1;
+			if (_dayOfWeek == 7) _dayOfWeek = 0;
+			_dayOfWeekImg.frameY = _dayOfWeek;
+			_princess->setDay(_day);
+			_princess->setDayOfWeek(_dayOfWeek);
+		}
 		return;
 	}
 	_day = _princess->getDate().day;
 	_dayImg.frameY = _day - 1;
 	_dayOfWeek = _princess->getDate().dayOfWeek;
 	_dayOfWeekImg.frameY = _dayOfWeek;
+}
+
+void princessScene::setNextMonth()
+{
+	if (_mon < 12)
+		_mon++;
+	else
+	{
+		_mon = 1;
+		_year++;
+		_yearImg.frameY = _year - 1200;
+		_princess->setYear(_year);
+	}
+	if (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12)
+		_finDay = 31;
+	else if (_mon == 2)
+		_finDay = 28;
+	else
+		_finDay = 30;
+
+	_monImg.frameY = _mon - 1;
+	_day = 1;
+	_dayImg.frameY = _day - 1;
+	_dayOfWeek = _princess->getDate().dayOfWeek + 1;
+	if (_dayOfWeek == 7) _dayOfWeek = 0;
+	_dayOfWeekImg.frameY = _dayOfWeek;
+
+	if (_princess->getInfo().strBlood == "A")
+	{
+		_princess->getStatusP()->morality += 3;
+		_princess->getStatusP()->stress += 2;
+	}
+	else if (_princess->getInfo().strBlood == "B")
+	{
+		_princess->getStatusP()->stress -= 2;
+	}
+	else if (_princess->getInfo().strBlood == "AB")
+	{
+		_princess->getStatusP()->sensitivity += 2;
+	}
+
+	if (_printStrStatus.str == "어쨌든 튼튼하게")
+	{
+		if(_princess->getInfo().age < 16)
+			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.28f, 0.35f);
+		else
+			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.16f, 0.20f);
+	}
+	else if (_printStrStatus.str == "무리하지 않는다")
+	{
+		if (_princess->getInfo().age < 16)
+			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.19f, 0.22f);
+		else
+			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.05f, 0.08f);
+	}
+	else if (_printStrStatus.str == "얌전한 아이로")
+	{
+		if (_princess->getInfo().age < 16)
+			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.10f, 0.13f);
+		else
+			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.01f, 0.04f);
+	}
+	else if (_printStrStatus.str == "다이어트를 시킨다")
+	{
+		if (_princess->getInfo().age < 16)
+			_princess->getBodyInfoP()->weight -= RND->getFromFloatTo(0.00f, 0.06f);
+		else
+			_princess->getBodyInfoP()->weight -= RND->getFromFloatTo(0.5f, 1.0f);
+	}
+	if (_mon == 3)
+		_season = SPRING;
+	else if (_mon == 6)
+		_season = SUMMER;
+	else if (_mon == 9)
+		_season = AUTUMN;
+	else if (_mon == 12)
+		_season = WINTER;
+	_flower.frameX = (int)_season;
+
+	_princess->setMonth(_mon);
+	_princess->setDay(_day);
+	_princess->setDayOfWeek(_dayOfWeek);
+	_princess->setSeason((int)_season);
+	setStat();
+	setBodyInfo();
+}
+
+void princessScene::setLoadData()
+{
+	setInfo();
+	_year = _princess->getDate().year;
+	_yearImg.frameY = _year - 1200;
+	_mon = _princess->getDate().mon;
+	_monImg.frameY = _mon - 1;
+	_day = _princess->getDate().day;
+	_dayImg.frameY = _day - 1;
+	_dayOfWeek = _princess->getDate().dayOfWeek;
+	_dayOfWeekImg.frameY = _dayOfWeek;
+	setStat();
+	setBodyInfo();
+	_flower.frameX = (int)_princess->getSeason();
 }
 
 void princessScene::dadTalkRender()
