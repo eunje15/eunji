@@ -171,7 +171,7 @@ void educationScene::initStatus()
 	for (int i = 0; i < _eduStatus.size() + 1; i++)
 	{
 		image* img = new image;
-		img->init("image/education/progessBack(300x44).bmp", 240, 44, false, RGB(255, 0, 255));
+		img->init("image/education/progressBack(300x44).bmp", 240, 44, false, RGB(255, 0, 255));
 
 		tagProgress temp;
 

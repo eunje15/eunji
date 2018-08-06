@@ -181,5 +181,13 @@ HRESULT playGround::image_init()
 	IMAGEMANAGER->addFrameImage("미술공주", "image/education/미술공주(350x100,7x1).bmp", 350, 100, 7, 1, true, RGB(1, 202, 0));
 	IMAGEMANAGER->addFrameImage("미술선생", "image/education/미술선생(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(1, 202, 0));
 
+	
+	//=====================아르바이트 이미지========================
+	IMAGEMANAGER->addImage("알바액자", "image/education/교육액자(420x180).bmp", 420, 180, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("알바선생", "image/work/알바선생(1800x130,15x1).bmp", 1800, 130, 15, 1, false, RGB(255, 0, 255));
+	
+
+	
+	
 	return S_OK;
 }
