@@ -11,12 +11,13 @@ partTimeScene::~partTimeScene()
 {
 }
 
-HRESULT partTimeScene::init(workStatus * work, int dayCount)
+HRESULT partTimeScene::init(workStatus* work, int dayCount, int idx)
 {
 	_princess = SCENEMANAGER->getPrincessAddress();
 	_dayOfWeek = (DAYOFWEEK)_princess->getDate().dayOfWeek;
 	_day = _princess->getDate().day;
 
+	_idx = idx;
 	_work = work;
 	_workName = _work->getName();
 	_dayCount = dayCount;
@@ -175,7 +176,7 @@ void partTimeScene::initStatus()
 		_workStatus.push_back(make_pair(_work->getProperty()[i].first, 0));
 	}
 
-	for (int i = 0; i < _workStatus.size(); i++)
+	for (int i = 0; i < _workStatus.size() + 1; i++)
 	{
 		image* img = new image;
 		img->init("image/education/progressBack(240x44).bmp", 240, 44, false, RGB(255, 0, 255));
@@ -323,6 +324,27 @@ void partTimeScene::changeFrame()
 			if (_dayOfWeek != MON)
 			{
 				//workStatus올려주기
+				for (int i = 0; i < _work->getProperty().size(); i++)
+				{
+					int randNum;
+					if (_work->getProperty()[i].second.first == _work->getProperty()[i].second.second)
+						randNum = _work->getProperty()[i].second.first;
+					else
+					{
+						if (_work->getProperty()[i].second.second < 0)
+						{
+							randNum = RND->getFromIntTo(_work->getProperty()[i].second.first, -_work->getProperty()[i].second.second);
+							randNum = -randNum;
+						}
+						else
+						{
+							randNum = RND->getFromIntTo(_work->getProperty()[i].second.first, _work->getProperty()[i].second.second);
+						}
+					}
+					changeStatus(_work->getProperty()[i].first, randNum);
+					_workStatus[i].second += randNum;
+					_vPStatus[i].second.data += randNum;
+				}
 			}
 			switch (_type)
 			{
@@ -537,12 +559,20 @@ void partTimeScene::changeFrame()
 				}
 				break;
 			}
+			if (_dayIdx < _dayCount)
+			{
+				_princess->getStatusP()->stress += _work->getStress();
+				_vPStatus[_vPStatus.size() - 1].second.data += _work->getStress();
+				_princess->setDay(_day);
+				_princess->setDayOfWeek(_dayOfWeek);
+			}
 		}
 	}
 }
 
 WORK_STATUS partTimeScene::selectStatus()
 {
+	//성공 조건 다시해야해
 	if (_princess->getStatus().stress > _princess->getStatus().faith)
 		return WORK_SLEEP;
 	if (_princess->getStatus().stress > _princess->getStatus().morality)
@@ -553,7 +583,87 @@ WORK_STATUS partTimeScene::selectStatus()
 int partTimeScene::changeStatus(string name, int value)
 {
 	int temp;
-	//스탯별로 정리해야해
+	
+	if (name == "요리")
+	{
+		temp = _princess->getStatus().cooking;
+		_princess->getStatusP()->cooking += value;
+	}
+	else if (name == "감수성")
+	{
+		temp = _princess->getStatus().sensitivity;
+		_princess->getStatusP()->sensitivity += value;
+	}
+	else if (name == "청소세탁")
+	{
+		temp = _princess->getStatus().cleaning;
+		_princess->getStatusP()->cleaning += value;
+	}
+	else if (name == "체력")
+	{
+		temp = _princess->getStatus().hp;
+		_princess->getStatusP()->hp += value;
+	}
+	else if (name == "도덕성")
+	{
+		temp = _princess->getStatus().morality;
+		_princess->getStatusP()->morality += value;
+	}
+	else if (name == "근력")
+	{
+		temp = _princess->getStatus().physical;
+		_princess->getStatusP()->physical += value;
+	}
+	else if (name == "매력")
+	{
+		temp = _princess->getStatus().sexual;
+		_princess->getStatusP()->sexual += value;
+	}
+	else if (name == "전투기술")
+	{
+		temp = _princess->getStatus().warriorSkill;
+		_princess->getStatusP()->warriorSkill += value;
+	}
+	else if (name == "신앙심")
+	{
+		temp = _princess->getStatus().faith;
+		_princess->getStatusP()->faith += value;
+	}
+	else if (name == "기품")
+	{
+		temp = _princess->getStatus().elegance;
+		_princess->getStatusP()->elegance += value;
+	}
+	else if (name == "항마력")
+	{
+		temp = _princess->getStatus().spellDefence;
+		_princess->getStatusP()->spellDefence += value;
+	}
+	else if (name == "화술")
+	{
+		temp = _princess->getStatus().conversation;
+		_princess->getStatusP()->conversation += value;
+	}
+	else if (name == "인과")
+	{
+		temp = _princess->getStatus().karma;
+		_princess->getStatusP()->karma += value;
+	}
+	else if (name == "성품")
+	{
+		temp = _princess->getStatus().personality;
+		_princess->getStatusP()->personality += value;
+	}
+	else if (name == "지능")
+	{
+		temp = _princess->getStatus().intelligence;
+		_princess->getStatusP()->intelligence += value;
+	}
+	else if (name == "관계")
+	{
+		temp = _princess->getStatus().withFather;
+		_princess->getStatusP()->withFather += value;
+	}
 	return temp;
 }
 

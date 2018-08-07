@@ -13,44 +13,45 @@ testClass::~testClass()
 
 HRESULT testClass::init()
 {
-	/*_back = IMAGEMANAGER->findImage("미술배경");
-	_friends.push_back(IMAGEMANAGER->findImage("미술친구1"));
-	_friends.push_back(IMAGEMANAGER->findImage("미술친구2"));
-	_friends.push_back(IMAGEMANAGER->findImage("미술선생"));
-	_princess = IMAGEMANAGER->findImage("미술공주");
+	_back = IMAGEMANAGER->findImage("나무꾼배경");
+	_friends.push_back(IMAGEMANAGER->findImage("나무꾼선생"));
+	_friends.push_back(IMAGEMANAGER->findImage("나무꾼친구1"));
+	_friends.push_back(IMAGEMANAGER->findImage("나무꾼친구2"));
+	_princess = IMAGEMANAGER->findImage("나무꾼공주");
 
 	switch (RND->getInt(3))
 	{
 	case 0:
-		_type = EDU_STUDY;
-		_startF = 0, _endF = 2;
+		_type = TEST_STUDY;
+		_startF = 0, _endF = 4;
 		_typeStr = "공부중";
 		break;
 	case 1:
-		_type = EDU_SLEEP;
-		_startF = 3, _endF = 4;
+		_type = TEST_SLEEP;
+		_startF = 0, _endF = 9;
 		_typeStr = "조는중";
 		break;
 	case 2:
-		_type = EDU_NOSTUDY;
-		_startF = 5, _endF = 6;
+		_type = TEST_NOSTUDY;
+		_startF = 11, _endF = 12;
 		_typeStr = "농땡이";
 		break;
 	}
 	_day = _success = _count = _frameCount = 0;
 	_gold = 10;
 	_dayOfWeek = MON;
-	_frameX = _startF;*/
+	_frameX = _startF;
 	return S_OK;
 }
 
 void testClass::update()
 {
-	/*if (_day >= 10) return;
+	if (_day >= 10) return;
 	_count++;
 	if (!(_count % 30))
 	{
 		_count = 0;
+		
 		for (int i = 0; i < _friends.size(); i++)
 		{
 			if (_friends[i]->getFrameX() < _friends[i]->getMaxFrameX())
@@ -58,9 +59,14 @@ void testClass::update()
 			else
 				_friends[i]->setFrameX(0);
 		}
-		_frameCount++;
-		if (_frameX >= _endF) _frameX = _startF;
-		_frameX++;
+		if (_frameX >= _endF)
+		{
+			_frameCount++;
+			_frameX = _startF;
+		}
+		else
+			_frameX++;
+		
 		if (_frameCount == 3)
 		{
 			_day++;
@@ -92,41 +98,39 @@ void testClass::update()
 			switch (RND->getInt(3))
 			{
 			case 0:
-				_type = EDU_STUDY;
-				_startF = 0, _endF = 2;
+				_type = TEST_STUDY;
+				_startF = 0, _endF = 7;
 				_typeStr = "공부중";
 				break;
 			case 1:
-				_type = EDU_SLEEP;
-				_startF = 3, _endF = 4;
+				_type = TEST_SLEEP;
+				_startF = 0, _endF = 9;
 				_typeStr = "조는중";
 				break;
 			case 2:
-				_type = EDU_NOSTUDY;
-				_startF = 5, _endF = 6;
+				_type = TEST_NOSTUDY;
+				_startF = 11, _endF = 12;
 				_typeStr = "농땡이";
 				break;
 			}
+			_frameX = _startF;
 		}
 		
 	}
 	if (_day == 10)
 	{
 		_typeStr = "끝";
-	}*/
+	}
 }
 
 void testClass::render()
 {
 	_back->render(DC, 0, 0);
-	for (int i = 0; i < _friends.size() - 1; i++)
-	{
-		
-	}
-	_friends[0]->frameRender(DC, 89, 43, _friends[0]->getFrameX(), 0);
-	_friends[1]->frameRender(DC, 160, 42, _friends[1]->getFrameX(), 0);
-	_friends[_friends.size() - 1]->frameRender(DC, 310, 42, _friends[_friends.size() - 1]->getFrameX(), 0);
-	_princess->frameRender(DC, 10, 42, _frameX, 0);
+	_friends[0]->frameRender(DC, 330, 20, _friends[0]->getFrameX(), 0);
+	_friends[1]->frameRender(DC, 200, 43, _friends[1]->getFrameX(), 0);
+	_friends[2]->frameRender(DC, 0, 43, _friends[2]->getFrameX(), 0);
+	_princess->frameRender(DC, 80, 42, _frameX, 0);
+	IMAGEMANAGER->findImage("나무꾼풀")->render(DC, 0, 108);
 	char str[128];
 	sprintf_s(str, "%d %d", _ptMouse.x, _ptMouse.y);
 	TextOut(DC, 700, 500, str, strlen(str));

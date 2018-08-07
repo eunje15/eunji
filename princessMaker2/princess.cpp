@@ -61,6 +61,12 @@ HRESULT princess::init()
 
 	_info.gold = 1000000;
 
+	_educationCount = new int[10];
+	_workSuccess = new int[15];
+
+	_educationCount[5] = 7;
+	_workSuccess[7] = 19;
+
 	return S_OK;
 }
 

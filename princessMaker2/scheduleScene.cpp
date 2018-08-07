@@ -912,11 +912,11 @@ void scheduleScene::setSchedule()
 	if (_scheduleWeek[_scheduleIdx] == "teach")
 	{
 		if(_scheduleIdx == 2 && (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12))
-			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 11);
+			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 11, _itemIdx[_scheduleIdx]);
 		else if(_scheduleIdx == 2 && _mon == 2)
-			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 8);
+			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 8, _itemIdx[_scheduleIdx]);
 		else	
-			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 10);
+			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 10, _itemIdx[_scheduleIdx]);
 	}
 	else if (_scheduleWeek[_scheduleIdx] == "work")
 	{

@@ -15,6 +15,7 @@ private:
 	status* _education;
 	vector<string> _vDialog;
 	DIALOG_TYPE _dialogType;
+	int _idx;
 	int _dialogIdx;
 
 	int _day, _dayCount, _dayIdx, _printDay;
@@ -44,7 +45,7 @@ public:
 	educationScene();
 	~educationScene();
 
-	HRESULT init(status* education, int dayCount);
+	HRESULT init(status* education, int dayCount, int idx);
 	void update();
 	void render();
 	void release();

@@ -14,6 +14,9 @@ private:
 	vector<item*> _vInven;
 	vector<string> _vItemName;
 	SEASON_TYPE _season;
+	int* _educationCount;
+	int* _workSuccess;
+
 public:
 	princess();
 	~princess();
@@ -58,13 +61,21 @@ public:
 	void setDataItem(vector<item*> vTotal);
 
 	tagDate getDate() { return _date; }
-	void setDate(tagDate date) { _date = date; }
+	int getDayOfWeek() { return _date.dayOfWeek; }
+	int getDay() { return _date.day; }
 
+	void setDate(tagDate date) { _date = date; }
 	void setYear(int year) { _date.year = year; }
 	void setMonth(int mon) { _date.mon = mon; }
 	void setDayOfWeek(int dayOfWeek) { _date.dayOfWeek = dayOfWeek; }
-	int getDayOfWeek() { return _date.dayOfWeek; }
 	void setDay(int day) { _date.day = day; }
-	int getDay() { return _date.day; }
+	
+	void setEducationCountIdx(int idx) { _educationCount[idx] += 1; }
+	void setWorkSuccessIdx(int idx) { _workSuccess[idx] += 1; }
+	void setEducationCount(int* education) { _educationCount = education; }
+	void setWorkSuccess(int* workSuccess) { _workSuccess = workSuccess; }
+
+	int* getEducationCount() { return _educationCount; }
+	int* getWorkSuccess() { return _workSuccess; }
 };
 

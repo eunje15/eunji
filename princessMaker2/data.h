@@ -68,6 +68,7 @@ struct tagStatus
 	int personality;		//성품
 	int karma;				//업보
 	int stress;				//스트레스
+	int withFather;			//아빠와의 관계
 	int total;				//총합
 	string plusNorth;		//무신
 };

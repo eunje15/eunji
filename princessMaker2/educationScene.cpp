@@ -12,7 +12,7 @@ educationScene::~educationScene()
 {
 }
 
-HRESULT educationScene::init(status* education, int dayCount)
+HRESULT educationScene::init(status* education, int dayCount, int idx)
 {
 	_princess = SCENEMANAGER->getPrincessAddress();
 	_dayOfWeek = (DAYOFWEEK)_princess->getDate().dayOfWeek;
@@ -21,6 +21,7 @@ HRESULT educationScene::init(status* education, int dayCount)
 	_education = education;
 	_eduName = _education->getName();
 	_dayCount = dayCount;
+	_idx = idx;
 	
 	if (_eduName == "자연과학")
 		_type = EDU_SCHOOL;
@@ -443,6 +444,7 @@ void educationScene::changeFrame()
 	{
 		setResultDialog();
 		_eduFin = true;
+		_princess->setEducationCountIdx(_idx);
 		return;
 	}
 	_count++;
@@ -514,7 +516,9 @@ void educationScene::changeFrame()
 					{
 						int randNum;
 						if (_eduStatus[i].first == "항마력")
+						{
 							randNum = RND->getInt(2);
+						}
 						else
 						{
 							if (_education->getProperty()[i].startP != _education->getProperty()[i].endP)
@@ -879,6 +883,7 @@ void educationScene::changeFrame()
 				//}
 				break;
 			}
+			_frameX = _startF;
 			if (_dayIdx < _dayCount)
 			{
 				_princess->getStatusP()->stress += 1;

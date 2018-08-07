@@ -16,6 +16,7 @@ private:
 	vector<string> _vDialog;
 	DIALOG_TYPE _dialogType;
 	int _dialogIdx;
+	int _idx;
 
 	int _day, _dayCount, _dayIdx, _printDay;
 	int _gold;
@@ -45,7 +46,7 @@ public:
 	partTimeScene();
 	~partTimeScene();
 
-	HRESULT init(workStatus* work, int dayCount);
+	HRESULT init(workStatus* work, int dayCount, int idx);
 	void update();
 	void render();
 	void release();

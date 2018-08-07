@@ -315,6 +315,8 @@ void saveLoadScene::saveData(int idx)
 	WriteFile(file, &_princess->getBodyInfo(), sizeof(tagBody), &save, NULL);
 	WriteFile(file, &_princess->getDate(), sizeof(tagDate), &save, NULL);
 	WriteFile(file, &season, sizeof(int), &save, NULL);
+	WriteFile(file, _princess->getEducationCount(), sizeof(int)*10, &save, NULL);
+	WriteFile(file, _princess->getWorkSuccess(), sizeof(int) * 15, &save, NULL);
 	int vItemSize = _princess->getVItem().size();
 	WriteFile(file, &vItemSize, sizeof(int), &save, NULL);
 	vector<string> vItemName;
@@ -341,6 +343,8 @@ void saveLoadScene::loadData(int idx)
 	vector<string> name;
 	int vItemSize;
 	int season;
+	int educationCount[10];
+	int workSuccess[15];
 	//name.resize(_princess->getVItem().size());
 
 	char str[128];
@@ -354,6 +358,8 @@ void saveLoadScene::loadData(int idx)
 	ReadFile(file, &bodyInfo, sizeof(tagBody), &load, NULL);
 	ReadFile(file, &date, sizeof(tagDate), &load, NULL);
 	ReadFile(file, &season, sizeof(int), &load, NULL);
+	ReadFile(file, educationCount, sizeof(int) * 10, &load, NULL);
+	ReadFile(file, workSuccess, sizeof(int) * 15, &load, NULL);
 	ReadFile(file, &vItemSize, sizeof(int), &load, NULL);
 	char str2[100000] = "";
 
@@ -371,6 +377,8 @@ void saveLoadScene::loadData(int idx)
 	_princess->setBodyInfo(bodyInfo);
 	_princess->setDate(date);
 	_princess->setSeason((SEASON_TYPE)season);
+	_princess->setEducationCount(educationCount);
+	_princess->setWorkSuccess(workSuccess);
 	/*for (int i = 0; i < _princess->getVItem().size(); i++)
 	{
 		_princess->setVItemName(i, name[i]);

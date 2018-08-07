@@ -32,7 +32,9 @@ public:
 	int getAge() { return _age; }
 	string getName() { return _name; }
 	int getSalary() { return _salary; }
+	int getStress() { return _stress; }
 
 	vector<pair<string, pair<int, int>>> getProperty() { return _property; }
+	vector<pair<string, int>> getSuccess() { return _success; }
 };
 
