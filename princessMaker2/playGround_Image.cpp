@@ -231,5 +231,42 @@ HRESULT playGround::image_init()
 	IMAGEMANAGER->addFrameImage("나무꾼친구2", "image/work/나무꾼친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
 	IMAGEMANAGER->addImage("나무꾼풀", "image/work/나무꾼풀(400x52).bmp", 400, 52, true, RGB(255, 0, 0));
 
+	IMAGEMANAGER->addImage("미용실배경", "image/work/미용실배경(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("미용실공주", "image/work/미용실공주(500x100,10x1).bmp", 500, 100, 10, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("미용실선생", "image/work/미용실선생(250x100,5x1).bmp", 250, 100, 5, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("미용실친구1", "image/work/미용실친구1(200x200,4x2).bmp", 200, 200, 4, 2, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("미용실친구2", "image/work/미용실친구2(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("미용실친구3", "image/work/미용실친구3(300x100,6x1).bmp", 300, 100, 6, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addImage("미용실친구3팔", "image/work/미용실친구3팔(50x100).bmp", 50, 100, true, RGB(0, 204, 0));
+
+	IMAGEMANAGER->addImage("미장이배경", "image/work/미장이배경(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("미장이공주", "image/work/미장이공주(450x100,9x1).bmp", 450, 100, 9, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("미장이선생", "image/work/미장이선생(450x70,9x1).bmp", 450, 70, 9, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("미장이친구1", "image/work/미장이친구1(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("미장이강아지", "image/work/미장이강아지(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+
+	IMAGEMANAGER->addImage("사냥꾼배경", "image/work/사냥꾼배경(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("사냥꾼공주", "image/work/사냥꾼공주(400x100,8x1).bmp", 400, 100, 8, 1, true, RGB(0, 207, 0));
+	IMAGEMANAGER->addFrameImage("사냥꾼선생", "image/work/사냥꾼선생(300x100,6x1).bmp", 300, 100, 6, 1, true, RGB(0, 207, 0));
+	IMAGEMANAGER->addFrameImage("사냥꾼토끼", "image/work/사냥꾼토끼(250x100,5x1).bmp", 250, 100, 5, 1, true, RGB(0, 207, 0));
+	IMAGEMANAGER->addImage("사냥꾼풀", "image/work/사냥꾼풀(400x52).bmp", 400, 52, true, RGB(255, 255, 255));
+
+	IMAGEMANAGER->addImage("묘지기배경", "image/work/묘지기배경(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("묘지기공주", "image/work/묘지기공주(400x100,8x1).bmp", 400, 100, 8, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("묘지기선생", "image/work/묘지기선생(300x100,6x1).bmp", 300, 100, 6, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("묘지기불", "image/work/묘지기불(100x45,2x1).bmp", 100, 45, 2, 1, true, RGB(0, 204, 0));
+
+	IMAGEMANAGER->addImage("가정교사배경", "image/work/가정교사배경(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("가정교사공주", "image/work/가정교사공주(500x100,10x1).bmp", 500, 100, 10, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("가정교사선생", "image/work/가정교사선생(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("가정교사친구", "image/work/가정교사친구1(350x100,7x1).bmp", 350, 100, 7, 1, true, RGB(0, 204, 0));
+
+	IMAGEMANAGER->addImage("주점배경", "image/work/주점배경(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("주점공주", "image/work/주점공주(1000x75,20x1).bmp", 1000, 75, 20, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("주점선생", "image/work/주점선생(150x100,3x1).bmp", 150, 100, 3, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("주점친구1", "image/work/주점친구1(200x75,4x1).bmp", 200, 75, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("주점친구2", "image/work/주점친구2(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("주점친구3", "image/work/주점친구3(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+
 	return S_OK;
 }

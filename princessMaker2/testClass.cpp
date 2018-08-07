@@ -13,27 +13,28 @@ testClass::~testClass()
 
 HRESULT testClass::init()
 {
-	_back = IMAGEMANAGER->findImage("나무꾼배경");
-	_friends.push_back(IMAGEMANAGER->findImage("나무꾼선생"));
-	_friends.push_back(IMAGEMANAGER->findImage("나무꾼친구1"));
-	_friends.push_back(IMAGEMANAGER->findImage("나무꾼친구2"));
-	_princess = IMAGEMANAGER->findImage("나무꾼공주");
+	_back = IMAGEMANAGER->findImage("주점배경");
+	_friends.push_back(IMAGEMANAGER->findImage("주점선생"));
+	_friends.push_back(IMAGEMANAGER->findImage("주점친구1"));
+	_friends.push_back(IMAGEMANAGER->findImage("주점친구2"));
+	_friends.push_back(IMAGEMANAGER->findImage("주점친구3"));
+	_princess = IMAGEMANAGER->findImage("주점공주");
 
 	switch (RND->getInt(3))
 	{
 	case 0:
 		_type = TEST_STUDY;
-		_startF = 0, _endF = 4;
+		_startF = 0, _endF = 7;
 		_typeStr = "공부중";
 		break;
 	case 1:
 		_type = TEST_SLEEP;
-		_startF = 0, _endF = 9;
+		_startF = 7, _endF = 17;
 		_typeStr = "조는중";
 		break;
 	case 2:
 		_type = TEST_NOSTUDY;
-		_startF = 11, _endF = 12;
+		_startF = 18, _endF = 19;
 		_typeStr = "농땡이";
 		break;
 	}
@@ -104,12 +105,12 @@ void testClass::update()
 				break;
 			case 1:
 				_type = TEST_SLEEP;
-				_startF = 0, _endF = 9;
+				_startF = 7, _endF = 17;
 				_typeStr = "조는중";
 				break;
 			case 2:
 				_type = TEST_NOSTUDY;
-				_startF = 11, _endF = 12;
+				_startF = 18, _endF = 19;
 				_typeStr = "농땡이";
 				break;
 			}
@@ -126,11 +127,13 @@ void testClass::update()
 void testClass::render()
 {
 	_back->render(DC, 0, 0);
-	_friends[0]->frameRender(DC, 330, 20, _friends[0]->getFrameX(), 0);
-	_friends[1]->frameRender(DC, 200, 43, _friends[1]->getFrameX(), 0);
-	_friends[2]->frameRender(DC, 0, 43, _friends[2]->getFrameX(), 0);
-	_princess->frameRender(DC, 80, 42, _frameX, 0);
-	IMAGEMANAGER->findImage("나무꾼풀")->render(DC, 0, 108);
+	_friends[0]->frameRender(DC, 200, 0, _friends[0]->getFrameX(), 0);
+	_friends[1]->frameRender(DC, 60, 17, _friends[1]->getFrameX(), 0);
+	_friends[2]->frameRender(DC, 210, 42, _friends[2]->getFrameX(), 0);
+	_friends[3]->frameRender(DC, 270, 43, _friends[3]->getFrameX(), 0);
+	_princess->frameRender(DC, 300, 17, _frameX, 0);
+	
+	
 	char str[128];
 	sprintf_s(str, "%d %d", _ptMouse.x, _ptMouse.y);
 	TextOut(DC, 700, 500, str, strlen(str));
