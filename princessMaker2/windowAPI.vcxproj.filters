@@ -225,6 +225,9 @@
     <ClInclude Include="partTimeScene.h">
       <Filter>playGround\scene</Filter>
     </ClInclude>
+    <ClInclude Include="dadTalkScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -367,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="partTimeScene.cpp">
       <Filter>playGround\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="dadTalkScene.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

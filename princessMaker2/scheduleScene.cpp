@@ -25,7 +25,7 @@ HRESULT scheduleScene::init(int year, int mon)
 
 	for (int i = 0; i < 42; i++)
 	{
-		_calImg[i].data.rc = RectMake(20 + (i % 7) * 40 , 160 + 40 * (i / 7), 40, 40);
+		_calImg[i].data.rc = RectMake(20 + (i % 7) * 40, 160 + 40 * (i / 7), 40, 40);
 		_calImg[i].x = (_calImg[i].data.rc.right + _calImg[i].data.rc.left) / 2 - 3;
 		_calImg[i].y = (_calImg[i].data.rc.bottom + _calImg[i].data.rc.top) / 2 - 3;
 		_calImg[i].data.isSelected = _calImg[i].data.isChoose = false;
@@ -38,7 +38,7 @@ HRESULT scheduleScene::init(int year, int mon)
 
 	for (int i = 0; i < 4; i++)
 	{
-		_chooseBox[i].rc = RectMake(610, 290 + i*28, 150, 28);
+		_chooseBox[i].rc = RectMake(610, 290 + i * 28, 150, 28);
 		_chooseBox[i].isChoose = _chooseBox[i].isSelected = false;
 		if (i > 1) continue;
 		_selectBox[i].rc = RectMake(600, 330 + i * 28, 150, 28);
@@ -60,11 +60,12 @@ HRESULT scheduleScene::init(int year, int mon)
 	_dialogIdx = _scheduleIdx = 0;
 	_selectNum = -1;
 	setScheduleImage();
-	
+
 	_fin = _select = _scheduleStart = false;
 	_progress = SCHEDULE_START;
 
 	_education = new educationScene;
+	_work = new partTimeScene;
 
 	return S_OK;
 }
@@ -548,7 +549,7 @@ void scheduleScene::update()
 			}
 
 		}
-		 break;
+		break;
 	case SCHEDULE_OK:
 		for (int i = 0; i < 2; i++)
 		{
@@ -567,13 +568,13 @@ void scheduleScene::update()
 
 						string str;
 						if (_princess->getInfo().dietType == "어쨌든 튼튼하게")
-							str = "식비가 80G 필요합니다.", _gold = 80;
+							str = "식비가 80G 필요합니다.", _gold = -80;
 						else if (_princess->getInfo().dietType == "무리하지 않는다")
-							str = "식비가 30G 필요합니다.", _gold = 30;
+							str = "식비가 30G 필요합니다.", _gold = -30;
 						else if (_princess->getInfo().dietType == "얌전한 아이로")
-							str = "식비가 10G 필요합니다.", _gold = 10;
+							str = "식비가 10G 필요합니다.", _gold = -10;
 						else if (_princess->getInfo().dietType == "다이어트를 시킨다")
-							str = "식비가 5G 필요합니다.", _gold = 5;
+							str = "식비가 5G 필요합니다.", _gold = -5;
 
 						setDialog(str);
 						_dialogIdx = 0;
@@ -606,7 +607,7 @@ void scheduleScene::update()
 				_scheduleStart = true;
 				setSchedule();
 				//if (_scheduleWeek[0] == "teach")
-					//_education->init(_sm->getVTeach()[_itemIdx[0]], 10);
+				//_education->init(_sm->getVTeach()[_itemIdx[0]], 10);
 			}
 		}
 
@@ -629,7 +630,23 @@ void scheduleScene::update()
 					}
 				}
 			}
-			if(_progress == SCHEDULE_START)
+			else if (_scheduleWeek[_scheduleIdx] == "work")
+			{
+				_work->update();
+				if (_work->getFin())
+				{
+					if (_progress == SCHEDULE_ING)
+					{
+						_scheduleIdx++;
+						_progress = SCHEDULE_FIN;
+						if (_scheduleIdx > 2)
+						{
+							_fin = true;
+						}
+					}
+				}
+			}
+			if (_progress == SCHEDULE_START)
 				setSchedule();
 		}
 		break;
@@ -658,7 +675,6 @@ void scheduleScene::update()
 		}
 	}
 }
-
 
 
 void scheduleScene::render()
@@ -700,12 +716,12 @@ void scheduleScene::render()
 				}
 				TextOut(DC, _chooseBox[i].rc.left + 2, _chooseBox[i].rc.top + 5, _chooseBox[i].str.c_str(), strlen(_chooseBox[i].str.c_str()));
 			}
-			
+
 			if (KEYMANAGER->isToggleKey(VK_TAB))
 			{
 				/*for (int i = 0; i < 42; i++)
 				{
-					Rectangle(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].data.rc.right, _calImg[i].data.rc.bottom);
+				Rectangle(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].data.rc.right, _calImg[i].data.rc.bottom);
 				}
 				*/
 				for (int i = 0; i < 10; i++)
@@ -858,6 +874,10 @@ void scheduleScene::render()
 				{
 					_education->render();
 				}
+				else if (_scheduleWeek[_scheduleIdx] == "work")
+				{
+					_work->render();
+				}
 			}
 			break;
 		}
@@ -875,7 +895,7 @@ void scheduleScene::render()
 					int a = 0;
 				/*if (count / 10 < 0)
 				{
-					IMAGEMANAGER->findImage("teachImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
+				IMAGEMANAGER->findImage("teachImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
 				}*/
 				if (_scheduleWeek[count / 10] == "teach")
 					IMAGEMANAGER->findImage("teachImg")->frameRender(DC, _calImg[i].data.rc.left, _calImg[i].data.rc.top, _calImg[i].frameX, 0);
@@ -908,25 +928,30 @@ void scheduleScene::setSchedule()
 	if (_progress != SCHEDULE_START) return;
 
 	_progress = SCHEDULE_ING;
-	
+
 	if (_scheduleWeek[_scheduleIdx] == "teach")
 	{
-		if(_scheduleIdx == 2 && (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12))
+		if (_scheduleIdx == 2 && (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12))
 			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 11, _itemIdx[_scheduleIdx]);
-		else if(_scheduleIdx == 2 && _mon == 2)
+		else if (_scheduleIdx == 2 && _mon == 2)
 			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 8, _itemIdx[_scheduleIdx]);
-		else	
+		else
 			_education->init(_sm->getVTeach()[_itemIdx[_scheduleIdx]], 10, _itemIdx[_scheduleIdx]);
 	}
 	else if (_scheduleWeek[_scheduleIdx] == "work")
 	{
-
+		if (_scheduleIdx == 2 && (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12))
+			_work->init(_sm->getVWork()[_itemIdx[_scheduleIdx]], 11, _itemIdx[_scheduleIdx]);
+		else if (_scheduleIdx == 2 && _mon == 2)
+			_work->init(_sm->getVWork()[_itemIdx[_scheduleIdx]], 8, _itemIdx[_scheduleIdx]);
+		else
+			_work->init(_sm->getVWork()[_itemIdx[_scheduleIdx]], 10, _itemIdx[_scheduleIdx]);
 	}
 	else if (_scheduleWeek[_scheduleIdx] == "fight")
 	{
 
 	}
-	else if(_scheduleWeek[_scheduleIdx] == "relax")
+	else if (_scheduleWeek[_scheduleIdx] == "relax")
 	{
 
 	}
@@ -939,7 +964,7 @@ void scheduleScene::setDialog(string dialog)
 	string str = DIALOG->getTotalDialog();
 	int strSize = str.size();
 	int idx = 0;
-	if(_vDialog.size() > 0)
+	if (_vDialog.size() > 0)
 		_vDialog.clear();
 	string temp = "스케줄 결정";
 	_vDialog.push_back(temp);
@@ -969,8 +994,8 @@ void scheduleScene::setScheduleImage()
 		{
 			_teachImg[j + i * 2].img = new image;
 			_teachImg[j + 2 * i].img->init("image/main/storeSelect(320x52,2x1).bmp", 320, 52, 2, 1, true, RGB(255, 0, 255));
-			_teachImg[j + 2 * i].data.rc = RectMake(460 + 170*j, 135 + 60*i, 160, 52);
-						  
+			_teachImg[j + 2 * i].data.rc = RectMake(460 + 170 * j, 135 + 60 * i, 160, 52);
+
 			_teachImg[j + 2 * i].frameY = j + 2 * i;
 		}
 	}
@@ -998,7 +1023,7 @@ void scheduleScene::setScheduleImage()
 		{
 			_fightImg[i * 2 + j].img = new image;
 			_fightImg[i * 2 + j].img->init("image/main/storeSelect(320x52,2x1).bmp", 320, 52, 2, 1, true, RGB(255, 0, 255));
-			_fightImg[i * 2 + j].data.rc = RectMake(460 + 170 * j, 300 + i*60, 160, 52);
+			_fightImg[i * 2 + j].data.rc = RectMake(460 + 170 * j, 300 + i * 60, 160, 52);
 			_fightImg[i * 2 + j].frameY = i * 2 + j;
 		}
 	}

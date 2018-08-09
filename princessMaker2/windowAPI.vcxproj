@@ -156,6 +156,7 @@
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="cookStore.h" />
     <ClInclude Include="cube.h" />
+    <ClInclude Include="dadTalkScene.h" />
     <ClInclude Include="data.h" />
     <ClInclude Include="dataInput.h" />
     <ClInclude Include="dialogManager.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="clothesStore.cpp" />
     <ClCompile Include="cookStore.cpp" />
     <ClCompile Include="cube.cpp" />
+    <ClCompile Include="dadTalkScene.cpp" />
     <ClCompile Include="dataInput.cpp" />
     <ClCompile Include="dialogManager.cpp" />
     <ClCompile Include="educationScene.cpp" />

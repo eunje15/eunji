@@ -3,7 +3,7 @@
 #include"data.h"
 #include "workStatus.h"
 
-enum WORK_TYPE { WORK_HOUSE, WORK_NURSERY, WORK_INN, WORK_FARM, WORK_CHURCH, WORK_RESTAURANT, WORK_WOOD, WORK_HAIR, WORK_PLASTERER, WORK_HUNTER, WORK_GRAVE, WORK_COACH, WORK_DRINK,WORK_NIGHT_DRINK, WORK_NIGHT_CLUB };
+enum WORK_TYPE { WORK_HOUSE, WORK_NURSERY, WORK_INN, WORK_FARM, WORK_CHURCH, WORK_RESTAURANT, WORK_WOOD, WORK_HAIR, WORK_PLASTERER, WORK_HUNTER, WORK_GRAVE, WORK_COACH, WORK_DRINK, WORK_NIGHT_DRINK, WORK_NIGHT_CLUB };
 enum WORK_STATUS { WORK_HARD, WORK_SLEEP, WORK_NOHARD };
 
 class princess;
@@ -11,7 +11,7 @@ class princess;
 class partTimeScene : public gameNode
 {
 private:
-	princess* _princess;
+	princess * _princess;
 	workStatus* _work;
 	vector<string> _vDialog;
 	DIALOG_TYPE _dialogType;

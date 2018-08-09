@@ -17,7 +17,7 @@ HRESULT playGround::init(void)
 	gameNode::init(true);
 	image_init();
 	
-	/*_princess = new princess;
+	_princess = new princess;
 	_princess->init();
 
 	SCENEMANAGER->setPrincessAddressLink(_princess);
@@ -27,10 +27,10 @@ HRESULT playGround::init(void)
 	SCENEMANAGER->addScene("공주씬", new princessScene);
 	
 	SCENEMANAGER->changeScene("공주씬");
-	_str = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", "처녀자리");*/
+	_str = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", "처녀자리");
 
-	SCENEMANAGER->addScene("테스트", new testClass);
-	SCENEMANAGER->changeScene("테스트");
+	//SCENEMANAGER->addScene("테스트", new testClass);
+	//SCENEMANAGER->changeScene("테스트");
 
 	return S_OK;
 }

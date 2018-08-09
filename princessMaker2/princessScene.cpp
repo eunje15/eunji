@@ -62,7 +62,7 @@ HRESULT princessScene::init()
 	setStringStatus();
 	//_princess->setDietType(_strStatus[1].str); //임시
 	_princess->setDietType(_princess->getInfo().dietType);
-	_printStrStatus.rc = RectMake(600,166, _status.img->getWidth(), 22);
+	_printStrStatus.rc = RectMake(600, 166, _status.img->getWidth(), 22);
 	_nameRc = RectMake(600, 12, _status.img->getWidth(), 22);
 	_firstNameRc = RectMake(600, 34, _status.img->getWidth(), 22);
 
@@ -77,13 +77,13 @@ HRESULT princessScene::init()
 	_selectMenu = IMAGEMANAGER->findImage("selectMenu");
 	_selectMenu->setX(WINSIZEX - _menu.img->getFrameWidth());
 	_selectMenu->setY(_status.img->getHeight());
-	
+
 
 	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			_menubox[i*4 + j].rc = RectMake(_menu.x + j * 50, _menu.y + 40 * i, 50, 40);
+			_menubox[i * 4 + j].rc = RectMake(_menu.x + j * 50, _menu.y + 40 * i, 50, 40);
 			_menubox[i].isSelected = false;
 		}
 	}
@@ -105,7 +105,7 @@ HRESULT princessScene::init()
 
 	_weaponStore = new weaponStore;
 	//_weaponStore->init();
-	
+
 
 	_clothesStore = new clothesStore;
 	//_clothesStore->init();
@@ -131,11 +131,28 @@ HRESULT princessScene::init()
 
 	_scheduleScene = new scheduleScene;
 	_scheduleScene->setStatusManagerAddressLink(_sm);
+
+	if (_princess->getStatus().hp < 200)
+		_princess->getStatusP()->hp = 200;
 	return S_OK;
 }
 
 void princessScene::update()
 {
+	if (KEYMANAGER->isOnceKeyDown(VK_F9))
+	{
+		_princess->getStatusP()->stress = 0;
+	}
+	if (KEYMANAGER->isOnceKeyDown(VK_F10))
+	{
+		_princess->setGold(-999800);
+	}
+	if (KEYMANAGER->isOnceKeyDown(VK_F11))
+	{
+		_princess->setGold(1000000);
+	}
+	//♥♡온니짱♥♡
+
 	if (_menuType == SELECT_NONE)
 	{
 		for (int i = 0; i < 9; i++)
@@ -187,7 +204,7 @@ void princessScene::update()
 							setNextMonth();
 							_scheduleOk = false;
 						}
-						_scheduleScene->init(_year,_mon);
+						_scheduleScene->init(_year, _mon);
 						break;
 					}
 					_menubox[i].isData = true;
@@ -195,7 +212,7 @@ void princessScene::update()
 			}
 		}
 	}
-	
+
 	if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON) && _menuType != SELECT_SCHEDULE)
 	{
 		_menuType = SELECT_NONE;
@@ -220,7 +237,7 @@ void princessScene::update()
 	}
 	else if (_menuType == SELECT_TOWN)
 	{
-	//	clickStore();
+		//	clickStore();
 		switch (_storeType)
 		{
 		case STORE_NONE: case STORE_SELECT:
@@ -310,9 +327,9 @@ void princessScene::render()
 	_dayImg.img->frameRender(DC, 88, 38, 0, _dayImg.frameY);
 	_flower.img->frameRender(DC, _flower.x, _flower.y, _flower.frameX, 0);
 	_frame.img->frameRender(DC, _frame.x, _frame.y, _frame.frameX, 0);
-	
+
 	_princess->render();
-	
+
 	_status.img->render(DC, _status.x, _status.y);
 	DrawText(DC, _princess->getInfo().name.c_str(), strlen(_princess->getInfo().name.c_str()), &_nameRc, DT_CENTER | DT_VCENTER);
 	DrawText(DC, _princess->getInfo().firstName.c_str(), strlen(_princess->getInfo().firstName.c_str()), &_firstNameRc, DT_CENTER | DT_VCENTER);
@@ -336,7 +353,7 @@ void princessScene::render()
 
 		}
 	}
-	
+
 	switch (_menuType)
 	{
 	case SELECT_NONE:
@@ -431,7 +448,7 @@ void princessScene::setStat()
 	_pInfo[4].str = "매력", _pInfo[4].data = _princess->getStatus().sexual;
 	_pInfo[5].str = "도덕성", _pInfo[5].data = _princess->getStatus().morality;
 	_pInfo[6].str = "신앙", _pInfo[6].data = _princess->getStatus().faith;
-	_pInfo[7].str = "인과",  _pInfo[7].data = _princess->getStatus().karma;
+	_pInfo[7].str = "인과", _pInfo[7].data = _princess->getStatus().karma;
 	_pInfo[8].str = "감수성", _pInfo[8].data = _princess->getStatus().sensitivity;
 	_pInfo[9].str = "스트레스", _pInfo[9].data = _princess->getStatus().stress;
 
@@ -462,37 +479,37 @@ void princessScene::setStat()
 
 	_pSkill[0].str = "전투기술", _pSkill[0].data = _princess->getStatus().warriorSkill;
 	_pSkill[1].str = "공격력", _pSkill[1].data = _princess->getStatus().power;
-_pSkill[2].str = "방어력", _pSkill[2].data = _princess->getStatus().defPower;
-_pSkill[3].str = "마법기술", _pSkill[3].data = _princess->getStatus().magicSkill;
-_pSkill[4].str = "마력", _pSkill[4].data = _princess->getStatus().spell;
-_pSkill[5].str = "항마력", _pSkill[5].data = _princess->getStatus().spellDefence;
+	_pSkill[2].str = "방어력", _pSkill[2].data = _princess->getStatus().defPower;
+	_pSkill[3].str = "마법기술", _pSkill[3].data = _princess->getStatus().magicSkill;
+	_pSkill[4].str = "마력", _pSkill[4].data = _princess->getStatus().spell;
+	_pSkill[5].str = "항마력", _pSkill[5].data = _princess->getStatus().spellDefence;
 
-for (int i = 0; i < 6; i++)
-{
-	_pSkill[i].strRc = RectMake(15, 395 + i * 20, 80, 20);
-	_pSkill[i].dataRc = RectMake(95, 395 + i * 20, 30, 20);
+	for (int i = 0; i < 6; i++)
+	{
+		_pSkill[i].strRc = RectMake(15, 395 + i * 20, 80, 20);
+		_pSkill[i].dataRc = RectMake(95, 395 + i * 20, 30, 20);
 
-	_pSkill[i].progressBar = new progressBar;
-	_pSkill[i].progressBar->init(125, 395 + i * 20, 110, 20);
-	_pSkill[i].progressBar->setGauge(_pSkill[i].data, 100);
-}
+		_pSkill[i].progressBar = new progressBar;
+		_pSkill[i].progressBar->init(125, 395 + i * 20, 110, 20);
+		_pSkill[i].progressBar->setGauge(_pSkill[i].data, 100);
+	}
 
-_pBasicStat[0].str = "예의범절", _pBasicStat[0].data = _princess->getStatus().manner;
-_pBasicStat[1].str = "예술", _pBasicStat[1].data = _princess->getStatus().art;
-_pBasicStat[2].str = "화술", _pBasicStat[2].data = _princess->getStatus().conversation;
-_pBasicStat[3].str = "요리", _pBasicStat[3].data = _princess->getStatus().cooking;
-_pBasicStat[4].str = "청소세탁", _pBasicStat[4].data = _princess->getStatus().cleaning;
-_pBasicStat[5].str = "성품", _pBasicStat[5].data = _princess->getStatus().personality;
+	_pBasicStat[0].str = "예의범절", _pBasicStat[0].data = _princess->getStatus().manner;
+	_pBasicStat[1].str = "예술", _pBasicStat[1].data = _princess->getStatus().art;
+	_pBasicStat[2].str = "화술", _pBasicStat[2].data = _princess->getStatus().conversation;
+	_pBasicStat[3].str = "요리", _pBasicStat[3].data = _princess->getStatus().cooking;
+	_pBasicStat[4].str = "청소세탁", _pBasicStat[4].data = _princess->getStatus().cleaning;
+	_pBasicStat[5].str = "성품", _pBasicStat[5].data = _princess->getStatus().personality;
 
-for (int i = 0; i < 6; i++)
-{
-	_pBasicStat[i].strRc = RectMake(WINSIZEX - 253, 400 + i * 20, 80, 20);
-	_pBasicStat[i].dataRc = RectMake(WINSIZEX - 173, 400 + i * 20, 30, 20);
+	for (int i = 0; i < 6; i++)
+	{
+		_pBasicStat[i].strRc = RectMake(WINSIZEX - 253, 400 + i * 20, 80, 20);
+		_pBasicStat[i].dataRc = RectMake(WINSIZEX - 173, 400 + i * 20, 30, 20);
 
-	_pBasicStat[i].progressBar = new progressBar;
-	_pBasicStat[i].progressBar->init(WINSIZEX - 143, 400 + i * 20, 110, 20);
-	_pBasicStat[i].progressBar->setGauge(_pBasicStat[i].data, 100);
-}
+		_pBasicStat[i].progressBar = new progressBar;
+		_pBasicStat[i].progressBar->init(WINSIZEX - 143, 400 + i * 20, 110, 20);
+		_pBasicStat[i].progressBar->setGauge(_pBasicStat[i].data, 100);
+	}
 }
 
 void princessScene::setDadTalk()
@@ -613,7 +630,7 @@ void princessScene::infoRender()
 	TextOut(DC, 40, 375, "건강합니다", strlen("건강합니다"));
 	TextOut(DC, 40, 400, "솔직합니다", strlen("솔직합니다"));
 
-	string str1 = "건강「" + _princess->getInfo().dietType+"」";
+	string str1 = "건강「" + _princess->getInfo().dietType + "」";
 	TextOut(DC, 40, 440, str1.c_str(), strlen(str1.c_str()));
 
 	//info3
@@ -664,7 +681,7 @@ void princessScene::statusRender()
 		oldBrush = (HBRUSH)SelectObject(DC, brush);
 		FillRect(DC, &_pInfo[i].strRc, brush);
 		Rectangle(DC, _pInfo[i].strRc.left, _pInfo[i].strRc.top, _pInfo[i].strRc.right, _pInfo[i].strRc.bottom);
-		TextOut(DC, _pInfo[i].strRc.left,_pInfo[i].strRc.top + 2, _pInfo[i].str.c_str(), strlen(_pInfo[i].str.c_str()));
+		TextOut(DC, _pInfo[i].strRc.left, _pInfo[i].strRc.top + 2, _pInfo[i].str.c_str(), strlen(_pInfo[i].str.c_str()));
 		if (i < 4)
 		{
 			FillRect(DC, &_p4Stat[i].strRc, brush);
@@ -684,14 +701,14 @@ void princessScene::statusRender()
 			FillRect(DC, &_p4Stat[i].dataRc, brush);
 			Rectangle(DC, _p4Stat[i].dataRc.left, _p4Stat[i].dataRc.top, _p4Stat[i].dataRc.right, _p4Stat[i].dataRc.bottom);
 			sprintf_s(str, "%3d", _p4Stat[i].data);
-			TextOut(DC, _p4Stat[i].dataRc.left + 2, _p4Stat[i].dataRc.top + 2,str, strlen(str));
+			TextOut(DC, _p4Stat[i].dataRc.left + 2, _p4Stat[i].dataRc.top + 2, str, strlen(str));
 			_p4Stat[i].progressBar->render();
 		}
 		SelectObject(DC, oldBrush);
 		DeleteObject(brush);
 		_pInfo[i].progressBar->render();
 	}
-	
+
 	for (int i = 0; i < 6; i++)
 	{
 		HBRUSH brush, oldBrush;
@@ -727,10 +744,15 @@ void princessScene::setGoldImg()
 
 	for (int i = 0; i < 7; i++)
 	{
+		_goldImg[i].data.isSelected = false;
+	}
+
+	for (int i = 0; i < 7; i++)
+	{
 		_goldImg[i].img = IMAGEMANAGER->findImage("number");
 		_goldImg[i].frameX = gold % 10;
 		_goldImg[i].data.isSelected = true;
-		_goldImg[i].data.rc = RectMake(760 - i*10,88,10,20);
+		_goldImg[i].data.rc = RectMake(760 - i * 10, 88, 10, 20);
 		if ((gold = gold / 10) == 0) break;
 	}
 }
@@ -754,8 +776,8 @@ void princessScene::setBodyInfo()
 			_bodyInfo[i][j].img = IMAGEMANAGER->findImage("number");
 			_bodyInfo[i][j].frameX = idx % 10;
 			_bodyInfo[i][j].data.isSelected = true;
-			if(i < 3)
-				_bodyInfo[i][j].data.rc = RectMake(630 - (j)*10 + i*34, 189, 10, 20);
+			if (i < 3)
+				_bodyInfo[i][j].data.rc = RectMake(630 - (j) * 10 + i * 34, 189, 10, 20);
 			else
 				_bodyInfo[i][j].data.rc = RectMake(630 - (j) * 10 + i * 36, 189, 10, 20);
 			if ((idx = idx / 10) == 0) break;
@@ -767,7 +789,7 @@ void princessScene::setBodyInfo()
 	_pBodyInfo[2].str = "가슴", _pBodyInfo[2].data = _princess->getBodyInfo().bast;
 	_pBodyInfo[3].str = "허리", _pBodyInfo[3].data = _princess->getBodyInfo().waist;
 	_pBodyInfo[4].str = "엉덩이", _pBodyInfo[4].data = _princess->getBodyInfo().hip;
-	
+
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -776,7 +798,7 @@ void princessScene::setBodyInfo()
 
 		_pBodyInfo[i].progressBar = new progressBar;
 		_pBodyInfo[i].progressBar->init(WINSIZEX - 110, 300 + i * 20, 80, 20);
-		if(i == 0)
+		if (i == 0)
 			_pBodyInfo[i].progressBar->setGauge(_pBodyInfo[i].data, 200);
 		else
 			_pBodyInfo[i].progressBar->setGauge(_pBodyInfo[i].data, 150);
@@ -840,34 +862,36 @@ void princessScene::setNextMonth()
 	else if (_princess->getInfo().strBlood == "B")
 	{
 		_princess->getStatusP()->stress -= 2;
+		if (_princess->getStatus().stress < 0)
+			_princess->getStatusP()->stress = 0;
 	}
 	else if (_princess->getInfo().strBlood == "AB")
 	{
 		_princess->getStatusP()->sensitivity += 2;
 	}
 
-	if (_printStrStatus.str == "어쨌든 튼튼하게")
+	if (_princess->getInfo().dietType == "어쨌든 튼튼하게")
 	{
-		if(_princess->getInfo().age < 16)
+		if (_princess->getInfo().age < 16)
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.28f, 0.35f);
 		else
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.16f, 0.20f);
 	}
-	else if (_printStrStatus.str == "무리하지 않는다")
+	else if (_princess->getInfo().dietType == "무리하지 않는다")
 	{
 		if (_princess->getInfo().age < 16)
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.19f, 0.22f);
 		else
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.05f, 0.08f);
 	}
-	else if (_printStrStatus.str == "얌전한 아이로")
+	else if (_princess->getInfo().dietType == "얌전한 아이로")
 	{
 		if (_princess->getInfo().age < 16)
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.10f, 0.13f);
 		else
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.01f, 0.04f);
 	}
-	else if (_printStrStatus.str == "다이어트를 시킨다")
+	else if (_princess->getInfo().dietType == "다이어트를 시킨다")
 	{
 		if (_princess->getInfo().age < 16)
 			_princess->getBodyInfoP()->weight -= RND->getFromFloatTo(0.00f, 0.06f);
@@ -910,7 +934,7 @@ void princessScene::setLoadData()
 
 void princessScene::dadTalkRender()
 {
-	IMAGEMANAGER->findImage("3Back")->render(DC, 592,286);
+	IMAGEMANAGER->findImage("3Back")->render(DC, 592, 286);
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -928,7 +952,7 @@ void princessScene::dadTalkRender()
 }
 
 void princessScene::changeInfoRender()
-{	
+{
 	IMAGEMANAGER->findImage("dialogFrame")->render(DC, 10, 426);
 	IMAGEMANAGER->findImage("frame")->render(DC, 20 + IMAGEMANAGER->findImage("dialogFrame")->getWidth(), 426);
 	_cube->setXY(30 + IMAGEMANAGER->findImage("dialogFrame")->getWidth(), 436);
@@ -1030,7 +1054,7 @@ void princessScene::changeInfoRender()
 			if (temp == "end")
 			{
 				_idx++;
-				if(_idx < _vDialog.size())
+				if (_idx < _vDialog.size())
 					DIALOG->setDialog(_vDialog[_idx], 5);
 			}
 			else
@@ -1069,17 +1093,17 @@ void princessScene::setStringStatus()
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			_strStatus[i].rc = RectMake(610, 290 + i*28, 150, 28);
+			_strStatus[i].rc = RectMake(610, 290 + i * 28, 150, 28);
 			_strStatus[i].isSelected = false;
 			_strStatus[i].isChoose = false;
 			_dialog[i].isSelected = false;
 		}
-		
+
 		setDialog(_cube->getDialog("DADTALK"));
 
 		for (int i = 0; i < 2; i++)
 		{
-			_chooseAnswer[i].rc = RectMake(0,0,0,0);
+			_chooseAnswer[i].rc = RectMake(0, 0, 0, 0);
 			_chooseAnswer[i].isSelected = _chooseAnswer[i].isChoose = false;
 		}
 	}
@@ -1137,7 +1161,7 @@ void princessScene::setStore()
 	_store[6].data.isSelected = _store[6].data.isChoose = false;
 
 	_store[0].data.str = "무기점", _store[1].data.str = "의상실", _store[2].data.str = "요리점";
-	_store[3].data.str = "잡화점", _store[4].data.str = "교회",	_store[5].data.str = "병원";
+	_store[3].data.str = "잡화점", _store[4].data.str = "교회", _store[5].data.str = "병원";
 	_store[6].data.str = "관둔다";
 	_count = 0;
 }
@@ -1162,39 +1186,39 @@ void princessScene::clickStore()
 				if (_storeType != STORE_SELECT) return;
 				switch (i)
 				{
-					case 0:
-						_storeType = STORE_WEAPON;
-						_weaponStore->init(_im->getVWeapon(), _im->getVArmor());
-						_weaponStore->setFin(false);
+				case 0:
+					_storeType = STORE_WEAPON;
+					_weaponStore->init(_im->getVWeapon(), _im->getVArmor());
+					_weaponStore->setFin(false);
 					break;
-					case 1:
-						_storeType = STORE_ARMOR;
-						_clothesStore->init(_im->getVClothes());
-						_clothesStore->setFin(false);
+				case 1:
+					_storeType = STORE_ARMOR;
+					_clothesStore->init(_im->getVClothes());
+					_clothesStore->setFin(false);
 					break;
-					case 2:
-						_storeType = STORE_COOK;
-						_cookStore->init(_im->getVCook());
-						_cookStore->setFin(false);
+				case 2:
+					_storeType = STORE_COOK;
+					_cookStore->init(_im->getVCook());
+					_cookStore->setFin(false);
 					break;
-					case 3:
-						_storeType = STORE_GOODS;
-						_goodsStore->init(_im->getVGoods());
-						_goodsStore->setFin(false);
+				case 3:
+					_storeType = STORE_GOODS;
+					_goodsStore->init(_im->getVGoods());
+					_goodsStore->setFin(false);
 					break;
-					case 4:
-						_storeType = STORE_CHURCH;
-						_church->init();
-						_church->setFin(false);
+				case 4:
+					_storeType = STORE_CHURCH;
+					_church->init();
+					_church->setFin(false);
 					break;
-					case 5:
-						_storeType = STORE_HOSTIPITAL;
-						_hospital->init();
-						_hospital->setFin(false);
+				case 5:
+					_storeType = STORE_HOSTIPITAL;
+					_hospital->init();
+					_hospital->setFin(false);
 					break;
-					case 6:
-						_menuType = SELECT_NONE;
-						_storeType = STORE_NONE;
+				case 6:
+					_menuType = SELECT_NONE;
+					_storeType = STORE_NONE;
 					break;
 				}
 			}

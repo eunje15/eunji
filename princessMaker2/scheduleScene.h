@@ -3,8 +3,9 @@
 #include "data.h"
 #include "statusManager.h"
 #include "educationScene.h"
+#include "partTimeScene.h"
 
-enum SCHEDULE_TYPE {SCHEDULE_NONE, SCHEDULE_TEACH, SCHEDULE_WORK, SCHEDULE_FIGHT, SCHEDULE_RELAX, SCHEDULE_OK, SCHEDULE_GO };
+enum SCHEDULE_TYPE { SCHEDULE_NONE, SCHEDULE_TEACH, SCHEDULE_WORK, SCHEDULE_FIGHT, SCHEDULE_RELAX, SCHEDULE_OK, SCHEDULE_GO };
 enum SCHEDULE_PROGRESS { SCHEDULE_START, SCHEDULE_ING, SCHEDULE_FIN };
 
 class princess;
@@ -12,7 +13,7 @@ class princess;
 class scheduleScene : public gameNode
 {
 private:
-	princess* _princess;
+	princess * _princess;
 	bool _fin, _select, _scheduleStart;
 	int _year, _mon, _gold;
 	SCHEDULE_TYPE _type;
@@ -24,11 +25,12 @@ private:
 	tagString _chooseBox[4], _selectBox[2];
 	string _scheduleWeek[4];
 	int _itemIdx[4];
-	
+
 	int _dialogIdx, _scheduleIdx, _selectNum;
 
 	statusManager* _sm;
 	educationScene* _education;
+	partTimeScene* _work;
 
 public:
 	scheduleScene();

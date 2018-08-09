@@ -17,12 +17,12 @@ HRESULT educationScene::init(status* education, int dayCount, int idx)
 	_princess = SCENEMANAGER->getPrincessAddress();
 	_dayOfWeek = (DAYOFWEEK)_princess->getDate().dayOfWeek;
 	_day = _princess->getDate().day;
-	
+
 	_education = education;
 	_eduName = _education->getName();
 	_dayCount = dayCount;
 	_idx = idx;
-	
+
 	if (_eduName == "자연과학")
 		_type = EDU_SCHOOL;
 	else if (_eduName == "시문")
@@ -51,14 +51,13 @@ HRESULT educationScene::init(status* education, int dayCount, int idx)
 	_gold = _education->getTuition();
 	_success = _count = _frameCount = _dayIdx = _printDay = 0;
 	_frameX = _startF;
-	_fin = _goldOk = _eduFin = false;
+	_fin = _goldOk = _eduFin = _noGold = _resultDialog = false;
 	_statusProgress = STATUS_START;
-	string str = _princess->getInfo().name + "는 오늘부터 " + _eduName +  "을 배웁니다";
+	string str = _princess->getInfo().name + "는 오늘부터 " + _eduName + "을 배웁니다";
 	setDialog(str);
 	_dialogX = 20, _dialogY = WINSIZEY - 180;
 	_dialogIdx = 0, _dialogType = DIALOG_ING;
 
-	
 	return S_OK;
 }
 
@@ -87,37 +86,119 @@ void educationScene::update()
 	case STATUS_ING:
 		if (!_goldOk)
 		{
-			_princess->setGold(-_gold);
-			_pGold.data += _gold;
-			_goldOk = true;
+			if (_princess->getGold() > _gold)
+			{
+				_princess->setGold(-_gold);
+				_pGold.data += _gold;
+				_goldOk = true;
+			}
+			else
+			{
+				while (_dayIdx++ < _dayCount)
+				{
+					if (_dayOfWeek != SUN)
+						_printDay++;
+					switch (_dayOfWeek)
+					{
+					case MON:
+						_dayOfWeek = TUE;
+						break;
+					case TUE:
+						_dayOfWeek = WED;
+						break;
+					case WED:
+						_dayOfWeek = THU;
+						break;
+					case THU:
+						_dayOfWeek = FRI;
+						break;
+					case FRI:
+						_dayOfWeek = SAT;
+						break;
+					case SAT:
+						_dayOfWeek = SUN;
+						break;
+					case SUN:
+						_dayOfWeek = MON;
+						break;
+					}
+					if (_dayIdx < _dayCount)
+					{
+						_day++;
+						_princess->setDay(_day);
+						_princess->setDayOfWeek(_dayOfWeek);
+					}
+				}
+			}
 		}
 		changeFrame();
 		break;
 	case STATUS_FIN:
 		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 		{
-			_fin = true;
+			if (_noGold)
+				_fin = true;
+			if (_resultDialog)
+			{
+				if (_princess->getGold() < _gold)
+				{
+					_noGold = true;
+					setDialog(_teachDialog[3]);
+					_dialogIdx = 0, _dialogType = DIALOG_ING;
+					_dialogX = 190, _dialogY = 235;
+				}
+				else
+					_fin = true;
+			}
+			else
+			{
+				_resultDialog = true;
+				setDialog(_teachDialog[2]);
+				_dialogIdx = 0, _dialogType = DIALOG_ING;
+				_dialogX = 190, _dialogY = 235;
+			}
 		}
 		break;
 	}
-		
+
 }
 
 void educationScene::render()
 {
-		switch (_statusProgress)
+	switch (_statusProgress)
+	{
+	case STATUS_START:
+		IMAGEMANAGER->findImage("교육액자")->render(DC, 10, WINSIZEY - 190);
+		if (dialogRender())
 		{
-		case STATUS_START:
-			IMAGEMANAGER->findImage("교육액자")->render(DC, 10, WINSIZEY - 190);
-			if (dialogRender())
+			for (int i = 0; i < _vDialog.size(); i++)
 			{
-				for (int i = 0; i < _vDialog.size(); i++)
-				{
-					TextOut(DC, _dialogX, _dialogY + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
-				}
+				TextOut(DC, _dialogX, _dialogY + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
 			}
-			break;
-		case STATUS_TEACH:
+		}
+		break;
+	case STATUS_TEACH:
+		IMAGEMANAGER->findImage("frame")->render(DC, 35, 225);
+		IMAGEMANAGER->findImage("교육선생")->frameRender(DC, 45, 235, _teacherFrameX, 0);
+		IMAGEMANAGER->findImage("dialogFrame")->render(DC, 180, 225);
+		if (dialogRender())
+		{
+			for (int i = 0; i < _vDialog.size(); i++)
+			{
+				TextOut(DC, _dialogX, _dialogY + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+			}
+		}
+		break;
+	case STATUS_ING:
+		IMAGEMANAGER->findImage("info2Back")->render(DC, 440, 238);
+		if (dialogRender())
+		{
+			eduRender();
+		}
+		break;
+	case STATUS_FIN:
+		if (_resultDialog)
+		{
 			IMAGEMANAGER->findImage("frame")->render(DC, 35, 225);
 			IMAGEMANAGER->findImage("교육선생")->frameRender(DC, 45, 235, _teacherFrameX, 0);
 			IMAGEMANAGER->findImage("dialogFrame")->render(DC, 180, 225);
@@ -129,15 +210,10 @@ void educationScene::render()
 				}
 			}
 			break;
-		case STATUS_ING:
+		}
+		else
+		{
 			IMAGEMANAGER->findImage("info2Back")->render(DC, 440, 238);
-			if (dialogRender())
-			{
-				eduRender();
-			}
-			break;
-		case STATUS_FIN:
-			IMAGEMANAGER->findImage("info2Back")->render(DC, 440, 238); 
 			if (dialogRender())
 			{
 				for (int i = 0; i < _vDialog.size(); i++)
@@ -146,8 +222,9 @@ void educationScene::render()
 				}
 			}
 			eduRender();
-			break;
 		}
+		break;
+	}
 }
 
 void educationScene::release()
@@ -190,7 +267,7 @@ void educationScene::initStatus()
 		temp.dataRc = RectMake(130 + 250 * (i % 2), 440 + (i / 2) * 50, 30, 25);
 
 		temp.progressBar = new progressBar;
-		temp.progressBar->init(160 + 250 * (i % 2), 440 + (i / 2)* 50, 110, 20);
+		temp.progressBar->init(160 + 250 * (i % 2), 440 + (i / 2) * 50, 110, 20);
 		temp.progressBar->setGauge(temp.data, 500);
 
 		_vPStatus.push_back(make_pair(img, temp));
@@ -211,20 +288,20 @@ void educationScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("자연과학친구1"));
 		_friends.push_back(IMAGEMANAGER->findImage("자연과학친구2"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 2;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 3, _endF = 4;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 5, _endF = 6;
-			break;
 		}
 		break;
 	case EDU_POETRY:
@@ -232,21 +309,22 @@ void educationScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("시문친구1"));
 		_friends.push_back(IMAGEMANAGER->findImage("시문친구2"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 4, _endF = 7;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 8, _endF = 9;
-			break;
 		}
+
 		break;
 	case EDU_THEOLOGY:
 		_friends.push_back(IMAGEMANAGER->findImage("신학선생"));
@@ -254,42 +332,44 @@ void educationScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("신학친구2"));
 		_friends.push_back(IMAGEMANAGER->findImage("신학친구3"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 1;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 2, _endF = 3;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 4, _endF = 5;
-			break;
 		}
+
 		break;
 	case EDU_STRATEGY:
 		_friends.push_back(IMAGEMANAGER->findImage("군사학선생"));
 		_friends.push_back(IMAGEMANAGER->findImage("군사학친구1"));
 		_friends.push_back(IMAGEMANAGER->findImage("군사학친구2"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 2;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 3, _endF = 4;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 5, _endF = 6;
-			break;
 		}
+
 		break;
 	case EDU_SWORDS:
 		_friends.push_back(IMAGEMANAGER->findImage("검술선생"));
@@ -297,21 +377,22 @@ void educationScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("검술친구2"));
 		_friends.push_back(IMAGEMANAGER->findImage("검술친구3"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 4, _endF = 5;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 6, _endF = 7;
-			break;
 		}
+
 		break;
 	case EDU_FIGHTING:
 		_friends.push_back(IMAGEMANAGER->findImage("격투술선생"));
@@ -320,21 +401,22 @@ void educationScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("격투술횃불"));
 		_friends.push_back(IMAGEMANAGER->findImage("격투술막대기"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 2;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 3, _endF = 4;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 5, _endF = 6;
-			break;
 		}
+
 		break;
 	case EDU_MAGIC:
 		_friends.push_back(IMAGEMANAGER->findImage("마법선생"));
@@ -342,21 +424,22 @@ void educationScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("마법횃불2"));
 		_friends.push_back(IMAGEMANAGER->findImage("마법친구1"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 7;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 8, _endF = 11;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 12, _endF = 13;
-			break;
 		}
+
 		break;
 	case EDU_SCIENCE:
 		_friends.push_back(IMAGEMANAGER->findImage("예법선생"));
@@ -364,63 +447,66 @@ void educationScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("예법친구2"));
 		_friends.push_back(IMAGEMANAGER->findImage("예법친구3"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 2;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 3, _endF = 4;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 5, _endF = 6;
-			break;
 		}
+
 		break;
 	case EDU_BALLET:
 		_friends.push_back(IMAGEMANAGER->findImage("무용선생"));
 		_friends.push_back(IMAGEMANAGER->findImage("무용친구1"));
 		_friends.push_back(IMAGEMANAGER->findImage("무용친구2"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 4, _endF = 5;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 6, _endF = 7;
-			break;
 		}
+
 		break;
 	case EDU_ART:
 		_friends.push_back(IMAGEMANAGER->findImage("미술친구1"));
 		_friends.push_back(IMAGEMANAGER->findImage("미술친구2"));
 		_friends.push_back(IMAGEMANAGER->findImage("미술선생"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == EDU_STUDY)
 		{
-		case 0:
 			_status = EDU_STUDY;
 			_startF = 0, _endF = 2;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == EDU_SLEEP)
+		{
 			_status = EDU_SLEEP;
 			_startF = 3, _endF = 4;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = EDU_NOSTUDY;
 			_startF = 5, _endF = 6;
-			break;
 		}
+
 		break;
 	}
 }
@@ -911,76 +997,103 @@ int educationScene::changeStatus(string name, int value)
 	{
 		temp = _princess->getStatus().intelligence;
 		_princess->getStatusP()->intelligence += value;
+		if (_princess->getStatus().intelligence < 0)
+			_princess->getStatusP()->intelligence = 0;
 	}
 	else if (name == "전투기술")
 	{
 		temp = _princess->getStatus().warriorSkill;
 		_princess->getStatusP()->warriorSkill += value;
+		if (_princess->getStatus().warriorSkill < 0)
+			_princess->getStatusP()->warriorSkill = 0;
 	}
 	else if (name == "마법기술")
 	{
 		temp = _princess->getStatus().magicSkill;
 		_princess->getStatusP()->magicSkill += value;
+		if (_princess->getStatus().magicSkill < 0)
+			_princess->getStatusP()->magicSkill = 0;
 	}
 	else if (name == "기품")
 	{
 		temp = _princess->getStatus().elegance;
 		_princess->getStatusP()->elegance += value;
+		if (_princess->getStatus().elegance < 0)
+			_princess->getStatusP()->elegance = 0;
 	}
 	else if (name == "체력")
 	{
 		temp = _princess->getStatus().hp;
 		_princess->getStatusP()->hp += value;
+		if (_princess->getStatus().hp < 0)
+			_princess->getStatusP()->hp = 0;
 	}
 	else if (name == "감수성")
 	{
 		temp = _princess->getStatus().sensitivity;
 		_princess->getStatusP()->sensitivity += value;
+		if (_princess->getStatus().sensitivity < 0)
+			_princess->getStatusP()->sensitivity = 0;
 	}
 	else if (name == "신앙심")
 	{
 		temp = _princess->getStatus().faith;
 		_princess->getStatusP()->faith += value;
+		if (_princess->getStatus().faith < 0)
+			_princess->getStatusP()->faith = 0;
 	}
 	else if (name == "공격력")
 	{
 		temp = _princess->getStatus().power;
 		_princess->getStatusP()->power += value;
+		if (_princess->getStatus().power < 0)
+			_princess->getStatusP()->power = 0;
 	}
 	else if (name == "방어력")
 	{
 		temp = _princess->getStatus().defPower;
 		_princess->getStatusP()->defPower += value;
+		if (_princess->getStatus().defPower < 0)
+			_princess->getStatusP()->defPower = 0;
 	}
 	else if (name == "마력")
 	{
 		temp = _princess->getStatus().spell;
 		_princess->getStatusP()->spell += value;
+		if (_princess->getStatus().spell < 0)
+			_princess->getStatusP()->spell = 0;
 	}
 	else if (name == "예의범절")
 	{
 		temp = _princess->getStatus().manner;
 		_princess->getStatusP()->manner += value;
+		if (_princess->getStatus().manner < 0)
+			_princess->getStatusP()->manner = 0;
 	}
 	else if (name == "매력")
 	{
 		temp = _princess->getStatus().sexual;
 		_princess->getStatusP()->sexual += value;
+		if (_princess->getStatus().sexual < 0)
+			_princess->getStatusP()->sexual = 0;
 	}
 	else if (name == "예술")
 	{
 		temp = _princess->getStatus().art;
 		_princess->getStatusP()->art += value;
+		if (_princess->getStatus().art < 0)
+			_princess->getStatusP()->art = 0;
 	}
 	else if (name == "항마력")
 	{
 		temp = _princess->getStatus().spellDefence;
 		if (value == 0)
 			_princess->getStatusP()->spellDefence += 0;
-		
 		else
 			_princess->getStatusP()->spellDefence += -1;
-		
+
+		if (_princess->getStatus().spellDefence < 0)
+			_princess->getStatusP()->spellDefence = 0;
 	}
 	return temp;
 }
@@ -997,8 +1110,8 @@ void educationScene::setDialog(string dialog)
 		_vDialog.push_back(_teachDialog[0]);
 	/*if (_statusProgess == STATUS_ING)
 	{
-		string temp = _eduName + " " + to_string(_dayCount + 1) + "일차";
-		_vDialog.push_back(temp);
+	string temp = _eduName + " " + to_string(_dayCount + 1) + "일차";
+	_vDialog.push_back(temp);
 	}*/
 	int strLength = 40;
 	if (_statusProgress == STATUS_FIN || _statusProgress == STATUS_TEACH) strLength = 28;

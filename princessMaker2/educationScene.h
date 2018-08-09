@@ -11,7 +11,7 @@ class princess;
 class educationScene : public gameNode
 {
 private:
-	princess* _princess;
+	princess * _princess;
 	status* _education;
 	vector<string> _vDialog;
 	DIALOG_TYPE _dialogType;
@@ -30,16 +30,16 @@ private:
 	EDU_STATUS _status;
 	STATUS_TYPE _statusProgress;
 	DAYOFWEEK _dayOfWeek;
-	vector<pair<string,int>> _eduStatus;
+	vector<pair<string, int>> _eduStatus;
 
 	image* _back;
 	image* _princessImg;
 	vector<image*> _friends;
 
-	bool _fin, _goldOk, _eduFin;
+	bool _fin, _goldOk, _eduFin, _noGold, _resultDialog;
 
 	tagProgress _pGold;
-	vector<pair<image*,tagProgress>> _vPStatus;
+	vector<pair<image*, tagProgress>> _vPStatus;
 
 public:
 	educationScene();
