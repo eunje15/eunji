@@ -5,6 +5,7 @@
 #include "prologueDialog.h"
 #include "princessScene.h"
 #include "testClass.h"
+#include "mapTool.h"
 
 class playGround : public gameNode
 {

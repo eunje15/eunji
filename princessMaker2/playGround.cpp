@@ -20,18 +20,20 @@ HRESULT playGround::init(void)
 	_princess = new princess;
 	_princess->init();
 
-	SCENEMANAGER->setPrincessAddressLink(_princess);
+	/*SCENEMANAGER->setPrincessAddressLink(_princess);
 
 	SCENEMANAGER->addScene("데이터입력", new dataInput);
 	SCENEMANAGER->addScene("프롤로그", new prologueDialog);
 	SCENEMANAGER->addScene("공주씬", new princessScene);
 	
 	SCENEMANAGER->changeScene("공주씬");
-	_str = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", "처녀자리");
+	_str = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", "처녀자리");*/
 
-	//SCENEMANAGER->addScene("테스트", new testClass);
-	//SCENEMANAGER->changeScene("테스트");
-
+	/*SCENEMANAGER->addScene("테스트", new testClass);
+	SCENEMANAGER->changeScene("테스트");
+*/
+	SCENEMANAGER->addScene("맵툴", new mapTool);
+	SCENEMANAGER->changeScene("맵툴");
 	return S_OK;
 }
 

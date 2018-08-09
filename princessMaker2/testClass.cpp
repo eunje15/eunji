@@ -13,28 +13,32 @@ testClass::~testClass()
 
 HRESULT testClass::init()
 {
-	_back = IMAGEMANAGER->findImage("林痢硅版");
-	_friends.push_back(IMAGEMANAGER->findImage("林痢急积"));
-	_friends.push_back(IMAGEMANAGER->findImage("林痢模备1"));
-	_friends.push_back(IMAGEMANAGER->findImage("林痢模备2"));
-	_friends.push_back(IMAGEMANAGER->findImage("林痢模备3"));
-	_princess = IMAGEMANAGER->findImage("林痢傍林");
+	_back = IMAGEMANAGER->findImage("广狼林痢硅版");
+	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢急积"));
+	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备1"));
+	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备2"));
+	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备3"));
+	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备4"));
+	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备5"));
+	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备6"));
+	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢眯阂"));
+	_princess = IMAGEMANAGER->findImage("广狼林痢傍林");
 
 	switch (RND->getInt(3))
 	{
 	case 0:
 		_type = TEST_STUDY;
-		_startF = 0, _endF = 7;
+		_startF = 0, _endF = 3;
 		_typeStr = "傍何吝";
 		break;
 	case 1:
 		_type = TEST_SLEEP;
-		_startF = 7, _endF = 17;
+		_startF = 4, _endF = 7;
 		_typeStr = "炼绰吝";
 		break;
 	case 2:
 		_type = TEST_NOSTUDY;
-		_startF = 18, _endF = 19;
+		_startF = 4, _endF = 7;
 		_typeStr = "丑动捞";
 		break;
 	}
@@ -100,20 +104,23 @@ void testClass::update()
 			{
 			case 0:
 				_type = TEST_STUDY;
-				_startF = 0, _endF = 7;
+				_startF = 0, _endF = 3;
 				_typeStr = "傍何吝";
 				break;
 			case 1:
 				_type = TEST_SLEEP;
-				_startF = 7, _endF = 17;
+				_startF = 4, _endF = 7;
 				_typeStr = "炼绰吝";
 				break;
 			case 2:
 				_type = TEST_NOSTUDY;
-				_startF = 18, _endF = 19;
+				_startF = 4, _endF = 7;
 				_typeStr = "丑动捞";
 				break;
 			}
+			_type = TEST_NOSTUDY;
+			_startF = 4, _endF = 7;
+			_typeStr = "丑动捞";
 			_frameX = _startF;
 		}
 		
@@ -127,11 +134,15 @@ void testClass::update()
 void testClass::render()
 {
 	_back->render(DC, 0, 0);
-	_friends[0]->frameRender(DC, 200, 0, _friends[0]->getFrameX(), 0);
-	_friends[1]->frameRender(DC, 60, 17, _friends[1]->getFrameX(), 0);
-	_friends[2]->frameRender(DC, 210, 42, _friends[2]->getFrameX(), 0);
-	_friends[3]->frameRender(DC, 270, 43, _friends[3]->getFrameX(), 0);
-	_princess->frameRender(DC, 300, 17, _frameX, 0);
+	_friends[0]->frameRender(DC, 0, 42, _friends[0]->getFrameX(), 0);
+	_friends[1]->frameRender(DC, 70, 42, _friends[1]->getFrameX(), 0);
+	_friends[2]->frameRender(DC, 115, 42, _friends[2]->getFrameX(), 0);
+	_friends[3]->frameRender(DC, 145, 43, _friends[3]->getFrameX(), 0);
+	_friends[4]->frameRender(DC, 270, 42, _friends[4]->getFrameX(), 0);
+	_friends[5]->frameRender(DC, 300, 42, _friends[5]->getFrameX(), 0);
+	_friends[6]->frameRender(DC, 200, 0, _friends[6]->getFrameX(), 0);
+	_friends[7]->frameRender(DC, 70, 0, _friends[7]->getFrameX(), 0);
+	_princess->frameRender(DC, 330, 42, _frameX, 0);
 	
 	
 	char str[128];

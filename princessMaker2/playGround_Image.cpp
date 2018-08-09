@@ -268,5 +268,34 @@ HRESULT playGround::image_init()
 	IMAGEMANAGER->addFrameImage("林痢模备2", "image/work/林痢模备2(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
 	IMAGEMANAGER->addFrameImage("林痢模备3", "image/work/林痢模备3(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
 
+	IMAGEMANAGER->addImage("林痢硅版", "image/work/林痢硅版(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("林痢傍林", "image/work/林痢傍林(1000x75,20x1).bmp", 1000, 75, 20, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("林痢急积", "image/work/林痢急积(150x100,3x1).bmp", 150, 100, 3, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("林痢模备1", "image/work/林痢模备1(200x75,4x1).bmp", 200, 75, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("林痢模备2", "image/work/林痢模备2(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("林痢模备3", "image/work/林痢模备3(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+
+	IMAGEMANAGER->addImage("广狼林痢硅版", "image/work/广狼林痢硅版(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("广狼林痢傍林", "image/work/广狼林痢傍林(400x100,8x1).bmp", 400, 100, 8, 1, true, RGB(1, 202, 1));
+	IMAGEMANAGER->addFrameImage("广狼林痢急积", "image/work/广狼林痢急积(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(1, 202, 1));
+	IMAGEMANAGER->addFrameImage("广狼林痢模备5", "image/work/广狼林痢模备1(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(1, 202, 1));
+	IMAGEMANAGER->addFrameImage("广狼林痢模备4", "image/work/广狼林痢模备2(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(1, 202, 1));
+	IMAGEMANAGER->addFrameImage("广狼林痢模备3", "image/work/广狼林痢模备3(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(1, 202, 1));
+	IMAGEMANAGER->addFrameImage("广狼林痢模备2", "image/work/广狼林痢模备4(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(1, 202, 1));
+	IMAGEMANAGER->addFrameImage("广狼林痢模备1", "image/work/广狼林痢模备5(300x100,6x1).bmp", 300, 100, 6, 1, true, RGB(1, 202, 1));
+	IMAGEMANAGER->addFrameImage("广狼林痢模备6", "image/work/广狼林痢模备6(150x100,3x1).bmp", 150, 100, 3, 1, true, RGB(1, 202, 1));
+	IMAGEMANAGER->addFrameImage("广狼林痢眯阂", "image/work/广狼林痢眯阂(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(1, 202, 1));
+
+	IMAGEMANAGER->addImage("广狼傈寸硅版", "image/work/广狼傈寸硅版(400x160).bmp", 400, 160, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("广狼傈寸傍林", "image/work/广狼傈寸傍林(500x100,10x1).bmp", 500, 100, 10, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("广狼傈寸急积", "image/work/广狼傈寸急积(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("广狼傈寸模备1", "image/work/广狼傈寸模备1(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("广狼傈寸模备2", "image/work/广狼傈寸模备2(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("广狼傈寸模备3", "image/work/广狼傈寸模备3(200x100,4x1).bmp", 200, 100, 4, 1, true, RGB(0, 204, 0));
+	IMAGEMANAGER->addFrameImage("广狼傈寸模备4", "image/work/广狼傈寸模备4(100x100,2x1).bmp", 100, 100, 2, 1, true, RGB(0, 204, 0));
+	
+
+	//==========================甘捞固瘤=====================================
+
 	return S_OK;
 }

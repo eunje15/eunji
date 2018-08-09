@@ -48,9 +48,9 @@ HRESULT partTimeScene::init(workStatus* work, int dayCount, int idx)
 		_type = WORK_COACH;
 	else if (_workName == "林痢")
 		_type = WORK_DRINK;
-	else if (_workName == "广狼 林痢")
+	else if (_workName == "广狼林痢")
 		_type = WORK_NIGHT_DRINK;
-	else if (_workName == "广狼 傈寸")
+	else if (_workName == "广狼傈寸")
 		_type = WORK_NIGHT_CLUB;
 
 	initStatus();
@@ -497,8 +497,58 @@ void partTimeScene::setImage()
 		}
 		break;
 	case WORK_NIGHT_DRINK:
+		_back = IMAGEMANAGER->findImage("广狼林痢硅版");
+		_friends.push_back(IMAGEMANAGER->findImage("广狼林痢急积"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备1"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备2"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备3"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备4"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备5"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备6"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼林痢眯阂"));
+		_princessImg = IMAGEMANAGER->findImage("广狼林痢傍林");
+
+		switch (RND->getInt(3))
+		{
+		case 0:
+			_status = WORK_HARD;
+			_startF = 0, _endF = 3;
+			break;
+		case 1:
+			_status = WORK_SLEEP;
+			_startF = 4, _endF = 7;
+			break;
+		case 2:
+			_status = WORK_NOHARD;
+			_startF = 4, _endF = 7;
+			break;
+		}
 		break;
 	case WORK_NIGHT_CLUB:
+		_back = IMAGEMANAGER->findImage("广狼傈寸硅版");
+		_friends.push_back(IMAGEMANAGER->findImage("广狼傈寸急积"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼傈寸模备1"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼傈寸模备2"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼傈寸模备3"));
+		_friends.push_back(IMAGEMANAGER->findImage("广狼傈寸模备4"));
+		_princessImg = IMAGEMANAGER->findImage("广狼傈寸傍林");
+
+		switch (RND->getInt(3))
+		{
+		case 0:
+			_status = WORK_HARD;
+			_startF = 0, _endF = 3;
+			_friends[1]->setFrameX(0), _friends[2]->setFrameX(0);
+			break;
+		case 1:
+			_status = WORK_SLEEP;
+			_startF = 3, _endF = 7;
+			break;
+		case 2:
+			_status = WORK_NOHARD;
+			_startF = 8, _endF = 9;
+			break;
+		}
 		break;
 	}
 }
@@ -912,28 +962,38 @@ void partTimeScene::changeFrame()
 				case WORK_NIGHT_DRINK:
 					if (selectStatus() == WORK_HARD)
 					{
-
+						_status = WORK_HARD;
+						_startF = 0, _endF = 3;
 					}
 					else if (selectStatus() == WORK_SLEEP)
 					{
-
+						_status = WORK_SLEEP;
+						_startF = 4, _endF = 7;
 					}
 					else
 					{
-
+						_status = WORK_NOHARD;
+						_startF = 4, _endF = 7;
 					}
 					break;
 				case WORK_NIGHT_CLUB:
 					if (selectStatus() == WORK_HARD)
 					{
+						_status = WORK_HARD;
+						_startF = 0, _endF = 3;
+						_friends[1]->setFrameX(0), _friends[2]->setFrameX(0);
 
 					}
 					else if (selectStatus() == WORK_SLEEP)
 					{
+						_status = WORK_SLEEP;
+						_startF = 3, _endF = 7;
 
 					}
 					else
 					{
+						_status = WORK_NOHARD;
+						_startF = 8, _endF = 9;
 
 					}
 					break;
@@ -1286,8 +1346,26 @@ void partTimeScene::workRender()
 
 		break;
 	case WORK_NIGHT_DRINK:
+		_friends[0]->frameRender(DC, backX, 42 + backY, _friends[0]->getFrameX(), 0);
+		_friends[1]->frameRender(DC, 70 + backX, 42 + backY, _friends[1]->getFrameX(), 0);
+		_friends[2]->frameRender(DC, 115 + backX, 42 + backY, _friends[2]->getFrameX(), 0);
+		_friends[3]->frameRender(DC, 145 + backX, 43 + backY, _friends[3]->getFrameX(), 0);
+		_friends[4]->frameRender(DC, 270 + backX, 42 + backY, _friends[4]->getFrameX(), 0);
+		_friends[5]->frameRender(DC, 300 + backX, 42 + backY, _friends[5]->getFrameX(), 0);
+		_friends[6]->frameRender(DC, 200 + backX, backY, _friends[6]->getFrameX(), 0);
+		_friends[7]->frameRender(DC, 70 + backX, backY, _friends[7]->getFrameX(), 0);
+		if(_status == WORK_HARD)
+			_princessImg->frameRender(DC, 330 + backX, 42 + backY, _frameX, 0);
+		else
+			_princessImg->frameRender(DC, 340 + backX, 42 + backY, _frameX, 0);
 		break;
 	case WORK_NIGHT_CLUB:
+		_friends[0]->frameRender(DC, backX, 42 + backY, _friends[0]->getFrameX(), 0);
+		_friends[1]->frameRender(DC, 130 + backX, 42 + backY, _friends[1]->getFrameX(), 0);
+		_friends[2]->frameRender(DC, 230 + backX, 42 + backY, _friends[2]->getFrameX(), 0);
+		_friends[3]->frameRender(DC, 50 + backX, 43 + backY, _friends[3]->getFrameX(), 0);
+		_friends[4]->frameRender(DC, 350 + backX, 42 + backY, _friends[4]->getFrameX(), 0);
+		_princessImg->frameRender(DC, 180 + backX, 42 + backY, _frameX, 0);
 		break;
 	}
 

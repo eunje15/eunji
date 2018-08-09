@@ -70,6 +70,9 @@
     <Filter Include="playGround\stat">
       <UniqueIdentifier>{a7a83e5d-676b-49b2-9ba0-bd80ce14d0ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\maptool">
+      <UniqueIdentifier>{7482ca49-0572-440e-a6fd-14d50d293967}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -226,7 +229,13 @@
       <Filter>playGround\scene</Filter>
     </ClInclude>
     <ClInclude Include="dadTalkScene.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>playGround\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="tileNode.h">
+      <Filter>playGround\maptool</Filter>
+    </ClInclude>
+    <ClInclude Include="mapTool.h">
+      <Filter>playGround\maptool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -372,7 +381,10 @@
       <Filter>playGround\scene</Filter>
     </ClCompile>
     <ClCompile Include="dadTalkScene.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>playGround\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="mapTool.cpp">
+      <Filter>playGround\maptool</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
