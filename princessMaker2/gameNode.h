@@ -2,8 +2,8 @@
 #include "image.h"
 
 //백버퍼 선언
-static image* _backBuffer = IMAGEMANAGER->addImage("backBuffer", WINSIZEX, WINSIZEY);
-
+static image* _backBuffer = IMAGEMANAGER->addImage("backBuffer", 4000, 3360);
+static image* _camera = IMAGEMANAGER->addImage("CAMERA", WINSIZEX, WINSIZEY);
 
 
 class gameNode
