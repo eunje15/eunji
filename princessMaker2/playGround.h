@@ -10,8 +10,11 @@
 class playGround : public gameNode
 {
 private:
+	enum SCENE_TYPE { MAPTOOL, GAME, START };
+
+private:
 	princess* _princess;
-	
+	SCENE_TYPE _type;
 	image* _test;
 	int _frameX, _frameY;
 	RECT _rc;

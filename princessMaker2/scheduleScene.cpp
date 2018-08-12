@@ -66,6 +66,7 @@ HRESULT scheduleScene::init(int year, int mon)
 
 	_education = new educationScene;
 	_work = new partTimeScene;
+	_relax = new relaxScene;
 
 	return S_OK;
 }
@@ -646,6 +647,22 @@ void scheduleScene::update()
 					}
 				}
 			}
+			else if (_scheduleWeek[_scheduleIdx] == "relax")
+			{
+				_relax->update();
+				if (_relax->getFin())
+				{
+					if (_progress == SCHEDULE_ING)
+					{
+						_scheduleIdx++;
+						_progress = SCHEDULE_FIN;
+						if (_scheduleIdx > 2)
+						{
+							_fin = true;
+						}
+					}
+				}
+			}
 			if (_progress == SCHEDULE_START)
 				setSchedule();
 		}
@@ -705,6 +722,14 @@ void scheduleScene::render()
 
 			for (int i = 0; i < 4; i++)
 			{
+				IMAGEMANAGER->findImage("알바액자")->render(DC, 10, 430);
+				if (dialogRender())
+				{
+					for (int i = 0; i < _vDialog.size(); i++)
+					{
+						TextOut(DC, 20, 440 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+					}
+				}
 				if (_chooseBox[i].isSelected)
 				{
 					HBRUSH brush, oldBrush;
@@ -828,7 +853,11 @@ void scheduleScene::render()
 					_relaxImg[i].img->frameRender(DC, _relaxImg[i].data.rc.left, _relaxImg[i].data.rc.top, _relaxImg[i].frameX, 0);
 					IMAGEMANAGER->findImage("relaxImg")->frameRender(DC, _relaxImg[i].data.rc.left + 5, _relaxImg[i].data.rc.top + 7, _relaxImg[i].frameY, 0);
 					TextOut(DC, _relaxImg[i].data.rc.left + 50, _relaxImg[i].data.rc.top + 7, _sm->getVRelax()[i]->getName().c_str(), strlen(_sm->getVRelax()[i]->getName().c_str()));
-					string str = to_string(_sm->getVRelax()[i]->getGold()*_princess->getInfo().age) + "G";
+					string str = "";
+					if (i == 1)
+						str = to_string(_sm->getVRelax()[i]->getGold()*_princess->getInfo().age) + "G";
+					else
+						str = "0G";
 					TextOut(DC, _relaxImg[i].data.rc.left + 50, _relaxImg[i].data.rc.top + 30, str.c_str(), strlen(str.c_str()));
 				}
 			}
@@ -877,6 +906,10 @@ void scheduleScene::render()
 				else if (_scheduleWeek[_scheduleIdx] == "work")
 				{
 					_work->render();
+				}
+				else if (_scheduleWeek[_scheduleIdx] == "relax")
+				{
+					_relax->render();
 				}
 			}
 			break;
@@ -953,6 +986,12 @@ void scheduleScene::setSchedule()
 	}
 	else if (_scheduleWeek[_scheduleIdx] == "relax")
 	{
+		if (_scheduleIdx == 2 && (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12))
+			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 11);
+		else if (_scheduleIdx == 2 && _mon == 2)
+			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 8);
+		else
+			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 10);
 
 	}
 }

@@ -13,147 +13,103 @@ testClass::~testClass()
 
 HRESULT testClass::init()
 {
-	_back = IMAGEMANAGER->findImage("广狼林痢硅版");
-	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢急积"));
-	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备1"));
-	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备2"));
-	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备3"));
-	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备4"));
-	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备5"));
-	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢模备6"));
-	_friends.push_back(IMAGEMANAGER->findImage("广狼林痢眯阂"));
-	_princess = IMAGEMANAGER->findImage("广狼林痢傍林");
-
-	switch (RND->getInt(3))
-	{
-	case 0:
-		_type = TEST_STUDY;
-		_startF = 0, _endF = 3;
-		_typeStr = "傍何吝";
-		break;
-	case 1:
-		_type = TEST_SLEEP;
-		_startF = 4, _endF = 7;
-		_typeStr = "炼绰吝";
-		break;
-	case 2:
-		_type = TEST_NOSTUDY;
-		_startF = 4, _endF = 7;
-		_typeStr = "丑动捞";
-		break;
-	}
-	_day = _success = _count = _frameCount = 0;
-	_gold = 10;
-	_dayOfWeek = MON;
-	_frameX = _startF;
+	vector<string> vStr = TXTDATA->txtLoad("dialog/workStart.txt");
+	vStr = TXTDATA->txtLoadCsv("dialog/workTeach.csv");
+	char cStr[100000];
+	strcpy(cStr, vStr[(int)7].c_str());
+	_teachDialog = TXTDATA->charArraySeparation(cStr);
+	_nextIdx = 1;
+	setDialog(_teachDialog[_nextIdx]);
 	return S_OK;
 }
 
 void testClass::update()
 {
-	if (_day >= 10) return;
-	_count++;
-	if (!(_count % 30))
+	if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 	{
-		_count = 0;
-		
-		for (int i = 0; i < _friends.size(); i++)
+		_nextIdx++;
+		if (_nextIdx > 0 && _nextIdx < _teachDialog.size())
 		{
-			if (_friends[i]->getFrameX() < _friends[i]->getMaxFrameX())
-				_friends[i]->setFrameX(_friends[i]->getFrameX() + 1);
-			else
-				_friends[i]->setFrameX(0);
+			setDialog(_teachDialog[_nextIdx]);
+			_dialogIdx = 0;
 		}
-		if (_frameX >= _endF)
-		{
-			_frameCount++;
-			_frameX = _startF;
-		}
-		else
-			_frameX++;
-		
-		if (_frameCount == 3)
-		{
-			_day++;
-			_frameCount = 0;
-			switch (_dayOfWeek)
-			{
-			case MON:
-				_dayOfWeek = TUE;
-				break;
-			case TUE:
-				_dayOfWeek = WED;
-				break;
-			case WED:
-				_dayOfWeek = THU;
-				break;
-			case THU:
-				_dayOfWeek = FRI;
-				break;
-			case FRI:
-				_dayOfWeek = SAT;
-				break;
-			case SAT:
-				_dayOfWeek = SUN;
-				break;
-			case SUN:
-				_dayOfWeek = MON;
-				break;
-			}
-			switch (RND->getInt(3))
-			{
-			case 0:
-				_type = TEST_STUDY;
-				_startF = 0, _endF = 3;
-				_typeStr = "傍何吝";
-				break;
-			case 1:
-				_type = TEST_SLEEP;
-				_startF = 4, _endF = 7;
-				_typeStr = "炼绰吝";
-				break;
-			case 2:
-				_type = TEST_NOSTUDY;
-				_startF = 4, _endF = 7;
-				_typeStr = "丑动捞";
-				break;
-			}
-			_type = TEST_NOSTUDY;
-			_startF = 4, _endF = 7;
-			_typeStr = "丑动捞";
-			_frameX = _startF;
-		}
-		
 	}
-	if (_day == 10)
+	if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
 	{
-		_typeStr = "场";
+		_nextIdx--;
+		if (_nextIdx > 0 && _nextIdx < _teachDialog.size())
+		{
+			setDialog(_teachDialog[_nextIdx]);
+			_dialogIdx = 0;
+		}
 	}
 }
 
 void testClass::render()
 {
-	_back->render(DC, 0, 0);
-	_friends[0]->frameRender(DC, 0, 42, _friends[0]->getFrameX(), 0);
-	_friends[1]->frameRender(DC, 70, 42, _friends[1]->getFrameX(), 0);
-	_friends[2]->frameRender(DC, 115, 42, _friends[2]->getFrameX(), 0);
-	_friends[3]->frameRender(DC, 145, 43, _friends[3]->getFrameX(), 0);
-	_friends[4]->frameRender(DC, 270, 42, _friends[4]->getFrameX(), 0);
-	_friends[5]->frameRender(DC, 300, 42, _friends[5]->getFrameX(), 0);
-	_friends[6]->frameRender(DC, 200, 0, _friends[6]->getFrameX(), 0);
-	_friends[7]->frameRender(DC, 70, 0, _friends[7]->getFrameX(), 0);
-	_princess->frameRender(DC, 330, 42, _frameX, 0);
-	
-	
-	char str[128];
-	sprintf_s(str, "%d %d", _ptMouse.x, _ptMouse.y);
-	TextOut(DC, 700, 500, str, strlen(str));
-
-	sprintf_s(str, "冉荐 : %d", _day);
-	TextOut(DC, 600, 500, str, strlen(str));
-	TextOut(DC, 600, 550, _typeStr.c_str(), strlen(_typeStr.c_str()));
+	IMAGEMANAGER->findImage("dialogFrame")->render(DC, 180, 225);
+	for (int i = 0; i < _vDialog.size(); i++)
+	{
+		TextOut(DC, 190, 235 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+	}
 }
 
 void testClass::release()
 {
+}
+
+void testClass::setDialog(string dialog)
+{
+	DIALOG->setDialog(dialog, 5);
+	string str = DIALOG->getTotalDialog();
+	int strSize = str.size();
+	int idx = 0;
+	if (_vDialog.size() > 0)
+		_vDialog.clear();
+	int strLength = 28;
+	while (1)
+	{
+		if (strSize > strLength)
+		{
+			_vDialog.push_back(str.substr(idx, strLength));
+			idx += strLength;
+			strSize -= strLength;
+		}
+		else
+		{
+			_vDialog.push_back(str.substr(idx, strSize));
+			break;
+		}
+	}
+	DIALOG->setDialog(_vDialog[0], 1);
+}
+
+bool testClass::dialogRender()
+{
+	if (_dialogIdx < _vDialog.size())
+	{
+		string temp = DIALOG->getCurrentDialog();
+		if (temp == "end")
+		{
+			_dialogIdx++;
+			if (_dialogIdx < _vDialog.size())
+				DIALOG->setDialog(_vDialog[_dialogIdx], 5);
+		}
+		else
+		{
+			if (_dialogIdx > 0)
+			{
+				for (int i = 0; i < _dialogIdx; i++)
+				{
+					TextOut(DC, 190, 235 + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
+				}
+			}
+			TextOut(DC, 190, 235 + _dialogIdx * 30, temp.c_str(), strlen(temp.c_str()));
+		}
+	}
+	else
+	{
+		return true;
+	}
+	return false;
 }

@@ -2,11 +2,14 @@
 #include "gameNode.h"
 #include "princess.h"
 
-enum SCENE_TYPE { SCENE_PROLOGUE, SCENE_WAR, SCENE_PRINCESS };
+
 enum PRO_DIALOG_TYPE { PRO_DIALOG_DEVIL, PRO_DIALOG_KING, PRO_DIALOG_GOD, PRO_DIALOG_NONE };
 enum PRO_DIALOG_PROGRESS { PRO_DIALOG_START, PRO_DIALOG_ING, PRO_DIALOG_FIN, PRO_FRAME_START, PRO_FRAME_FIN };
 class prologueDialog :	public gameNode
 {
+private:
+	enum SCENE_TYPE { SCENE_PROLOGUE, SCENE_WAR, SCENE_PRINCESS };
+
 private:
 	princess* _princess;
 

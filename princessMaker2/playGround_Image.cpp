@@ -296,6 +296,12 @@ HRESULT playGround::image_init()
 	
 
 	//==========================맵이미지=====================================
+	IMAGEMANAGER->addFrameImage("map", "image/field/e_map(640x3360,16x84).bmp", 640, 3360, 16, 84, true, RGB(255, 0, 255));
+	
 
+	//======================무사수행이미지===================================
+	IMAGEMANAGER->addFrameImage("조작키", "image/field/조작키(200x80,5x2).bmp", 200, 80, 5, 2, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("무사수행정보", "image/field/무사수행정보(180x170).bmp", 180, 170, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("fieldMap", "image/field/FieldMap(1600x600,2x1).bmp", 1600, 600, 2, 1, false, RGB(255, 0, 255));
 	return S_OK;
 }

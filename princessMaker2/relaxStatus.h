@@ -1,17 +1,21 @@
 #pragma once
 #include "gameNode.h"
+#include "data.h"
 
-enum RELAX_TYPE { FREE_NOGOLD, FREE_GOLD, VACATION_SEA, VACATION_MOUNTAIN };
+class princess;
+
 class relaxStatus : public gameNode
 {
 private:
+	enum RELAX_TYPE { RELAX_FREE, RELAX_VACATION };
+
+private:
+	princess* _princess;
 	string _name;
 	int _season;
-	int _sensitivity;
-	int _stress;
 	int _gold;
-	float _weight;	//¹«°Ô
 	RELAX_TYPE _type;
+	tagRelax _relaxInfo[8];
 public:
 	relaxStatus();
 	~relaxStatus();
@@ -20,9 +24,11 @@ public:
 	void render();
 	void release();
 
-	void setRelaxStatus(int season, int type);
+	void setRelaxStatus(int type);
 
 	string getName() { return _name; }
 	int getGold() { return _gold; }
+
+	tagRelax getRelaxIdx(int idx);
 };
 

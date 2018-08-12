@@ -63,7 +63,7 @@ HRESULT partTimeScene::init(workStatus* work, int dayCount, int idx)
 	_fin = _workFin = false;
 	_goldOk = true;
 	_progress = STATUS_START;
-	string str = _princess->getInfo().name + "는 오늘부터 " + _workName + "을 시작합니다.";
+	string str = _princess->getInfo().name + "는 오늘부터 " + _workName + " 일을 시작합니다.";
 	setDialog(str);
 	_dialogX = 20, _dialogY = WINSIZEY - 180;
 	_dialogIdx = 0, _dialogType = DIALOG_ING;
@@ -80,7 +80,10 @@ void partTimeScene::update()
 		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 		{
 			_progress = STATUS_TEACH;
-			//setDialog(_teachDialog[1]);
+			if (_workStart)
+				setDialog(_teachDialog[1]);
+			else
+				setDialog(_teachDialog[2]);
 			_dialogX = 190, _dialogY = 235;
 			_dialogIdx = 0, _dialogType = DIALOG_ING;
 		}
@@ -143,9 +146,15 @@ void partTimeScene::render()
 		{
 			workRender();
 		}
+
+		//char str[128];
+		//sprintf_s(str, "print : %d, success : %d", _printDay, _success);
+		//TextOut(DC, WINSIZEX / 2, 50, str, strlen(str));
 		break;
 	case STATUS_FIN:
-		IMAGEMANAGER->findImage("info2Back")->render(DC, 440, 238);
+		IMAGEMANAGER->findImage("frame")->render(DC, 35, 225);
+		IMAGEMANAGER->findImage("알바선생")->frameRender(DC, 45, 235, _teacherFrameX, 0);
+		IMAGEMANAGER->findImage("dialogFrame")->render(DC, 180, 225);
 		if (dialogRender())
 		{
 			for (int i = 0; i < _vDialog.size(); i++)
@@ -153,7 +162,12 @@ void partTimeScene::render()
 				TextOut(DC, _dialogX, _dialogY + i * 30, _vDialog[i].c_str(), strlen(_vDialog[i].c_str()));
 			}
 		}
-		workRender();
+		if (_workName != "집안일" && _success > 0)
+		{
+			char str[128];
+			sprintf_s(str, "%d일 분으로 %dG", _printDay, _pGold.data);
+			TextOut(DC, _dialogX, _dialogY + (_vDialog.size()) * 30, str, strlen(str));
+		}
 		break;
 	}
 }
@@ -218,43 +232,49 @@ void partTimeScene::setImage()
 	case WORK_HOUSE:
 		_friends.push_back(IMAGEMANAGER->findImage("집안일선생"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 2;
 			_friends[0]->setFrameX(0);
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 2, _endF = 7;
 			_friends[0]->setFrameX(1);
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 8, _endF = 9;
 			_friends[0]->setFrameX(1);
-			break;
+
 		}
 		break;
 	case WORK_NURSERY:
 		_friends.push_back(IMAGEMANAGER->findImage("보모선생"));
 		_friends.push_back(IMAGEMANAGER->findImage("보모친구1"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 4, _endF = 7;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 8, _endF = 9;
-			break;
+
 		}
 		break;
 	case WORK_INN:
@@ -262,21 +282,24 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("여관닭"));
 		_friends.push_back(IMAGEMANAGER->findImage("여관이불"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 4, _endF = 8;
 			_friends[2]->setFrameX(0);
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 9, _endF = 10;
-			break;
+
 		}
 		break;
 	case WORK_FARM:
@@ -287,40 +310,46 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("말머리"));
 		_friends.push_back(IMAGEMANAGER->findImage("말궁둥이"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 4;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 5, _endF = 9;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 10, _endF = 11;
-			break;
+
 		}
 		break;
 	case WORK_CHURCH:
 		_friends.push_back(IMAGEMANAGER->findImage("성당선생"));
 		_friends.push_back(IMAGEMANAGER->findImage("성당책상"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 4, _endF = 5;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 6, _endF = 7;
-			break;
+
 		}
 		break;
 	case WORK_RESTAURANT:
@@ -330,20 +359,23 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("레스토랑친구2"));
 		_friends.push_back(IMAGEMANAGER->findImage("레스토랑친구3"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 1;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 2, _endF = 3;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 4, _endF = 5;
-			break;
+
 		}
 		break;
 	case WORK_WOOD:
@@ -351,20 +383,23 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("나무꾼친구1"));
 		_friends.push_back(IMAGEMANAGER->findImage("나무꾼친구2"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 4;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 0, _endF = 9;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 11, _endF = 12;
-			break;
+
 		}
 		break;
 	case WORK_HAIR:
@@ -373,23 +408,26 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("미용실친구2"));
 		_friends.push_back(IMAGEMANAGER->findImage("미용실친구3"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 3;
 			_friends[1]->setFrameY(0);
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 4, _endF = 7;
 			_friends[1]->setFrameY(1);
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 8, _endF = 9;
 			_friends[1]->setFrameY(1);
-			break;
+
 		}
 		break;
 	case WORK_PLASTERER:
@@ -397,81 +435,91 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("미장이친구1"));
 		_friends.push_back(IMAGEMANAGER->findImage("미장이강아지"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 0, _endF = 6;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 7, _endF = 8;
-			break;
+
 		}
 		break;
 	case WORK_HUNTER:
 		_friends.push_back(IMAGEMANAGER->findImage("사냥꾼선생"));
 		_friends.push_back(IMAGEMANAGER->findImage("사냥꾼토끼"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 4;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 2, _endF = 5;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 6, _endF = 7;
-			break;
+
 		}
 		break;
 	case WORK_GRAVE:
 		_friends.push_back(IMAGEMANAGER->findImage("묘지기선생"));
 		_friends.push_back(IMAGEMANAGER->findImage("묘지기불"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 4, _endF = 5;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 6, _endF = 7;
-			break;
-		}
 
+		}
 		break;
 	case WORK_COACH:
 		_friends.push_back(IMAGEMANAGER->findImage("가정교사선생"));
 		_friends.push_back(IMAGEMANAGER->findImage("가정교사친구"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 1:
-			_status = WORK_HARD;
-			_startF = 0, _endF = 4;
-			break;
-		case 0:
 			_status = WORK_SLEEP;
 			_startF = 5, _endF = 7;
-			break;
-		case 2:
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
+			_status = WORK_HARD;
+			_startF = 0, _endF = 4;
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 8, _endF = 9;
-			break;
+
 		}
 		break;
 	case WORK_DRINK:
@@ -480,20 +528,23 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("주점친구2"));
 		_friends.push_back(IMAGEMANAGER->findImage("주점친구3"));
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 7;
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 7, _endF = 17;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 18, _endF = 19;
-			break;
+
 		}
 		break;
 	case WORK_NIGHT_DRINK:
@@ -508,20 +559,20 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("밤의주점촛불"));
 		_princessImg = IMAGEMANAGER->findImage("밤의주점공주");
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 3;
-			break;
-		case 1:
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 4, _endF = 7;
-			break;
-		case 2:
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 4, _endF = 7;
-			break;
 		}
 		break;
 	case WORK_NIGHT_CLUB:
@@ -533,21 +584,24 @@ void partTimeScene::setImage()
 		_friends.push_back(IMAGEMANAGER->findImage("밤의전당친구4"));
 		_princessImg = IMAGEMANAGER->findImage("밤의전당공주");
 
-		switch (RND->getInt(3))
+		if (selectStatus() == WORK_HARD)
 		{
-		case 0:
 			_status = WORK_HARD;
 			_startF = 0, _endF = 3;
 			_friends[1]->setFrameX(0), _friends[2]->setFrameX(0);
-			break;
-		case 1:
+
+		}
+		else if (selectStatus() == WORK_SLEEP)
+		{
 			_status = WORK_SLEEP;
 			_startF = 3, _endF = 7;
-			break;
-		case 2:
+
+		}
+		else
+		{
 			_status = WORK_NOHARD;
 			_startF = 8, _endF = 9;
-			break;
+
 		}
 		break;
 	}
@@ -556,8 +610,18 @@ void partTimeScene::setImage()
 void partTimeScene::setTeachDialog()
 {
 	//다이얼로그 만들기, 다시합시당
+	vector<string> vStr = TXTDATA->txtLoad("dialog/workStart.txt");
+	vStr[(int)_type] == "T" ? _workStart = false : _workStart = true;
+	if (_workStart)
+	{
+		vStr[(int)_type] = "T";
+		TXTDATA->txtSave("dialog/workStart.txt", vStr);
+	}
 	_teacherFrameX = (int)_type;
-	_teachDialog.push_back(_workName);
+	vStr = TXTDATA->txtLoadCsv("dialog/workTeach.csv");
+	char cStr[100000];
+	strcpy(cStr, vStr[(int)_type].c_str());
+	_teachDialog = TXTDATA->charArraySeparation(cStr);
 }
 
 void partTimeScene::setDialog(string dialog)
@@ -568,8 +632,9 @@ void partTimeScene::setDialog(string dialog)
 	int idx = 0;
 	if (_vDialog.size() > 0)
 		_vDialog.clear();
-
-	int strLength = 40;
+	if (_progress == STATUS_TEACH)
+		_vDialog.push_back(_teachDialog[0]);
+	int strLength = 50;
 	if (_progress == STATUS_FIN || _progress == STATUS_TEACH) strLength = 28;
 	while (1)
 	{
@@ -593,9 +658,30 @@ void partTimeScene::setResultDialog()
 	_progress = STATUS_FIN;
 	_vDialog.clear();
 	//게임보고 마무리 어떻게 지어지나 봐야해
-	string str = to_string(_printDay) + "일간의 급여는" + to_string(_pGold.data) + "이다.";
-	_vDialog.push_back(str);
-	DIALOG->setDialog(_vDialog[0], 5);
+	/*string str = to_string(_printDay) + "일간의 급여는" + to_string(_pGold.data) + "이다.";
+	_vDialog.push_back(str);*/
+	if (_workName == "집안일")
+		_vDialog.push_back(_teachDialog[3]);
+	else
+	{
+		if (_success == 0)
+			_vDialog.push_back(_teachDialog[3]);
+		else
+		{
+			if (_success < _printDay)
+				_vDialog.push_back(_teachDialog[4]);
+			else
+			{
+				_vDialog.push_back(_teachDialog[5]);
+				_pGold.data *= 1.5;
+			}
+		}
+	}
+	_princess->setGold(_pGold.data);
+	//DIALOG->setDialog(_vDialog[0], 5);
+	setDialog(_vDialog[0]);
+	_dialogX = 190, _dialogY = 235;
+	_dialogType = DIALOG_FIN;
 }
 
 void partTimeScene::changeFrame()
@@ -636,7 +722,15 @@ void partTimeScene::changeFrame()
 			_day++;
 			_dayIdx++;
 			if (_dayOfWeek != SUN)
+			{
 				_printDay++;
+				if (_status == WORK_HARD)
+				{
+					_success++;
+					//_princess->setGold(_gold);
+					_pGold.data += _gold;
+				}
+			}
 			switch (_dayOfWeek)
 			{
 			case MON:
@@ -1001,8 +1095,8 @@ void partTimeScene::changeFrame()
 			}
 			if (_dayIdx < _dayCount)
 			{
-				_princess->getStatusP()->stress += _work->getStress();
-				_vPStatus[_vPStatus.size() - 1].second.data += _work->getStress();
+				//_princess->getStatusP()->stress += _work->getStress();
+				//_vPStatus[_vPStatus.size() - 1].second.data += _work->getStress();
 				_princess->setDay(_day);
 				_princess->setDayOfWeek(_dayOfWeek);
 			}
@@ -1029,19 +1123,14 @@ WORK_STATUS partTimeScene::selectStatus()
 			return WORK_SLEEP;
 		if (_princess->getStatus().stress > _princess->getStatus().morality)
 			return WORK_NOHARD;
-		if (!RND->getInt(2))
+	//	if (!RND->getInt(2))
 			return WORK_SLEEP;
-		else
-			return WORK_NOHARD;
+	//	else
+	//		return WORK_NOHARD;
 	}
-	////성공 조건 다시해야해
-	//if (_princess->getStatus().stress > _princess->getStatus().faith)
-	//	return WORK_SLEEP;
-	//if (_princess->getStatus().stress > _princess->getStatus().morality)
-	//	return WORK_NOHARD;
-	_success++;
-	_princess->setGold(_gold);
-	_pGold.data += _gold;
+	//_success++;
+	//_princess->setGold(_gold);
+	//_pGold.data += _gold;
 	return WORK_HARD;
 }
 
@@ -1375,16 +1464,13 @@ void partTimeScene::workRender()
 	switch (_status)
 	{
 	case WORK_HARD:
-		sprintf_s(str2, "프레임카운트 :%d, 공부중", _frameCount);
-		TextOut(DC, WINSIZEX / 2, WINSIZEY / 2, str2, strlen(str2));
+		TextOut(DC, 445, 280, "오늘은 착실하게 일을 했다.", strlen("오늘은 착실하게 일을 했다."));
 		break;
 	case WORK_SLEEP:
-		sprintf_s(str2, "프레임카운트 :%d, 자는중", _frameCount);
-		TextOut(DC, WINSIZEX / 2, WINSIZEY / 2, str2, strlen(str2));
+		TextOut(DC, 445, 280, "오늘은 실수를 한 것 같다.", strlen("오늘은 실수를 한 것 같다."));
 		break;
 	case WORK_NOHARD:
-		sprintf_s(str2, "프레임카운트 :%d, 농땡이중", _frameCount);
-		TextOut(DC, WINSIZEX / 2, WINSIZEY / 2, str2, strlen(str2));
+		TextOut(DC, 445, 280, "농땡이를 피웁니다.", strlen("농땡이를 피웁니다."));
 		break;
 	}
 

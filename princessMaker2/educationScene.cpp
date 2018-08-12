@@ -161,6 +161,7 @@ void educationScene::update()
 		break;
 	}
 
+	
 }
 
 void educationScene::render()
@@ -976,6 +977,11 @@ void educationScene::changeFrame()
 				_vPStatus[_vPStatus.size() - 1].second.data += 1;
 				_princess->setDay(_day);
 				_princess->setDayOfWeek(_dayOfWeek);
+				for (int i = 0; i < _vPStatus.size() - 1; i++)
+				{
+					_vPStatus[i].second.progressBar->setGauge(changeStatus(_eduStatus[i].first, 0), 500);
+				}
+				_vPStatus[_eduStatus.size()].second.progressBar->setGauge(_princess->getStatus().stress, 500);
 			}
 		}
 	}
@@ -1094,6 +1100,13 @@ int educationScene::changeStatus(string name, int value)
 
 		if (_princess->getStatus().spellDefence < 0)
 			_princess->getStatusP()->spellDefence = 0;
+	}
+	else if (name == "스트레스")
+	{
+		temp = _princess->getStatus().stress;
+		_princess->getStatusP()->stress += value;
+		if (_princess->getStatus().stress < 0)
+			_princess->getStatusP()->stress = 0;
 	}
 	return temp;
 }
@@ -1332,16 +1345,12 @@ void educationScene::eduRender()
 	{
 	case EDU_STUDY:
 		TextOut(DC, 445, 280, "서서히 성과가 드러나고 있습니다.", strlen("서서히 성과가 드러나고 있습니다."));
-		sprintf_s(str2, "프레임카운트 :%d, 공부중", _frameCount);
-		TextOut(DC, WINSIZEX / 2, WINSIZEY / 2, str2, strlen(str2));
 		break;
 	case EDU_SLEEP:
-		sprintf_s(str2, "프레임카운트 :%d, 자는중", _frameCount);
-		TextOut(DC, WINSIZEX / 2, WINSIZEY / 2, str2, strlen(str2));
+		TextOut(DC, 445, 280, "수업에 집중을 못합니다.", strlen("수업에 집중을 못합니다."));
 		break;
 	case EDU_NOSTUDY:
-		sprintf_s(str2, "프레임카운트 :%d, 농땡이중", _frameCount);
-		TextOut(DC, WINSIZEX / 2, WINSIZEY / 2, str2, strlen(str2));
+		TextOut(DC, 445, 280, "농땡이를 피웁니다.", strlen("농땡이를 피웁니다."));
 		break;
 	}
 

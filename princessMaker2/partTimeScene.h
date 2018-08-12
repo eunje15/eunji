@@ -11,7 +11,7 @@ class princess;
 class partTimeScene : public gameNode
 {
 private:
-	princess * _princess;
+	princess* _princess;
 	workStatus* _work;
 	vector<string> _vDialog;
 	DIALOG_TYPE _dialogType;
@@ -37,7 +37,7 @@ private:
 	image* _princessImg;
 	vector<image*> _friends;
 
-	bool _fin, _goldOk, _workFin;
+	bool _fin, _goldOk, _workFin, _workStart;
 
 	tagProgress _pGold;
 	vector<pair<image*, tagProgress>> _vPStatus;

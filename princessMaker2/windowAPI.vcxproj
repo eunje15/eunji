@@ -160,6 +160,7 @@
     <ClInclude Include="data.h" />
     <ClInclude Include="dataInput.h" />
     <ClInclude Include="dialogManager.h" />
+    <ClInclude Include="eastBattleScene.h" />
     <ClInclude Include="educationScene.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effectManager.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="progressBar.h" />
     <ClInclude Include="prologueDialog.h" />
     <ClInclude Include="randomFunction.h" />
+    <ClInclude Include="relaxScene.h" />
     <ClInclude Include="relaxStatus.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="saveLoadScene.h" />
@@ -214,6 +216,7 @@
     <ClCompile Include="dadTalkScene.cpp" />
     <ClCompile Include="dataInput.cpp" />
     <ClCompile Include="dialogManager.cpp" />
+    <ClCompile Include="eastBattleScene.cpp" />
     <ClCompile Include="educationScene.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effectManager.cpp" />
@@ -237,6 +240,7 @@
     <ClCompile Include="princessScene.cpp" />
     <ClCompile Include="progressBar.cpp" />
     <ClCompile Include="prologueDialog.cpp" />
+    <ClCompile Include="relaxScene.cpp" />
     <ClCompile Include="relaxStatus.cpp" />
     <ClCompile Include="saveLoadScene.cpp" />
     <ClCompile Include="sceneManager.cpp" />

@@ -145,7 +145,7 @@ void princessScene::update()
 	}
 	if (KEYMANAGER->isOnceKeyDown(VK_F10))
 	{
-		_princess->setGold(-999800);
+		_princess->setGold(-1000000);
 	}
 	if (KEYMANAGER->isOnceKeyDown(VK_F11))
 	{

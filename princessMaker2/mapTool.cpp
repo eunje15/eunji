@@ -14,14 +14,15 @@ mapTool::~mapTool()
 HRESULT mapTool::init()
 {
 	IMAGEMANAGER->addFrameImage("sampleMap", "image/field/e_samplemap(320x1680,16x84).bmp", 320, 1680, 16, 84, false, RGB(255, 0, 255));
-	IMAGEMANAGER->addFrameImage("map", "image/field/e_map(640x3360,16x84).bmp", 640, 3360, 16, 84, false, RGB(255, 0, 255));
+	
 
-	_isSetObj = true;
+	_isSetObj = false;
 	_isDrag = false;
 
 	if (!_isSetObj)
 		objLoad();
 	setup();
+	load();
 	return S_OK;
 }
 

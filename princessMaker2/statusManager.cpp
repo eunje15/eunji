@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "statusManager.h"
+#include <algorithm>
 
 
 statusManager::statusManager()
@@ -65,7 +66,7 @@ void statusManager::loadData(const char * dataName)
 void statusManager::loadWorkData(const char * dataName)
 {
 	vector<string> vStr = TXTDATA->txtLoadCsv(dataName);
-
+	
 	for (int i = 0; i < vStr.size(); i++)
 	{
 		char str[100000];
@@ -112,14 +113,10 @@ void statusManager::setFightData()
 
 void statusManager::setRelaxData()
 {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 2; i++)
 	{
-		for (int j = 0; j < 4; j++)
-		{
-			relaxStatus* temp = new relaxStatus;
-			temp->setRelaxStatus(j, i);
-			_vRelax.push_back(temp);
-			if (i == 0 || i == 1) break;
-		}
+		relaxStatus* temp = new relaxStatus;
+		temp->setRelaxStatus(i);
+		_vRelax.push_back(temp);
 	}
 }

@@ -73,6 +73,9 @@
     <Filter Include="playGround\maptool">
       <UniqueIdentifier>{7482ca49-0572-440e-a6fd-14d50d293967}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\battle">
+      <UniqueIdentifier>{c987ab54-b958-46eb-9597-47bd75c9dc79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -237,6 +240,12 @@
     <ClInclude Include="mapTool.h">
       <Filter>playGround\maptool</Filter>
     </ClInclude>
+    <ClInclude Include="eastBattleScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="relaxScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -385,6 +394,12 @@
     </ClCompile>
     <ClCompile Include="mapTool.cpp">
       <Filter>playGround\maptool</Filter>
+    </ClCompile>
+    <ClCompile Include="eastBattleScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="relaxScene.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

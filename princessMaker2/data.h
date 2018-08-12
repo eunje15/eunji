@@ -136,6 +136,13 @@ struct tagStatusData
 	int plusEnd;
 };
 
+struct tagRelax
+{
+	int sensitivity;
+	int stress;
+	float weight;	//¹«°Ô
+};
+
 enum DIALOG_TYPE { DIALOG_ING, DIALOG_FIN };
 enum STATUS_TYPE {STATUS_START, STATUS_TEACH, STATUS_ING, STATUS_FIN };
 enum SEASON_TYPE { SPRING, SUMMER, AUTUMN, WINTER };

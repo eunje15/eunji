@@ -2,23 +2,12 @@
 #include "gameNode.h"
 #include "data.h"
 
-enum TEST_TYPE { TEST_STUDY, TEST_SLEEP, TEST_NOSTUDY };
-//enum DAYOFWEEK {MON, TUE, WED, THU, FRI, SAT, SUN };
 class testClass : public gameNode
 {
 private:
-	int _day;
-	int _gold;
-	int _success;
-	int _startF, _endF, _count, _frameCount, _frameX;
-	int _teacherStartF, _teacherEndF;
-	string _typeStr;
-	TEST_TYPE _type;
-	DAYOFWEEK _dayOfWeek;
-	image* _back;
-	image* _princess;
-	image* _teacher;
-	vector<image*> _friends;
+	vector<string>	_vDialog, _teachDialog;
+	int				_dialogIdx;
+	int				_nextIdx;
 public:
 	testClass();
 	~testClass();
@@ -27,5 +16,7 @@ public:
 	void update();
 	void render();
 	void release();
+	void setDialog(string dialog);
+	bool dialogRender();
 };
 
