@@ -142,25 +142,37 @@ void weaponStore::update()
 				{
 					if (i == 0)
 					{
-						if (_princess->setItem(_vItem[_selectNumber]))
+						if (_princess->getGold() >= _vItem[_selectNumber]->getPrice())
 						{
-							_princess->setGold(_vItem[_selectNumber]->getPrice());
-							string str = "「감사합니다.」";
-							setDialog(str);
-							_type = WEAPON_SELECT;
-							_dialogIdx = 0;
-							_dialogType = DIALOG_FIN;
-							for (int i = 0; i < 12; i++)
+							if (_princess->setItem(_vItem[_selectNumber]))
 							{
-								_itemImg[i].data.isChoose = _itemImg[i].data.isSelected = false;
+								_princess->setGold(-_vItem[_selectNumber]->getPrice());
+								string str = "「감사합니다.」";
+								setDialog(str);
+								_type = WEAPON_SELECT;
+								_dialogIdx = 0;
+								_dialogType = DIALOG_FIN;
+								for (int i = 0; i < 12; i++)
+								{
+									_itemImg[i].data.isChoose = _itemImg[i].data.isSelected = false;
+								}
+								_selectItem = false;
 							}
-							_selectItem = false;
+							else
+							{
+								string str = "「인벤토리창이 꽉 차서 물건을 구입할 수 없습니다.」";
+								setDialog(str);
+								_type = WEAPON_NONE;
+								_dialogIdx = 0;
+								_dialogType = DIALOG_ING;
+							}
 						}
 						else
 						{
-							string str = "「인벤토리창이 꽉 차서 물건을 구입할 수 없습니다.」";
+							string str = "「돈이 없다면 돌아가.」";
 							setDialog(str);
-							_type = WEAPON_NONE;
+							_type = WEAPON_SELECT;
+							_selectItem = false;
 							_dialogIdx = 0;
 							_dialogType = DIALOG_ING;
 						}

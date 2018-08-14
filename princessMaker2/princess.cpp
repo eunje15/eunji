@@ -19,7 +19,7 @@ HRESULT princess::init()
 	_info.year = 1200, _info.mon = 1, _info.day = 1, _info.dayOfWeek = 0;
 	_info.blood = BLOOD_A;
 	_info.strBlood = "A";
-	_info.age = 11;
+	_info.age = 17;
 	_info.dietType = "무리하지 않는다";
 
 	_bodyInfo.height = 149.16;
@@ -27,6 +27,7 @@ HRESULT princess::init()
 	_bodyInfo.bast = 74.57;
 	_bodyInfo.waist = 55.82;
 	_bodyInfo.hip = 77.71;
+	_bodyInfo.clothesType = 0; //평상복
 
 	_date.name = _info.name;
 	_date.firstName = _info.firstName;
@@ -51,13 +52,13 @@ HRESULT princess::init()
 	char str[128];
 	sprintf_s(str, "body%d", _info.age);
 	_body.img = IMAGEMANAGER->findImage(str);
-	_body.x = 80;
+	_body.x = 100;
 	_body.y = WINSIZEY - _body.img->getFrameHeight();
 	
 	sprintf_s(str, "face%d", _info.age);
 	_face.img = IMAGEMANAGER->findImage(str);
-	_face.x = 80;
-	_face.y = _body.y - _face.img->getFrameHeight() + 1;
+	_face.x = 100;
+	_face.y = _body.y - _face.img->getFrameHeight() + 2;
 
 	_info.gold = 1000000;
 
@@ -76,8 +77,8 @@ void princess::update()
 
 void princess::render()
 {
-	_body.img->frameRender(DC, _body.x, _body.y);
-	_face.img->frameRender(DC, _face.x, _face.y);
+	_body.img->frameRender(DC, _body.x, _body.y, 0, _bodyInfo.clothesType);
+	_face.img->frameRender(DC, _face.x, _face.y, 0, _bodyInfo.clothesType);
 }
 
 void princess::release()

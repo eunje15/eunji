@@ -77,6 +77,8 @@ void itemManager::loadData(const char* dataName)
 			tItem->setItem(temp[0], atoi(temp[1].c_str()), isStore, property, 3, i, 0);
 			_vCook.push_back(tItem);
 		}
+		if (_type == DATA_CLOTHES)
+			tItem->setFrameY(i);
 		_vTotal.push_back(tItem);
 	}
 }

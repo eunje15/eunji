@@ -30,6 +30,7 @@ HRESULT playGround::init(void)
 	
 	SCENEMANAGER->changeScene("공주씬");
 	_str = TXTDATA->txtLoadCsv("dialog/별자리능력치.csv", "처녀자리");
+
 	/*
 	SCENEMANAGER->addScene("테스트", new testClass);
 	SCENEMANAGER->changeScene("테스트");
@@ -96,6 +97,8 @@ void playGround::render(void)
 
 	SCENEMANAGER->render();
 
+	//IMAGEMANAGER->findImage("back")->render(DC);
+	//IMAGEMANAGER->findImage("body10")->frameRender(DC, 50, 50, 0, 2);
 	char str[128];
 	sprintf_s(str, "%d,%d", _ptMouse.x, _ptMouse.y);
 	TextOut(_camera->getMemDC(), 700, 20, str,strlen(str));

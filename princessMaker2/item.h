@@ -1,7 +1,7 @@
 #pragma once
 #include "gameNode.h"
+#include "data.h"
 
-enum ITEM_TYPE { ITEM_WEAPON, ITEM_ARMOR, ITEM_CLOTHES, ITEM_COOK, ITEM_GOODS };
 class item : public gameNode 
 {
 private:
@@ -12,6 +12,7 @@ private:
 	image* _img;
 	vector<pair<string, float>> _property;
 	bool _isWear;
+	int	_clothesFrameY;
 	float _x, _y;
 	bool _isStore;
 public:
@@ -27,8 +28,13 @@ public:
 	void setImage();
 	void setXY(float x, float y);
 	void setName(string name) { _name = name; }
+	void setFrameY(int frameY) { _clothesFrameY = frameY; }
+	int getFrameY() { return _clothesFrameY; }
 	float getX() { return _x; }
 	float getY() { return _y; }
+	ITEM_TYPE getType() { return _type; }
+	void setIsWear(bool isWear) { _isWear = isWear; }
+	bool getIsWear() { return _isWear; }
 
 	string getName() { return _name; }
 	int getPrice() { return _price; }

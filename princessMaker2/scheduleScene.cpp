@@ -722,7 +722,7 @@ void scheduleScene::render()
 
 			for (int i = 0; i < 4; i++)
 			{
-				IMAGEMANAGER->findImage("알바액자")->render(DC, 10, 430);
+				//IMAGEMANAGER->findImage("알바액자")->render(DC, 10, 430);
 				if (dialogRender())
 				{
 					for (int i = 0; i < _vDialog.size(); i++)
@@ -987,11 +987,11 @@ void scheduleScene::setSchedule()
 	else if (_scheduleWeek[_scheduleIdx] == "relax")
 	{
 		if (_scheduleIdx == 2 && (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12))
-			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 11);
+			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 11, _itemIdx[_scheduleIdx]);
 		else if (_scheduleIdx == 2 && _mon == 2)
-			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 8);
+			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 8, _itemIdx[_scheduleIdx]);
 		else
-			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 10);
+			_relax->init(_sm->getVRelax()[_itemIdx[_scheduleIdx]], 10, _itemIdx[_scheduleIdx]);
 
 	}
 }

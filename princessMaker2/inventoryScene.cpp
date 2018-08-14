@@ -46,6 +46,14 @@ void inventoryScene::update()
 		if (PtInRect(&_vInvenImg[i].data.rc, _ptMouse))
 		{
 			_vInvenImg[i].frameX = 1;
+			if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+			{
+				if (_vInven[i]->getType() == ITEM_CLOTHES)
+				{
+					_vInven[i]->setIsWear(true);
+					_princess->getBodyInfoP()->clothesType = _vInven[i]->getFrameY();
+				}
+			}
 		}
 	}
 }
@@ -72,11 +80,12 @@ void inventoryScene::render()
 		vector<pair<string, float>> vTemp = _vInven[i]->getProperty();
 		for (int j = 0; j < vTemp.size(); j++)
 		{
+			if (vTemp[j].first == "나이" || vTemp[j].first == "비만") continue;
 			TextOut(DC, _vInven[i]->getX() + j * 80, _vInven[i]->getY() + 45, vTemp[j].first.c_str(), strlen(vTemp[j].first.c_str()));
 			if (vTemp[j].second > 0)
 				TextOut(DC, _vInven[i]->getX() + vTemp[j].first.size() * 8 + j * 80, _vInven[i]->getY() + 45, "+", strlen("+"));
 			char stat[128];
-			sprintf_s(stat, "%d", (int)vTemp[j].second);
+			sprintf_s(stat, "%d ", (int)vTemp[j].second);
 			TextOut(DC, _vInven[i]->getX() + vTemp[j].first.size() * 8 + 10 + j * 80, _vInven[i]->getY() + 45, stat, strlen(stat));
 		}
 	}

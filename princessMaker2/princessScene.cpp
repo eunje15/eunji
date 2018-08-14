@@ -139,6 +139,10 @@ HRESULT princessScene::init()
 
 void princessScene::update()
 {
+	if (KEYMANAGER->isOnceKeyDown(VK_F8))
+	{
+		_princess->getStatusP()->stress = 100;
+	}
 	if (KEYMANAGER->isOnceKeyDown(VK_F9))
 	{
 		_princess->getStatusP()->stress = 0;
@@ -179,6 +183,7 @@ void princessScene::update()
 						break;
 					case 3:
 						_menuType = SELECT_INFO;
+						setBodyInfo();
 						break;
 					case 4:
 						_menuType = SELECT_TOWN;
@@ -839,6 +844,7 @@ void princessScene::setNextMonth()
 		_year++;
 		_yearImg.frameY = _year - 1200;
 		_princess->setYear(_year);
+		_princess->getBodyInfoP()->waist -= 0.3f;
 	}
 	if (_mon == 1 || _mon == 3 || _mon == 5 || _mon == 7 || _mon == 8 || _mon == 10 || _mon == 12)
 		_finDay = 31;
@@ -876,6 +882,9 @@ void princessScene::setNextMonth()
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.28f, 0.35f);
 		else
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.16f, 0.20f);
+		_princess->getBodyInfoP()->height += 0.4f;
+		_princess->getBodyInfoP()->bast += 0.04f;
+		_princess->getBodyInfoP()->hip += 0.08f;
 	}
 	else if (_princess->getInfo().dietType == "무리하지 않는다")
 	{
@@ -883,6 +892,9 @@ void princessScene::setNextMonth()
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.19f, 0.22f);
 		else
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.05f, 0.08f);
+		_princess->getBodyInfoP()->height += 0.3f;
+		_princess->getBodyInfoP()->bast += 0.03f;
+		_princess->getBodyInfoP()->hip += 0.06f;
 	}
 	else if (_princess->getInfo().dietType == "얌전한 아이로")
 	{
@@ -890,6 +902,9 @@ void princessScene::setNextMonth()
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.10f, 0.13f);
 		else
 			_princess->getBodyInfoP()->weight += RND->getFromFloatTo(0.01f, 0.04f);
+		_princess->getBodyInfoP()->height += 0.3f;
+		_princess->getBodyInfoP()->bast += 0.02f;
+		_princess->getBodyInfoP()->hip += 0.05f;
 	}
 	else if (_princess->getInfo().dietType == "다이어트를 시킨다")
 	{
@@ -897,6 +912,9 @@ void princessScene::setNextMonth()
 			_princess->getBodyInfoP()->weight -= RND->getFromFloatTo(0.00f, 0.06f);
 		else
 			_princess->getBodyInfoP()->weight -= RND->getFromFloatTo(0.5f, 1.0f);
+		_princess->getBodyInfoP()->height += 0.2f;
+		_princess->getBodyInfoP()->bast += 0.01f;
+		_princess->getBodyInfoP()->hip += 0.04f;
 	}
 	if (_mon == 3)
 		_season = SPRING;

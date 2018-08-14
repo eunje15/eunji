@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "cookStore.h"
+#include "princess.h"
 
 
 cookStore::cookStore()
@@ -13,6 +14,8 @@ cookStore::~cookStore()
 
 HRESULT cookStore::init(vector<item*> vItem)
 {
+	_princess = SCENEMANAGER->getPrincessAddress();
+
 	setItem(vItem);
 	_npc.img = IMAGEMANAGER->findImage("peopleFace");
 	_npc.frameX = 13, _npc.frameY = 0;
@@ -53,7 +56,7 @@ HRESULT cookStore::init(vector<item*> vItem)
 		_buyBox[i].isSelected = _buyBox[i].isChoose = false;
 	}
 
-	_buyBox[0].str = "산다";
+	_buyBox[0].str = "먹는다";
 	_buyBox[1].str = "그만 둔다";
 	_buyBox[2].str = "가게를 나선다";
 
@@ -95,6 +98,7 @@ void cookStore::update()
 					_itemImg[i].data.isChoose = false;
 					if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 					{
+						_selectNumber = i;
 						_selectItem = true;
 						_itemImg[i].data.isChoose = true;
 						_itemImg[i].frameX = 0;
@@ -128,7 +132,19 @@ void cookStore::update()
 				{
 					if (i == 0)
 					{
-						//플레이어랑 연동시켜야해~
+						if (_princess->getGold() >= _vItem[_selectNumber]->getPrice())
+						{
+
+						}
+						else
+						{
+							string str = "「돈이 없으니 돌아가세요.」";
+							setDialog(str);
+							_type = COOK_SELECT;
+							_selectItem = false;
+							_dialogIdx = 0;
+							_dialogType = DIALOG_ING;
+						}
 					}
 					else if (i == 1)
 					{

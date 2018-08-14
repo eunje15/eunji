@@ -34,7 +34,7 @@ HRESULT playGround::image_init()
 
 	//==========메인이미지===============
 	IMAGEMANAGER->addImage("back", "image/main/main(800x600).bmp", 800, 600, false, RGB(255, 0, 255));
-	IMAGEMANAGER->addFrameImage("flower", "image/main/flower(850x225,5x1).bmp", 850,255,5,1,true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("flower", "image/main/flower2(850x225,5x1).bmp", 850,255,5,1,true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("mainFrame", "image/main/액자(720x130,6x1).bmp", 720,130,6,1,false, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("cal", "image/main/cal(179x100).bmp", 179, 100, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("schedule", "image/main/scheduleCal(300x299).bmp", 300, 299, false, RGB(255, 0, 255));
@@ -65,6 +65,7 @@ HRESULT playGround::image_init()
 
 
 	//==========다이얼로그이미지==============
+	IMAGEMANAGER->addImage("1Back", "image/main/1Back(170x64).bmp", 170, 64, false, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("3Back", "image/main/dadTalkBack(170x112).bmp", 170, 112, false, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("4Back", "image/main/4Back(170x136).bmp", 170, 136, false, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("2Back", "image/main/2Back(140x88).bmp", 140, 88, false, RGB(255, 0, 255));
@@ -79,9 +80,25 @@ HRESULT playGround::image_init()
 	IMAGEMANAGER->addFrameImage("storeQuit", "image/main/storeQuit(240x40,2x1).bmp", 240, 40, 2, 1, true, RGB(255, 0, 255));
 
 	//===========공주이미지==============
-	IMAGEMANAGER->addFrameImage("face11", "image/princess/11_face(1020x786,2x3).bmp", 1020, 786, 2, 3, true, RGB(255, 0, 255));
-	IMAGEMANAGER->addFrameImage("body11", "image/princess/11_clothes(1020x1336,2x4).bmp", 1020, 1336, 2, 4, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("princessFace", "image/princess/딸얼굴(1464x922,12x7).bmp", 1464, 922, 12, 7, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("face10", "image/princess/10_face(2040x1228,4x4).bmp", 2040, 1228, 4, 4, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("body10", "image/princess/10_clothes(1020x1172,2x4).bmp", 1020, 1172, 2, 4, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("face11", "image/princess/11_face(2550x1200,5x4).bmp", 2550, 1200, 5, 4, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("body11", "image/princess/11_clothes2(1020x1200,2x4).bmp", 1020, 1200, 2, 4, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("sunburn11", "image/princess/11_sunburn(1020x1336,2x4).bmp", 1020, 1336, 2, 4, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("face12", "image/princess/12_face(3060x1052,6x4).bmp", 3060, 1052, 6, 4, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("body12", "image/princess/12_clothes(1020x1336,2x4).bmp", 1020, 1336, 2, 4, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("face13", "image/princess/13_face(2550x1422,5x6).bmp", 2550, 1422, 5, 6, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("body13", "image/princess/13_clothes(1020x2178,2x5).bmp", 1020, 2178, 2, 5, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("face14", "image/princess/14_face(2550x1616,5x8).bmp", 2550, 1616, 5, 8, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("body14", "image/princess/14_clothes(1020x2388,2x6).bmp", 1020, 2388, 2, 6, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("face15", "image/princess/15_face(2550x1850,5x10).bmp", 2550, 1850, 5, 10, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("body15", "image/princess/15_clothes(510x4150,1x10).bmp", 510, 4150, 1, 10, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("face16", "image/princess/16_face(2550x1630,5x10).bmp", 2550, 1630, 5, 10, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("body16", "image/princess/16_clothes(510x4370,1x10).bmp", 510, 4370, 1, 10, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("face17", "image/princess/17_face(2550x1490,5x10).bmp", 2550, 1490, 5, 10, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("body17", "image/princess/17_clothes(510x4510,1x10).bmp", 510, 4510, 1, 10, true, RGB(255, 0, 255));
+
 
 	//===============NPC이미지====================
 	IMAGEMANAGER->addFrameImage("cube", "image/npc/cube(840x260,7x2).bmp", 840, 260, 7, 2, true, RGB(255, 0, 255));
@@ -303,5 +320,12 @@ HRESULT playGround::image_init()
 	IMAGEMANAGER->addFrameImage("조작키", "image/field/조작키(200x80,5x2).bmp", 200, 80, 5, 2, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("무사수행정보", "image/field/무사수행정보(180x170).bmp", 180, 170, false, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("fieldMap", "image/field/FieldMap(1600x600,2x1).bmp", 1600, 600, 2, 1, false, RGB(255, 0, 255));
+
+	//======================바캉스이미지====================================
+	IMAGEMANAGER->addImage("black", "image/main/black(800x600).bmp", 800, 600, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("자유행동사진", "image/vacation/자유행동사진(252x163).bmp", 252, 163, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("산사진", "image/vacation/산사진(3200x1424,4x4).bmp", 3200, 1424, 4, 4, false, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("바다사진", "image/vacation/바다사진(3200x1424,4x4).bmp", 3200, 1424, 4, 4, false, RGB(255, 0, 255));
+
 	return S_OK;
 }

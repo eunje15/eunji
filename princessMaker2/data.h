@@ -80,6 +80,7 @@ struct tagBody
 	float bast;
 	float waist;
 	float hip;
+	int clothesType;
 };
 
 
@@ -147,5 +148,5 @@ enum DIALOG_TYPE { DIALOG_ING, DIALOG_FIN };
 enum STATUS_TYPE {STATUS_START, STATUS_TEACH, STATUS_ING, STATUS_FIN };
 enum SEASON_TYPE { SPRING, SUMMER, AUTUMN, WINTER };
 enum DAYOFWEEK { MON, TUE, WED, THU, FRI, SAT, SUN };
-
+enum ITEM_TYPE { ITEM_WEAPON, ITEM_ARMOR, ITEM_CLOTHES, ITEM_COOK, ITEM_GOODS };
 #endif

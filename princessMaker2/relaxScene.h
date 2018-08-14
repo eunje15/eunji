@@ -25,20 +25,21 @@ private:
 	tagImg _yearImg, _monImg, _dayImg, _dayOfWeekImg;
 	vector<pair<image*, tagProgress>> _vPStatus;
 	tagString _selectBox[2], _clickHome;
-	vector<pair<string, int>> _relaxStatus;
+	vector<pair<string, float>> _relaxStatus;
 	bool _fin, _moneyOk;
 	int _princessAnswer, _count;
+	int _dialogX, _dialogY, _princessFrameX;
 public:
 	relaxScene();
 	~relaxScene();
 
-	HRESULT init(relaxStatus* relax, int dayCount);
+	HRESULT init(relaxStatus* relax, int dayCount, int idx);
 	void update();
 	void render();
 	void release();
 	void setRelax(int idx);
 	void initStatus(int idx);
-	int changeStatus(string name, int value);
+	float changeStatus(string name, float value);
 	void changeDay();
 	void setDialog(string dialog);
 	bool dialogRender();

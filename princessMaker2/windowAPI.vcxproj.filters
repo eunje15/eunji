@@ -240,11 +240,11 @@
     <ClInclude Include="mapTool.h">
       <Filter>playGround\maptool</Filter>
     </ClInclude>
-    <ClInclude Include="eastBattleScene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="relaxScene.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>playGround\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="eastBattleScene.h">
+      <Filter>playGround\battle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -395,11 +395,11 @@
     <ClCompile Include="mapTool.cpp">
       <Filter>playGround\maptool</Filter>
     </ClCompile>
-    <ClCompile Include="eastBattleScene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="relaxScene.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>playGround\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="eastBattleScene.cpp">
+      <Filter>playGround\battle</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
