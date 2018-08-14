@@ -9,7 +9,7 @@ cookStore::cookStore()
 
 
 cookStore::~cookStore()
-{
+{ 
 }
 
 HRESULT cookStore::init(vector<item*> vItem)
